@@ -1,0 +1,8 @@
+/**
+ * Created by lenovo on 2017/6/12.
+ */
+const Util = {
+  width: window.screen.width,
+  height: window.screen.height,
+}
+module.exports = Util

@@ -1,0 +1,47 @@
+<template >
+  <div @click="ButtonClick" class="mybutton actived">
+    {{title}}
+  </div>
+</template>
+
+<script>
+  export default {
+    props: [
+      'title'
+    ],
+    methods: {
+      ButtonClick(){
+        this.$emit('ButtonClick')
+      }
+    }
+  }
+</script>
+<style scoped>
+  .mybutton{
+    color: #fff;
+    text-decoration: none;
+    border-color: transparent;
+    background-color: #ea5a49;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+    display: block;
+    clear: both;
+    margin: 0;
+    padding: 0 12px;
+    min-width: 52px;
+    min-height: 45px;
+    border-radius: 4px;
+    vertical-align: top;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    line-height: 45px;
+    cursor: pointer;
+    opacity: 0.9;
+  }
+  .actived:active{
+    opacity: 1;
+  }
+</style>

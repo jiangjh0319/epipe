@@ -1,0 +1,82 @@
+@import "./variable.styl"
+html, body
+  font-size 0.14rem
+  color $font_color_3
+  background-color $bg_color
+//height 100%
+
+.banner_img
+  width: 100%;
+
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: all 0.3s;
+}
+
+.slide-enter, .slide-leave-to {
+  transform: translate3d(100%, 0, 0);
+}
+
+.over_width {
+  overflow: hidden;
+  display: -webkit-box;
+  display: box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+ /* autoprefixer: off*/
+        -webkit-box-orient: vertical;
+    /* autoprefixer: on*/
+  box-orient: vertical;
+  word-break: break-all;
+}
+
+.simple-ellipsis {
+  overflow: hidden;
+  display: -webkit-box;
+  display: box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  /* autoprefixer: off*/
+        -webkit-box-orient: vertical;
+    /* autoprefixer: on*/
+  box-orient: vertical;
+}
+.padding_bottom_content
+  padding-bottom 0.15rem
+
+
+@keyframes myfirst  //伸长
+{
+0%   {height: 0rem;border:none}
+25%  {background:  0.13rem;border:none}
+50%  {background:  0.26rem;border:none}
+100% {background:  0.4rem;border:none}
+}
+@-webkit-keyframes circle{ //查询日志旋转
+0%{ transform:rotate(0deg) }
+100%{ transform:rotate(-90deg) }
+}
+@-webkit-keyframes circle2{ //查询通讯录旋转
+0%{ transform:rotate(0deg) }
+100%{ transform:rotate(90deg) }
+}
+.top_ul_yuan22 {
+  animation: circle2 0.2s;
+  transform: rotate(90deg)
+}
+
+@-webkit-keyframes seach_im{ //查询通讯录
+0%{ position:relative;top:6rem;opacity:0.5}
+100%{ position:relative;top:0.05rem ;opacity:1}
+}
+@-webkit-keyframes opacity_show{ //查询通讯录
+0%{opacity:0.1}
+100%{opacity:1}
+}

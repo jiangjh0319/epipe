@@ -1,0 +1,39 @@
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from 'vue'
+import App from './App'
+import router from './router/router'
+import FastClick from 'fastclick'
+import './js/rem'
+import './assets/iconfont'
+// 引入服务
+import Service from './js/Service'
+//  数据交互
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+//  提示框
+import {Alert, Confirm, Toast} from 'wc-messagebox'
+import 'wc-messagebox/style.css'
+// 引入轮播图组件
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+
+import './style/style.css'
+
+
+const options = ''
+Vue.use(Alert, options)
+Vue.use(Confirm, options)
+Vue.use(Toast, options)
+Vue.use(VueAxios, axios)
+Vue.use(VueAwesomeSwiper)
+Vue.prototype.Service = Service
+FastClick.attach(document.body)
+
+Vue.config.productionTip = false
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  template: '<App/>',
+  components: {App}
+})

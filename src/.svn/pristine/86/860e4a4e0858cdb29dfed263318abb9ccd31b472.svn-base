@@ -1,0 +1,72 @@
+<template>
+  <div v-bind:class="{ chose_blue: color=='blue',chose_red: color=='red' }" class="header_top">
+    <div class="itme_tabs">
+      <div v-if="path" @click="ReturnBack" class="header_back_left">
+        <img style="width: 0.2rem" src="../img/back.png"/>
+      </div>
+    </div>
+    <div class="itme_tabs">{{title}}</div>
+    <div class="itme_tabs"></div>
+  </div>
+</template>
+
+<script>
+  export default {
+    props: [
+      'title',
+      'path',
+      'query',
+      'color'
+    ],
+    methods: {
+      ReturnBack(){
+        if (this.path == 'back') {
+          window.history.back()
+        } else {
+          this.$router.push({
+            path: this.path,
+            query: this.query
+          })
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .header_top {
+    display: flex;
+    background-color: #0fc37c;
+    flex-direction: row;
+    height: 0.44rem;
+    font-family: PingFang SC;
+  }
+
+  .itme_tabs {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.18rem;
+    color: #fff;
+  }
+
+  .itme_tabs:first-child {
+    justify-content: flex-start;
+  }
+
+  .header_back_left {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 0.34rem;
+    height: 0.34rem;
+  }
+  .chose_blue{
+    background-color: #609ef7;
+  }
+  .chose_red{
+    background-color: #fd545c;
+  }
+</style>

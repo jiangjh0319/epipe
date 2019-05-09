@@ -1,0 +1,16 @@
+/**
+ * Created by lenovo on 2017/6/12.
+ */
+const Util = {
+  getNewTime: function (date, mark) {
+    var datesave = new Date(date);
+    if (mark == '年月日') {
+      return datesave.getFullYear() + '年' + (datesave.getMonth() + 1) + '月' + datesave.getDate() + '日'
+    } else if (mark == '年月') {
+      return datesave.getFullYear() + '年' + (datesave.getMonth() + 1) + '月'
+    } else {
+      return datesave.getFullYear() + '-' + (datesave.getMonth() + 1) + '-' + datesave.getDate()
+    }
+  }
+}
+module.exports = Util

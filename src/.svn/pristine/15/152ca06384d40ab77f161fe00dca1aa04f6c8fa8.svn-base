@@ -1,0 +1,39 @@
+<template style="width: 100%;height: 100%">
+  <div class="content">
+    <HeaderTop color="blue" title="工作台"></HeaderTop>
+    <div class="scroll_content">
+      <div style="font-size: 13px">团</div>
+      <div style="font-size: 0.13rem">团</div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  export default {
+    data () {
+      return {
+
+      }
+    },
+    components: {
+      HeaderTop
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .home_nav_top {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .home_nav_top li {
+    flex: 1;
+    height: 2rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+</style>

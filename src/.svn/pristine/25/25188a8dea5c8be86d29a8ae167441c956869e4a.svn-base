@@ -1,0 +1,288 @@
+<style scoped>
+  .date_piker_con li {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    height: 0.29rem;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.15rem;
+    color: #333;
+  }
+
+  .date_piker_con {
+    display: flex;
+    flex-direction: row;
+    height: 0.3rem;
+    background-color: #fff;
+  }
+
+  .date_piker_li {
+    padding-top: 0.13rem;
+    padding-bottom: 0.13rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: #f1f2f3;
+  }
+
+  .date_piker_li li {
+    display: flex;
+    justify-content: center;
+    width: 14.28%;
+    height: 0.34rem;
+    align-items: center;
+  }
+
+  .date_top_con {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .date_top_con li {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    height: 0.59rem;
+    background-color: #fff;
+  }
+
+  .date_piker_li li .div_choserd {
+    width: 0.34rem;
+    height: 0.34rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    border-radius: 1rem;
+    background-color: #609ef7;
+  }
+
+  .record_word_div {
+    margin-left: 0.15rem;
+    margin-right: 0.15rem;
+    display: flex;
+    height: 0.44rem;
+    align-items: center;
+    font-size: 0.15rem;
+    border-bottom: 1px solid #D9D9D9;
+  }
+
+  .record_wordcon_div {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .record_con_div2 {
+    flex: 9;
+    display: flex;
+    align-items: center;
+    font-size: 0.15rem;
+  }
+
+  .record_con_div3 {
+    flex: 9;
+    display: flex;
+    height: 0.29rem;
+    border-bottom: 0.01rem solid #E6E6E6;
+  }
+
+  .date_top_mytitle {
+    font-size: 0.18rem;
+    font-weight: bold;
+    flex: 1.5;
+  }
+</style>
+
+<template style="width: 100%;height: 100%">
+  <div class="content">
+    <HeaderTop path="back" color="blue" title="工作台"></HeaderTop>
+    <div class="scroll_content">
+      <ul class="date_top_con">
+        <li @click="goleft">左边</li>
+        <li class="date_top_mytitle">{{topdate}}</li>
+        <li @click="goright">右边</li>
+      </ul>
+      <ul class="date_piker_con">
+        <li>一</li>
+        <li>二</li>
+        <li>三</li>
+        <li>四</li>
+        <li>五</li>
+        <li>六</li>
+        <li>日</li>
+      </ul>
+      <ul class="date_piker_li">
+        <li @click="chosetime(index,item.id)" v-for="(item,index) in dateArrray">
+          <div v-bind:class="{ div_choserd: item.mark }">{{item.id}}</div>
+        </li>
+      </ul>
+      <div style="background-color: #fff">
+        <div class="record_word_div">
+          当天考勤信息
+        </div>
+      </div>
+      <div  style="padding-top:0.15rem;background-color: #fff">
+        <div class="record_wordcon_div">
+          <div style="flex: 1">1</div>
+          <div class="record_con_div2">打卡时间（08:08:27）</div>
+        </div>
+        <div class="record_wordcon_div">
+          <div style="flex: 1"></div>
+          <div class="record_con_div3">深圳市 南山区 科苑路 北区华瀚科技</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  import Util from '../../js/Util.js'
+  let mydate
+  let myyear
+  let mymonth
+  let myday
+  let hasDay
+  /*当前月的第一天*/
+  function getDaysInOneMonth(year, month) {
+    month = parseInt(month, 10);
+    var d = new Date(year, month, 0);
+    return d.getDate()
+  }
+  /*公共的方法*/
+  function commonways(mydate) {
+    myyear = mydate.getFullYear()
+    mymonth = mydate.getMonth() + 1
+    myday = mydate.getDate()
+    hasDay = getDaysInOneMonth(myyear, mymonth)
+    /*一号是星期几*/
+    function getnum(dataone) {
+      let num = new Date(dataone).getDay()
+      if (num == 0) {
+        return 6
+      } else {
+        return num - 1
+      }
+    }
+
+    let dataone = myyear + '/' + mymonth + '/1'
+    let array = []
+    for (var i = 1; i <= getnum(dataone); i++) {
+      array.push({id: ''})
+    }
+    for (var i = 1; i <= hasDay; i++) {
+      if (mydate.getFullYear() + '-' + mydate.getMonth() == new Date().getFullYear() + '-' + new Date().getMonth()) {
+        if (i == myday) {
+          array.push({id: i, mark: true})
+        } else {
+          array.push({id: i, mark: false})
+        }
+      } else {
+        array.push({id: i, mark: false})
+      }
+    }
+    console.log(array.length)
+    return array
+  }
+
+  function getPreMonth(mydate) {
+    var arr = mydate.split('-');
+    var year = arr[0]; //获取当前日期的年份
+    var month = arr[1]; //获取当前日期的月份
+    var day = arr[2]; //获取当前日期的日
+    var days = new Date(year, month, 0);
+    days = days.getDate(); //获取当前日期中月的天数
+    var year2 = year;
+    var month2 = parseInt(month) - 1;
+    if (month2 == 0) {
+      year2 = parseInt(year2) - 1;
+      month2 = 12;
+    }
+    var day2 = day;
+    var days2 = new Date(year2, month2, 0);
+    days2 = days2.getDate();
+    if (day2 > days2) {
+      day2 = days2;
+    }
+    if (month2 < 10) {
+      month2 = '0' + month2;
+    }
+    var t2 = year2 + '/' + month2 + '/' + day2;
+    return t2;
+  }
+
+  function getNextMonth(mydate) {
+    var arr = mydate.split('-');
+    var year = arr[0]; //获取当前日期的年份
+    var month = arr[1]; //获取当前日期的月份
+    var day = arr[2]; //获取当前日期的日
+    var days = new Date(year, month, 0);
+    days = days.getDate(); //获取当前日期中的月的天数
+    var year2 = year;
+    var month2 = parseInt(month) + 1;
+    if (month2 == 13) {
+      year2 = parseInt(year2) + 1;
+      month2 = 1;
+    }
+    var day2 = day;
+    var days2 = new Date(year2, month2, 0);
+    days2 = days2.getDate();
+    if (day2 > days2) {
+      day2 = days2;
+    }
+    if (month2 < 10) {
+      month2 = '0' + month2;
+    }
+
+    var t2 = year2 + '/' + month2 + '/' + day2;
+    return t2;
+  }
+  export default {
+    data () {
+      return {
+        dateArrray: [],
+        topdate: ''
+      }
+    },
+    components: {
+      HeaderTop
+    },
+    methods: {
+      chosetime(index, id){
+        if (id != '') {
+          let array = this.dateArrray
+          for (let i = 0; i < array.length; i++) {
+            if (i == index) {
+              array[index].mark = true
+            } else {
+              array[i].mark = false
+            }
+          }
+          console.log(mymonth + '月' + id + '日')
+          this.dateArrray = array
+        }
+      },
+      goleft(){
+        mydate = myyear + '-' + mymonth + '-' + myday
+        this.dateArrray = commonways(new Date(getPreMonth(mydate)))
+        this.topdate = myyear + '年' + mymonth + '月'
+      },
+      goright(){
+        mydate = myyear + '-' + mymonth + '-' + myday
+        this.dateArrray = commonways(new Date(getNextMonth(mydate)))
+        this.topdate = myyear + '年' + mymonth + '月'
+      }
+    },
+    mounted: function () {
+      mydate = new Date()
+      this.dateArrray = commonways(mydate)
+      this.topdate = myyear + '年' + mymonth + '月'
+    }
+
+  }
+</script>

@@ -1,0 +1,53 @@
+<template style="width: 100%;height: 100%">
+  <!--<transition name="slide">-->
+  <div class="content">
+    <HeaderTop path="back"  title="供需"></HeaderTop>
+    <div class="scroll_content">
+      <ul class="tender_div1">
+        <li>透明钢丝管子 内径3.2毫米厚度2.5毫米</li>
+        <li style="margin-top: 0.098rem">询价时间：2017-01-02</li>
+        <li>报价时间：2017-02-02</li>
+        <li>收货地址：河北 保定 顺平县</li>
+      </ul>
+      <ul class="tender_div1">
+        <li>透明钢丝管子 内径3.2毫米厚度2.5毫米</li>
+        <li style="margin-top: 0.098rem">询价时间：2017-01-02</li>
+        <li>报价时间：2017-02-02</li>
+        <li>收货地址：河北 保定 顺平县</li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  export default {
+    data () {
+      return {}
+    },
+    components: {
+      HeaderTop,
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .tender_div1{
+    margin: 0.15rem 0.15rem 0 0.15rem;
+    padding: 0.15rem;
+    background-color: #fff;
+    border-radius: 0.027rem;
+  }
+  .tender_div1 li{
+    color: #666;
+    font-size: 0.13rem;
+    margin-top: 0.055rem;
+  }
+  .tender_div1 li:first-child{
+    color: #333;
+    font-size: 0.15rem;
+    font-weight: bold;
+    margin: 0;
+  }
+</style>

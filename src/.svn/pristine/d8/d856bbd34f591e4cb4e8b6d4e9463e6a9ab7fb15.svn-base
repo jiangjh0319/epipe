@@ -1,0 +1,275 @@
+<template style="width: 100%;height: 100%">
+  <div class="content">
+    <HeaderTop title="首页"></HeaderTop>
+    <div class="scroll_content">
+      <swiper :options="swiperOption" ref="mySwiper">
+        <!-- 这部分放你要渲染的那些内容 -->
+        <swiper-slide>
+          <img @click="gogo" class="banner_img" src="../../img/pic2.png"/>
+        </swiper-slide>
+        <swiper-slide>
+          <img class="banner_img" src="../../img/pic3.png"/>
+        </swiper-slide>
+        <swiper-slide>
+          <img class="banner_img" src="../../img/pic4.png"/>
+        </swiper-slide>
+        <!-- 这是轮播的小圆点 -->
+        <div class="swiper-pagination" slot="pagination"></div>
+      </swiper>
+      <ul class="home_nav_top">
+        <li @click="go_exhibition">
+          <div style="background: -webkit-linear-gradient(top, #51cdfc 0%,#27b1eb 100%);">
+            <svg style="width: 0.22rem;height: 0.22rem;color:red" class="icon" aria-hidden="false">
+              <use xlink:href="#icon-zhanhui"></use>
+            </svg>
+          </div>
+          <div>展会</div>
+        </li>
+        <li>
+          <div style="background: -webkit-linear-gradient(top, #fc757e 0%,#fd535b 100%);">
+            <svg style="width: 0.22rem;height: 0.22rem;color:red" class="icon" aria-hidden="false">
+              <use xlink:href="#icon-gongxu"></use>
+            </svg>
+          </div>
+          <div>供需</div>
+        </li>
+        <li @click="go_tender">
+          <div style="background: -webkit-linear-gradient(top, #45e3b5 0%,#22be8e 100%);">
+            <svg style="width: 0.22rem;height: 0.22rem;color:red" class="icon" aria-hidden="false">
+              <use xlink:href="#icon-zhaotoubiao"></use>
+            </svg>
+          </div>
+          <div>招投标</div>
+        </li>
+        <li>
+          <div style="background: -webkit-linear-gradient(top, #fbc470 0%,#ffa61f 100%);">
+            <svg style="width: 0.22rem;height: 0.22rem;color:red" class="icon" aria-hidden="false">
+              <use xlink:href="#icon-huiyuan"></use>
+            </svg>
+          </div>
+          <div>会员</div>
+        </li>
+      </ul>
+      <div class="home_title_con1">
+        <div></div>
+        <div>头条</div>
+      </div>
+      <ul class="home_title_con2">
+        <li class="over_width">东深供水在深圳目前比较好，累计给深圳用户提供1.2亿的方便财产2亿的方便财产</li>
+        <li class="home_title_con3">深圳新闻网是立足深圳、辐射全国的综合性区域门户网站,为用户提供新闻、视频、博客、房产、汽车、财经、健康、美食、旅游、教育、时尚、娱乐</li>
+        <li>
+          <span>国内资讯</span>
+          <span>&nbsp&nbsp&nbsp&nbsp2017-06-04</span>
+          <span>&nbsp&nbsp&nbsp&nbsp阅读：215</span>
+        </li>
+      </ul>
+      <ul class="home_title_con4">
+        <div><img width="100%" src="../../img/pic2222.jpg"/></div>
+        <div>
+          <div class="home_title_con5 over_width">东深供水在深圳目前比较好，累计给深圳用户提供1.2亿的方便财产2亿的方便财产</div>
+          <div class="home_title_con6 simple-ellipsis">11111深圳新闻网是立足深圳、深圳新闻网是立足深圳深圳新闻网是立足深圳辐射全国的综合性区域门户网站</div>
+          <div class="home_title_con7">
+            <span>国内资讯</span>
+            <span>&nbsp&nbsp2017-06-04</span>
+            <span>&nbsp&nbsp阅读：215</span>
+          </div>
+        </div>
+      </ul>
+      <ul class="home_title_con4">
+        <div><img width="100%" src="../../img/pic1111.jpg"/></div>
+        <div>
+          <div class="home_title_con5 over_width">东深供水在深圳目前比较好，累计给深圳用户提供1.2亿的方便财产2亿的方便财产</div>
+          <div class="home_title_con6">深圳新闻网是立足深圳、辐射全国的综合性区域门户网站</div>
+          <div class="home_title_con7">
+            <span>国内资讯</span>
+            <span>&nbsp&nbsp2017-06-04</span>
+            <span>&nbsp&nbsp阅读：215</span>
+          </div>
+        </div>
+      </ul>
+    </div>
+    <Tabs></Tabs>
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  import Tabs from '../../components/tabs.vue'
+  import ButtonCom from '../../components/button.vue'
+  export default {
+    data () {
+      return {
+        swiperOption: {
+          autoplay: 1500,
+          initialSlide: 0,
+          pagination: '.swiper-pagination'
+        }
+      }
+    },
+    components: {
+      HeaderTop,
+      Tabs,
+      ButtonCom
+    },
+    methods: {
+      gogo() {
+        this.$router.push({
+          path: 'record'
+        })
+      },
+      go_exhibition(){
+        this.$router.push({
+          path: 'exhibition'
+        })
+      },
+      go_tender(){
+        this.$router.push({
+          path: 'tender'
+        })
+      }
+    },
+    mounted() {
+      let param = {
+        page_no: '1',
+        page_count: '20'
+      }
+      this.axios.get(this.Service.host + this.Service.news, {
+        params: {page_no: 1, page_count: 30}
+      }).then(function (res) {
+        console.log(res);
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .home_title_con7 {
+    color: #666;
+    font-size: 0.11rem;
+    margin-top: 0.09rem;
+  }
+
+  .home_title_con6 {
+    color: #666;
+    font-size: 0.12rem;
+    margin-top: 0.06rem;
+  }
+
+  .home_title_con5 {
+    width: 100%;
+    font-size: 0.14rem;
+    font-weight: bold;
+    margin-top: -0.03rem;
+  }
+
+  .home_title_con4 {
+    background-color: #fff;
+    padding: 0.15rem;
+    margin-top: 0.15rem;
+    clear: both;
+    height: 0.8rem;
+  }
+
+  .home_title_con4 > div:first-child {
+    width: 1.34rem;
+    border-radius: 0.025rem;
+    height: 0.8rem;
+    float: left;
+    overflow: hidden;
+    background-color: #fff;
+  }
+
+  .home_title_con4 > div:last-child {
+    width: 2.03rem;
+    float: right;
+    background-color: #fff;
+  }
+
+  .home_title_con2 {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 0.15rem;
+  }
+
+  .home_title_con2 li:first-child {
+    font-size: 0.14rem;
+    font-weight: bold;
+  }
+
+  .home_title_con3 {
+    font-size: 0.12rem;
+    color: #666;
+    margin-top: 0.08rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .home_title_con2 li:last-child {
+    margin-top: 0.15rem;
+  }
+
+  .home_title_con2 li:last-child span:first-child {
+    font-size: 0.1rem;
+    color: #666;
+  }
+
+  .home_title_con2 li:last-child span {
+    font-size: 0.1rem;
+    color: #666;
+  }
+
+  .home_title_con1 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 0.475rem;
+  }
+
+  .home_title_con1 div:first-child {
+    width: 0.04rem;
+    height: 0.25rem;
+    background-color: #ff8800;
+    margin-left: 0.15rem;
+  }
+
+  .home_title_con1 div:last-child {
+    margin-left: 0.08rem;
+    font-size: 0.17rem;
+  }
+
+  .home_nav_top {
+    display: flex;
+    flex-direction: row;
+    height: 0.96rem;
+    align-items: center;
+    background-color: #fff;
+  }
+
+  .home_nav_top li {
+    flex: 1;
+    font-size: 0.14rem;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .home_nav_top li > div:first-child {
+    width: 0.398rem;
+    height: 0.398rem;
+    border-radius: 10rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home_nav_top li div {
+    display: flex;
+    font-size: 0.12rem;
+    margin-top: 0.035rem;
+  }
+</style>

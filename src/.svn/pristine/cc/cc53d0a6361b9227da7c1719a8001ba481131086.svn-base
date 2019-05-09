@@ -1,0 +1,64 @@
+<template>
+  <div class="header_top">
+    <div class="itme_tabs">
+      <div v-if="path" @click="ReturnBack" class="header_back_left">
+        <img style="width: 0.2rem" src="../img/back.png"/>
+      </div>
+    </div>
+    <div class="itme_tabs">{{title}}</div>
+    <div class="itme_tabs"></div>
+  </div>
+</template>
+
+<script>
+  export default {
+    props: [
+      'title',
+      'path',
+      'query'
+    ],
+    methods: {
+      ReturnBack(){
+        if (this.path == 'back') {
+          window.history.back()
+        } else {
+          this.$router.push({
+            path: this.path,
+            query: this.query
+          })
+        }
+      }
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .header_top {
+    display: flex;
+    background-color: green;
+    flex-direction: row;
+    height: 40px;
+  }
+
+  .itme_tabs {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.16rem;
+    color: #fff;
+  }
+
+  .itme_tabs:first-child {
+    justify-content: flex-start;
+  }
+
+  .header_back_left {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 0.34rem;
+    height: 0.34rem;
+  }
+</style>

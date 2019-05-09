@@ -1,0 +1,39 @@
+<style scoped>
+  .tab_work_con{
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+    height: 100px;
+    background-color: #fff;
+  }
+</style>
+<template style="width: 100%;height: 100%">
+  <div class="content">
+    <HeaderTop title="工作台"></HeaderTop>
+    <div class="scroll_content">
+      <img class="banner_img" src="../../img/banner3.jpg" />
+      <div class="tab_work_con">
+
+      </div>
+     </div>
+    <Tabs></Tabs>
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  import Tabs from '../../components/tabs.vue'
+  export default {
+    data () {
+      return {
+
+      }
+    },
+    components: {
+      HeaderTop,
+      Tabs
+    }
+  }
+</script>
+
+

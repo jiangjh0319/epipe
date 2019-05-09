@@ -1,0 +1,19 @@
+/**
+ * Created by lenovo on 2017/6/12.
+ */
+const Service = {
+  host: 'http://spd9.com',
+  news: '/news/indurstryinfo',
+  queryString: function (params, postFlag) {
+    var paramUrl = ''
+    for (var key in params) {
+      if (!postFlag && paramUrl == '') {
+        paramUrl += '?' + key + '=' + params[key]
+      } else {
+        paramUrl += '&' + key + '=' + params[key]
+      }
+    }
+    return paramUrl
+  }
+}
+module.exports = Service

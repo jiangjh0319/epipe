@@ -1,0 +1,59 @@
+<template>
+  <div class="foot_tab_div">
+    <router-link tag="div"  to="/home" class="tab_item">
+      <svg class="icon" aria-hidden="false">
+        <use xlink:href="#icon-jia"></use>
+      </svg>
+      <div>首页</div>
+    </router-link>
+    <router-link tag="div"  to="/work" class="tab_item">
+      <svg class="icon" aria-hidden="false">
+        <use xlink:href="#icon-jia"></use>
+      </svg>
+      <div>工作台</div>
+    </router-link>
+    <router-link  tag="div"  to="/find" class="tab_item">
+      <svg class="icon" aria-hidden="false">
+        <use xlink:href="#icon-jia"></use>
+      </svg>
+      <div>发现</div>
+    </router-link>
+    <router-link tag="div" to="/user" class="tab_item">
+      <svg class="icon" aria-hidden="false">
+        <use xlink:href="#icon-jia"></use>
+      </svg>
+      <div>我的</div>
+    </router-link>
+  </div>
+</template>
+
+<script>
+export default {
+}
+  </script>
+
+  <!-- Add "scoped" attribute to limit CSS to this component only -->
+  <style scoped>
+   .foot_tab_div{
+     height: 0.49rem;
+     width: 100%;
+     background-color: #fff;
+     display: flex;
+     opacity: 1;
+   }
+  .tab_item{
+    display: flex;
+    flex: 1;
+    height: 0.49rem;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+   .router-link-active{
+     color: #0fc37c;
+     font-size: 0.14rem;
+   }
+    .tab_item svg{
+      font-size: 0.19rem;
+    }
+</style>

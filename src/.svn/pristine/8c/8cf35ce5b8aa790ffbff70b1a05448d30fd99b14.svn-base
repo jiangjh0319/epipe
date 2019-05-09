@@ -1,0 +1,112 @@
+<style scoped>
+  .tab_work_con{
+    margin-left: 0.135rem;
+    margin-right: 0.135rem;
+    margin-top: 0.15rem;
+    padding-bottom: 0.2rem;
+    background-color: #fff;
+  }
+  .tab_work_2con{
+    display: flex;
+    flex-direction: row;
+    height: 0.53rem;
+    align-items: center;
+  }
+  .tab_work_2con li:first-child{
+    width: 0.035rem;
+    height: 0.16rem;
+    background-color: red;
+    border-radius: 1rem;
+    margin-left: 0.12rem;
+  }
+  .tab_work_2con li:last-child{
+    margin-left: 0.05rem;
+    font-size: 0.16rem;
+  }
+  .tab_work_3con{
+    display: flex;
+    flex-direction: row;
+  }
+  .tab_work_3con li{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+<template style="width: 100%;height: 100%">
+  <div class="content">
+    <HeaderTop title="工作台"></HeaderTop>
+    <div class="scroll_content">
+      <img class="banner_img" src="../../img/banner_work.jpg" />
+      <div class="tab_work_con">
+        <ul class="tab_work_2con">
+          <li></li>
+          <li>移动办公</li>
+        </ul>
+        <ul class="tab_work_3con">
+          <li>
+            <div>团</div>
+            <div style="font-size:0.14rem">团</div>
+          </li>
+          <li>
+            <div>团</div>
+            <div>团</div>
+          </li>
+          <li>
+            <div>团</div>
+            <div>团</div>
+          </li>
+          <li>
+            <div>团</div>
+            <div>团</div>
+          </li>
+        </ul>
+      </div>
+      <div class="tab_work_con">
+        <ul class="tab_work_2con">
+          <li></li>
+          <li>移动办公</li>
+        </ul>
+        <ul class="tab_work_3con">
+          <li>
+            <div>团</div>
+            <div style="font-size:0.14rem">团</div>
+          </li>
+          <li>
+            <div>团</div>
+            <div>团</div>
+          </li>
+          <li>
+            <div>团</div>
+            <div>团</div>
+          </li>
+          <li>
+            <div>团</div>
+            <div>团</div>
+          </li>
+        </ul>
+      </div>
+     </div>
+    <Tabs></Tabs>
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  import Tabs from '../../components/tabs.vue'
+  export default {
+    data () {
+      return {
+
+      }
+    },
+    components: {
+      HeaderTop,
+      Tabs
+    }
+  }
+</script>
+
+

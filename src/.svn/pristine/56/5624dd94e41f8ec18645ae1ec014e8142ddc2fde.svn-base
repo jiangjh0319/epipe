@@ -1,0 +1,103 @@
+<template style="width: 100%;height: 100%">
+  <!--<transition name="slide">-->
+  <div class="content">
+    <HeaderTop color="blue" path="back" title="展会"></HeaderTop>
+    <div class="scroll_content">
+      <div class="exhibit_top_div1">
+        <ul>
+          <li class="over_width">2017中国（深圳）国际海绵城市规划与建设展开看展开看</li>
+          <li>
+            <div>
+              <span>、
+                <svg class="icon" aria-hidden="false">
+                  <use xlink:href="#icon-location"></use>
+                </svg>
+              </span>深圳会展中心
+            </div>
+            <div>
+              <span>、
+                <svg class="icon" aria-hidden="false">
+                  <use xlink:href="#icon-date"></use>
+                </svg>
+              </span>2017年8月22-24</div>
+          </li>
+        </ul>
+      </div>
+      <div class="exhibit_top_div1">
+        <ul>
+          <li class="over_width">2017中国（深圳）国际海绵城市规划与建设展开看展开看</li>
+          <li>
+            <div>
+              <span>、
+                <svg class="icon" aria-hidden="false">
+                  <use xlink:href="#icon-location"></use>
+                </svg>
+              </span>深圳会展中心
+            </div>
+            <div>
+              <span>、
+                <svg class="icon" aria-hidden="false">
+                  <use xlink:href="#icon-date"></use>
+                </svg>
+              </span>2017年8月22-24</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  export default {
+    data () {
+      return {}
+    },
+    components: {
+      HeaderTop,
+    }
+  }
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .exhibit_top_div1 {
+    display: flex;
+    margin: 0.15rem 0.15rem 0 0.15rem;
+    flex: 1;
+    height: 1.83rem;
+    border-radius: 0.028rem;
+    overflow: hidden;
+    background-image: url("../../img/pic3.png");
+    background-size: 100%;
+    flex-direction: column-reverse;
+  }
+
+  .exhibit_top_div1 > ul {
+    height: 0.59rem;
+    opacity: 0.4;
+    background-color: #000000;
+    border-radius: 0.027rem;
+  }
+
+  .exhibit_top_div1 > ul li:first-child {
+    opacity: 1;
+    margin: 0.1rem;
+    margin-bottom: 0.045rem;
+    color: #fff;
+    font-size: 0.15rem;
+    font-weight: bold;
+    opacity: 1;
+    z-index: 100;
+  }
+
+  .exhibit_top_div1 > ul li:last-child {
+    opacity: 1;
+    margin: 0.1rem;
+    margin-top: 0;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+</style>

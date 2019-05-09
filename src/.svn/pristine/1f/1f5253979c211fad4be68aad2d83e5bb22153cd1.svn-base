@@ -1,0 +1,43 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from '@/page/home/home.vue'
+import Work from '@/page/work/work.vue'
+import Find from '@/page/find/find.vue'
+import User from '@/page/user/user.vue'
+import Record from '@/page/work/record.vue'
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      redirect: '/home'
+    },
+    {
+      path: '/home',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/work',
+      name: 'Work',
+      component: Work
+    },
+    {
+      path: '/find',
+      name: 'Find',
+      component: Find
+    },
+    {
+      path: '/user',
+      name: 'User',
+      component: User
+    },
+    {
+      path: '/record',
+      name: 'Record',
+      component: Record
+    }
+  ]
+})

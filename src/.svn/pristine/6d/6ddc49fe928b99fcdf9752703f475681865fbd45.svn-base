@@ -1,0 +1,243 @@
+<style scoped>
+  .total_top_ul {
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    height: 0.6rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .total_top_ul li {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 0.45rem;
+    border-right: 0.01rem solid #ccc;
+    color: #ff8800;
+    font-size: 0.16rem;
+  }
+
+  .total_top_ul li:first-child {
+    color: #0fc37c;
+  }
+
+  .total_top_ul li:last-child {
+    border: none;
+    color: #fe5c65;
+  }
+
+  .total_con_ul1 {
+    margin-left: 0.15rem;
+    margin-right: 0.15rem;
+    padding: 0.14rem 0.14rem 0.14rem 0.16rem;
+    background-color: #fff;
+    margin-top: 0.15rem;
+    border-radius: 0.026rem;
+  }
+
+  .total_con_ul1 ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 0.15rem;
+  }
+
+  .total_con_ul1 ul li:first-child {
+    width: 0.1rem;
+    height: 0.1rem;
+  }
+
+  .total_con_ul1 ul:first-child li:first-child {
+    background-color: #ff8800;
+    border-radius: 1rem;
+  }
+
+  .total_con_ul1 ul li:last-child {
+    margin-left: 0.1rem;
+  }
+
+  .total_con_lidiv {
+    color: #666;
+    margin-top: 0.05rem;
+  }
+
+  .total_con_ul1 ul li span {
+    margin-left: 0.1rem;
+  }
+
+  .date_top_con {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 0.005rem solid #E6E6E6;
+  }
+
+  .date_top_con li {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    height: 0.59rem;
+    background-color: #fff;
+  }
+
+  .date_top_mytitle {
+    font-size: 0.18rem;
+    font-weight: bold;
+    flex: 1.5;
+  }
+</style>
+<template style="width: 100%;height: 100%">
+  <div class="content">
+    <HeaderTop path="back" color="blue" title="考情记录"></HeaderTop>
+    <div class="scroll_content">
+      <ul class="date_top_con">
+        <li @click="goleft">左边</li>
+        <li class="date_top_mytitle">{{topdate}}</li>
+        <li @click="goright">右边</li>
+      </ul>
+      <ul class="total_top_ul">
+        <li>
+          <div>正常打开</div>
+          <div>20天</div>
+        </li>
+        <li>
+          <div>迟到早退</div>
+          <div>2次</div>
+        </li>
+        <li>
+          <div>缺卡</div>
+          <div>2天 </div>
+        </li>
+      </ul>
+      <div v-if="aaa">
+        <div class="total_con_ul1">
+          <ul>
+            <li></li>
+            <li>迟到</li>
+          </ul>
+          <ul style="margin-top: 0.11rem" class="total_con_lidiv">
+            <li></li>
+            <li>2017-06-07（周一）<span>10：02</span></li>
+          </ul>
+          <ul class="total_con_lidiv">
+            <li></li>
+            <li>2017-06-09（周三）<span>12：42</span></li>
+          </ul>
+        </div>
+        <div class="total_con_ul1">
+          <ul>
+            <li></li>
+            <li>缺卡</li>
+          </ul>
+          <ul style="margin-top: 0.11rem" class="total_con_lidiv">
+            <li></li>
+            <li>2017-06-07（周一）</li>
+          </ul>
+        </div>
+        <div class="total_con_ul1">
+          <ul>
+            <li></li>
+            <li>早退</li>
+          </ul>
+          <ul style="margin-top: 0.11rem" class="total_con_lidiv">
+            <li></li>
+            <li>2017-06-07（周一）<span>10：02</span></li>
+          </ul>
+        </div>
+      </div>
+      <Norecord v-if="!aaa"></Norecord>
+    </div>
+
+  </div>
+</template>
+
+<script>
+  import HeaderTop from '../../components/header.vue'
+  import Util  from '../../js/Util.js'
+  import Norecord from '../../components/norecord.vue'
+  function getPreMonth(mydate) {
+    var arr = mydate.split('-');
+    var year = arr[0]; //获取当前日期的年份
+    var month = arr[1]; //获取当前日期的月份
+    var day = arr[2]; //获取当前日期的日
+    var days = new Date(year, month, 0);
+    days = days.getDate(); //获取当前日期中月的天数
+    var year2 = year;
+    var month2 = parseInt(month) - 1;
+    if (month2 == 0) {
+      year2 = parseInt(year2) - 1;
+      month2 = 12;
+    }
+    var day2 = day;
+    var days2 = new Date(year2, month2, 0);
+    days2 = days2.getDate();
+    if (day2 > days2) {
+      day2 = days2;
+    }
+    if (month2 < 10) {
+      month2 = '0' + month2;
+    }
+    var t2 = year2 + '/' + month2 + '/' + day2;
+    return t2;
+  }
+  function getNextMonth(mydate) {
+    var arr = mydate.split('-');
+    var year = arr[0]; //获取当前日期的年份
+    var month = arr[1]; //获取当前日期的月份
+    var day = arr[2]; //获取当前日期的日
+    var days = new Date(year, month, 0);
+    days = days.getDate(); //获取当前日期中的月的天数
+    var year2 = year;
+    var month2 = parseInt(month) + 1;
+    if (month2 == 13) {
+      year2 = parseInt(year2) + 1;
+      month2 = 1;
+    }
+    var day2 = day;
+    var days2 = new Date(year2, month2, 0);
+    days2 = days2.getDate();
+    if (day2 > days2) {
+      day2 = days2;
+    }
+    if (month2 < 10) {
+      month2 = '0' + month2;
+    }
+
+    var t2 = year2 + '/' + month2 + '/' + day2;
+    return t2;
+  }
+  let mydate
+  export default {
+    data () {
+      return {
+        topdate: '',
+        aaa: false
+      }
+    },
+    components: {
+      HeaderTop,
+      Norecord
+    },
+    methods: {
+      goleft(){
+        console.log(getPreMonth(Util.getNewTime(mydate)))
+        mydate = new Date(getPreMonth(Util.getNewTime(mydate)))
+        this.topdate = Util.getNewTime(mydate, '年月')
+      },
+      goright(){
+        console.log(getNextMonth(Util.getNewTime(mydate)))
+        mydate = new Date(getNextMonth(Util.getNewTime(mydate)))
+        this.topdate = Util.getNewTime(mydate, '年月')
+      }
+    },
+    mounted(){
+      mydate = new Date()
+      this.topdate = Util.getNewTime(mydate, '年月')
+    }
+  }
+</script>
+
+
