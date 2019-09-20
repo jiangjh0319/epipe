@@ -9,7 +9,7 @@
         <div class="content">
             <div class="styles input_group">
                 <div class="bor_bottom">
-                    <span class="title">文件标题</span>
+                    <span class="title"><span class="required">*</span>文件标题</span>
                     <input placeholder="请输入标题"  v-model="employeeTitle" />
                 </div>
                   <div>
@@ -23,18 +23,27 @@
             </div>
             <div class="styles input_group">
                 <div class="bor_bottom">
-                    <span class="title">招聘岗位</span>
+                    <span class="title"><span class="required">*</span>招聘岗位</span>
                     <input style="color:#666" v-model="position" placeholder="请输入招聘岗位名称"/>
                 </div>
                 <div class="bor_bottom">
-                    <span class="title">需求人数</span>
+                    <span class="title"><span class="required">*</span>需求人数</span>
                     <input style="color:#666" v-model="num" placeholder="请输入需求人数"/>
                 </div>
     
-                 <div class="bor_bottom choose" @click="getTime(0)">
-                     <span class="title">希望到岗日期</span>
+                 <div class="bor_bottom choose" @click.stop="getTime(0)">
+                     <span class="title"><span class="required">*</span>希望到岗日期</span>
                     <p>
                         <span class="nullValue">{{arrivalDate}}</span>
+                        <svg class="icon icon-back" aria-hidden="false">
+                                <use xlink:href="#icon-right"></use>
+                        </svg>
+                    </p>
+                </div>
+                <div class="bor_bottom choose" @click="go_push(isNew,'isNew','是否新增')">
+                    <span class="title"><span class="required">*</span>是否新增</span>
+                    <p>
+                        <span class="nullValue">{{isNewName}}</span>
                         <svg class="icon icon-back" aria-hidden="false">
                                 <use xlink:href="#icon-right"></use>
                         </svg>
@@ -43,7 +52,7 @@
             </div>
 
             <div class="styles" style="padding:0 0.15rem;">
-                <p class="title">申请理由</p>
+                <p class="title"><span class="required">*</span>申请理由</p>
                 <textarea v-model.trim="employeeReason" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入申请理由,限定1000字">
 
                 </textarea>
@@ -72,16 +81,21 @@
                         </svg>
                     </p>
                 </router-link>
-                <div class="bor_bottom">
+                <!-- <div class="bor_bottom">
                     <span class="title">年龄</span>
                     <input placeholder="请输入年龄范围"  v-model="age" />
-                </div>
-                <!-- <div class="bor_bottom">
-                    <span class="title">学历</span>
-                    <input placeholder="请输入学历要求"  v-model="education" />
                 </div> -->
+                 <router-link :to="{ path:'/option', query: {indexs:age,type:'age',title:'年龄',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
+                    <span class="title">年龄</span>
+                    <p>
+                        <span class="nullValue">{{ageName}}</span>
+                        <svg class="icon icon-back" aria-hidden="false">
+                                <use xlink:href="#icon-right"></use>
+                        </svg>
+                    </p>
+                </router-link>
                 <router-link :to="{ path:'/option', query: {indexs:education,type:'education',title:'学历类型',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
-                    <span class="title">学历</span>
+                    <span class="title"><span class="required">*</span>学历</span>
                     <p>
                         <span class="nullValue">{{educationName}}</span>
                         <svg class="icon icon-back" aria-hidden="false">
@@ -91,43 +105,38 @@
                 </router-link>
                 <div class="bor_bottom">
                     <span class="title">专业</span>
-                    <input placeholder="请输入专业要求"  v-model="major" />
+                    <input placeholder="请输入专业要求" style="color:#666"  v-model="major" />
                 </div>
-                <div class="bor_bottom">
-                    <span class="title">职业资格证</span>
-                    <input placeholder="请输入详细职业资格证要求"  v-model="qualifications" />
-                </div>
-                <div class="bor_bottom">
-                    <span class="title">计算机</span>
-                    <input placeholder="请输入计算机水平要求"  v-model="computerLevel" />
-                </div>
-                <div class="bor_bottom">
-                    <span class="title">外语水平</span>
-                    <input placeholder="请输入外语水平要求"  v-model="foreignLevel" />
-                </div>
-                <div class="bor_bottom">
-                    <span class="title">经验与技能</span>
-                    <input placeholder="请输入经验与技能要求"  v-model="skill" />
-                </div>
-                <div class="bor_bottom">
-                    <span class="title">公文写作</span>
-                    <input placeholder="请输入公文写作能力要求"  v-model="writings" />
-                </div>
-                <div class="bor_bottom">
-                    <span class="title">必要条件</span>
-                    <input placeholder="请输入必要条件"  v-model="condition" />
-                </div>
-                <div class="bor_bottom">
-                    <span class="title">优先录用</span>
-                    <input placeholder="请输入优先录用要求"  v-model="priority" />
-                </div>
-                <div class="bor_bottom">
-                    <span class="title">其他要求</span>
-                    <input placeholder="请输入其他要求"  v-model="other" />
+                <router-link :to="{ path:'/option', query: {indexs:highestEducation,type:'highestEducation',title:'最高学历毕业学校',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
+                    <span class="title"><span class="required">*</span>最高学历毕业学校</span>
+                    <p>
+                        <span class="nullValue">{{highestEducationName}}</span>
+                        <svg class="icon icon-back" aria-hidden="false">
+                                <use xlink:href="#icon-right"></use>
+                        </svg>
+                    </p>
+                </router-link>
+                <router-link :to="{ path:'/option', query: {indexs:jobExperience,type:'jobExperience',title:'工作经验',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
+                    <span class="title"><span class="required">*</span>工作经验</span>
+                    <p>
+                        <span class="nullValue">{{jobExperienceName}}</span>
+                        <svg class="icon icon-back" aria-hidden="false">
+                                <use xlink:href="#icon-right"></use>
+                        </svg>
+                    </p>
+                </router-link>
+                <div class="bor_bottom choose" @click.stop="moreSelect">
+                    <span class="title">更多</span>
+                     <p>
+                        <span class="nullValue"></span>
+                        <svg class="icon icon-back" aria-hidden="false">
+                                <use xlink:href="#icon-right"></use>
+                        </svg>
+                    </p>
                 </div>
             </div>
             <div class="styles" style="padding:0 0.15rem;">
-                <p class="title">工作职责</p>
+                <p class="title"><span class="required">*</span>工作职责</p>
                 <textarea v-model.trim="responsibility" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入详细工作职责">
 
                 </textarea>
@@ -198,97 +207,42 @@ let save_leave = (index,text,that) =>{
         that.$toast('需求人数不能为空')
     }else if(isNaN(that.num)){
         that.$toast('需求人数为数字')
-    }else if(that.num>10){
+    }else if(that.education==''){
+        that.$toast('请选择学历')
+    }else if(that.jobExperience==''){
+        that.$toast('请选择工作经验')
+    }else if(that.highestEducation==''){
+        that.$toast('请选择最高学历毕业学校')
+    }
+    else if(that.num>10){
         that.$toast('需求人数不能超过10个')
     }else if(that.position == ''){
         that.$toast('请输入岗位名称')
-    }else if(that.position.length<6||that.position>30){
-        that.$toast('岗位名称不能低于6个或超过30个字符')
+    }else if(that.position.length<2||that.position>30){
+        that.$toast('岗位名称不能低于2个或超过30个字符')
+    }else if(that.isNew==-1){
+        that.$toast('请选择是否新增')
+    }else if(that.responsibility==''){
+        that.$toast('工作职责不能为空')
+    }else if(that.responsibility.length>1000){
+        that.$toast('工作职责不能超过1000字')
     }else if(that.employeeReason == ''){
         that.$toast('申请理由不能为空')
-    }else if(that.sex==-1){
-        that.$toast('请选择性别')
-    }else if(that.marriage==-1){
-        that.$toast('请选择婚姻状况')
-    }else if(that.age==''){
-        that.$toast('请输入年龄要求')
-    }else if(that.age.length>30){
-        that.$toast('年龄不能超过30个字符')
-    }else if(that.educationName=='请选择'){
-        that.$toast('请选择学历要求')
-    }else if(that.age.length>30){
-        that.$toast('学历内容不能超过30个字符')
-    }else if(that.major==''){
-        that.$toast('请输入专业要求')
     }else if(that.major.length>30){
         that.$toast('专业要求内容不能超过30个字符')
-    }else if(that.foreignLevel.length>30){
-        that.$toast('外语水平内容不能超过30字符')
-    }else if(that.computerLevel.length>30){
-        that.$toast('计算机要求内容不能超过30字符')
-    }else if(that.qualifications.length>30){
-        that.$toast('职业资格证内容不能超过30字符')
-    }else if(that.writings.length>30){
-        that.$toast('公文写作能力内容不能超过30字符')
-    }else if(that.skill==''){
-        that.$toast('请输入经验与技能要求')
-    }else if(that.skill.length>100){
-        that.$toast('经验与技能文字不能超过100字符')
-    }else if(that.condition==''){
-        that.$toast('必要条件不能为空')
-    }else if(that.condition.length>30){
-        that.$toast('必要条件内容不能超过30字符')
-    }else if(that.priority.length>30){
-        that.$toast('优先录用内容不能超过30字符')
-    }else if(that.other.length>500){
-        that.$toast('其他要求内容不能超过500字符')
-    }else if(that.responsibility.length>1000||that.responsibility.length<1){
-        that.$toast('工作职责不能少于1个或超过1000字符')
     }else if(that.employeeReason.length>1000||that.employeeReason.length<6){
         that.$toast('申请理由不能少于6个或超过1000字符')
     }else if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
     }else{
-        // let chosed_id = '';  //抄送人
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id  += "|" + that.chosed_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id += "|" + that.chosed_list[i].receiverId
-        //     }
-        // }
-        // chosed_id = chosed_id.slice(1)
 
-        // let approver_id = '' //审批人
 
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id  += "|" + that.approver_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id  += "|" + that.approver_list[i].auditUserId
-        //     }
-        // }
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        // approver_id = approver_id.slice(1)
-        // let urlStr = '',fileSizeStr = '',fileNameStr = '';
-        // for(let i=0;i<that.accessory.length;i++){
-        //     urlStr+='|'+that.accessory[i].url;
-        //     fileSizeStr+='|'+that.accessory[i].fileSize;
-        //     fileNameStr+='|'+that.accessory[i].fileName;  
-        // }
-        // urlStr = urlStr.slice(1)
-        // fileSizeStr = fileSizeStr.slice(1)
-        // fileNameStr = fileNameStr.slice(1)
-
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
-
-        let fileObj = {},params={}
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
         that.axios({
@@ -300,7 +254,7 @@ let save_leave = (index,text,that) =>{
                 data:{
                     Id :that.id, // id
                     employeeTitle:that.employeeTitle,//标题
-                    employeeReason:that.employeeReason, //申请理由
+                    employeeReason:that.employeeReason.replace(/\n/g, '<br/>'), //申请理由
                     position:that.position, //招聘岗位
                     num:that.num, //招聘人数
                     arrivalDate:that.arrivalDate,//到岗时间
@@ -308,6 +262,9 @@ let save_leave = (index,text,that) =>{
                     sex:that.sex,//性别
                     marriage:that.marriage,//婚姻
                     age:that.age,//年龄
+                    jobExperience:that.jobExperience,
+                    isNew:that.isNew,
+                    highestEducation:that.highestEducation,
                     education:that.education, //学历
                     major:that.major,//专业
                     qualifications:that.qualifications,//证书
@@ -315,16 +272,16 @@ let save_leave = (index,text,that) =>{
                     foreignLevel:that.foreignLevel, //外语水平
                     skill:that.skill,//特殊技能
                     writings:that.writings, //写作
-                    condition:that.condition, //必要条件
                     priority:that.priority, //优先录用
-                    other:that.other, //其他要求
-                    responsibility:that.responsibility, //工作职责
+                    responsibility:that.responsibility.replace(/\n/g, '<br/>'), //工作职责
 
                     urls : fileObj.urlStr, //附件
                     fileNames:fileObj.fileNameStr, 
                     fileSizes:fileObj.fileSizeStr,
-                    auditUserIds: approver_id, //审批人
-                    receiverIds: chosed_id, //抄送人
+                    auditUserIds, //审批人
+                    receiverIds, //抄送人
+                    auditCompanyIds,
+                    receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -389,11 +346,18 @@ export default {
                 isShow:false,
                 textNum:0,
                 responsibilityNum:0,
-                sex:-1,//性别
+                sex:'',//性别
                 sexType:'请选择',//性别
-                marriage:-1,//婚姻
+                marriage:'',//婚姻
                 marriageType:'请选择',//婚姻
                 age:'',//年龄
+                ageName:'请选择',//年龄
+                isNew:-1,
+                isNewName:'请选择',
+                highestEducation:'',
+                highestEducationName:'请选择',
+                jobExperience:'',
+                jobExperienceName:'请选择',
                 education:'', //学历
                 educationName:'请选择',
                 major:'',//专业
@@ -402,9 +366,7 @@ export default {
                 foreignLevel:'', //外语水平
                 skill:'',//特殊技能
                 writings:'', //写作
-                condition:'', //必要条件
                 priority:'', //优先录用
-                other:'', //其他要求
                 responsibility:'', //工作职责
             }
         },
@@ -425,7 +387,7 @@ export default {
            save_leave(0, "提交成功", this)
         },
          history_back_click(){
-            if(!this.isUpdate()){
+            if(!this.Util.isUpdate(this.$data,this.oldData)){
                  window.location.href = "epipe://?&mark=history_back"
             }else{
                 this.isShow = true;
@@ -445,34 +407,15 @@ export default {
             localStorage.removeItem('employee')
             window.location.href = "epipe://?&mark=history_back"
         },
-        isUpdate(){
-            let data = this.$data;
-            for(let key in data){
-               if(key=='approver_list'||key=='chosed_list'||key=='accessory'){
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-
-                        if(key!='accessory'&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }
-                    }
-                }else if(key!='oldData'&&key!='approver_list'&&key!='chosed_list'&&key!='accessory'){
-                    if(data[key]!=this.oldData[key]){
-                            return true;
-                    }
-                }
-            }
-            return false
-        },
         addAccessory:function(){
             window.location.href = "epipe://?&mark=addAccessory"
         },
-        deleteFile:function(index){  //删除附件
+        go_push(indexs,type,title){
+            console.log(1)
+                this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title,getType:1}})
 
+        },
+        deleteFile:function(index){  //删除附件
             this.accessory.splice(index,1)
         },
         go_fildDetails: function (url) { //查看图片详情
@@ -537,6 +480,19 @@ export default {
                 timeStr = timeStr.split(/[- : \/]/);
                 return new Date(timeStr[0],timeStr[1]-1,timeStr[2],timeStr[3],timeStr[4])
              },
+            moreSelect(){
+                let params = {
+                    qualifications:this.qualifications,
+                    computerLevel:this.computerLevel,
+                    foreignLevel:this.foreignLevel,
+                    skill:this.skill,
+                    writings:this.writings,
+                    condition:this.condition,
+                    priority:this.priority
+                }
+
+                this.$router.push({path:'/more_employee',query:params})
+            }
         },
          watch:{
             employeeReason : function(){
@@ -557,7 +513,6 @@ export default {
             }
         },
         activated(){
-            console.log(11)
             this.approver_list = this.approver_man_state
             this.chosed_list = this.chosed_man_state
          },
@@ -574,15 +529,33 @@ export default {
 
              eventBus.$on('leaveType', res =>{
                 if(res.name=='') return;
+                console.log(res)
                 if(res.type=='sex'){
                     this.sex = res.index
                     this.sexType = res.name
                 }else if(res.type=='education'){
                     this.education = res.index
                     this.educationName = res.name 
-                }else{
+                }else if(res.type=='age'){
+                    this.age = res.index
+                    this.ageName = res.name
+                }else if(res.type=='isNew'){
+                    this.isNew = res.index
+                    this.isNewName = res.name
+                }else if(res.type=='jobExperience'){
+                    this.jobExperience = res.index
+                    this.jobExperienceName = res.name
+                }else if(res.type=='highestEducation'){
+                    this.highestEducation = res.index
+                    this.highestEducationName = res.name
+                }else if(res.type=='marriage'){
                     this.marriage = res.index
                     this.marriageType = res.name
+                }else{
+                    let obj = JSON.parse(res.name)
+                    for(let key in obj){
+                        this[key] = obj[key]
+                    }
                 }
             })
          },
@@ -599,7 +572,7 @@ export default {
                     that.accessory.push(obj)
                 }
 
-            this.axios.get('/user/info').then(function(res){
+            this.axios.post('/user/current/userinfo').then(function(res){
                 that.departmentName = res.data.b.officeName
                 that.userName = res.data.b.name
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
@@ -621,25 +594,30 @@ export default {
                         that.employeeTitle = data.employeeTitle;
                         that.position = data.position;
                         that.num = data.num;
-                        that.employeeReason = data.employeeReason;
-                        that.arrivalDate = data.arrivalDate;
+                        that.employeeReason = data.employeeReason.replace(/<br\/>/g,'\n');
+                        that.arrivalDate = data.arrivalDate.slice(0,-8);
                         that.sex = data.sexCode//性别
                         that.sexType = data.sex//性别
                         that.marriage= data.marriageCode//婚姻
                         that.marriageType= data.marriage//婚姻
-                        that.age= data.age//年龄
+                        that.age= data.ageCode//年龄
+                        that.ageName = data.age
+                        that.highestEducation = data.highestEducationCode
+                        that.highestEducationName = data.highestEducation
+                        that.jobExperience = data.jobExperienceCode
+                        that.jobExperienceName = data.jobExperience
                         that.education= data.educationCode //学历
                         that.educationName= data.education //学历
+                        that.isNew = data.isNewCode
+                        that.isNewName = data.isNew
                         that.major= data.major//专业
                         that.qualifications= data.qualifications//证书
                         that.computerLevel= data.computerLevel//计算机水平
                         that.foreignLevel= data.foreignLevel //外语水平
                         that.skill= data.skill//特殊技能
                         that.writings= data.writings //写作
-                        that.condition= data.condition //必要条件
                         that.priority= data.priority //优先录用
-                        that.other= data.other //其他要求
-                        that.responsibility= data.responsibility //工作职责
+                        that.responsibility= data.responsibility.replace(/<br\/>/g,'\n') //工作职责
 
                         that.textNum = data.employeeReason.length
                         that.responsibilityNum = data.responsibility.length
@@ -792,7 +770,6 @@ export default {
 
     .bor_bottom{
         position:relative;
-
     }
 
     .bor_bottom:after{
@@ -825,6 +802,10 @@ export default {
     .content-title{
         margin-bottom:0.05rem;
         color #609ef7
+    }
+
+    .required{
+        color:#fd545c;
     }
 
     

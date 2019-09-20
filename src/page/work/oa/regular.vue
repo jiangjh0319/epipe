@@ -193,47 +193,14 @@ let save_leave = (index,text,that) =>{
     }else if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
     }else{
-        // let chosed_id = ''; //抄送人
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id  += "|" + that.chosed_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id += "|" + that.chosed_list[i].receiverId
-        //     }
-        // }
-        // chosed_id = chosed_id.slice(1)
+       
 
-        // let approver_id = '' //审批人
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id  += "|" + that.approver_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id  += "|" + that.approver_list[i].auditUserId
-        //     }
-        // }
-        // approver_id = approver_id.slice(1)
-        // let urlStr = '',fileSizeStr = '',fileNameStr = '';
-        // for(let i=0;i<that.accessory.length;i++){
-        //     urlStr+='|'+that.accessory[i].url;
-        //     fileSizeStr+='|'+that.accessory[i].fileSize;
-        //     fileNameStr+='|'+that.accessory[i].fileName;  
-        // }
-        // urlStr = urlStr.slice(1)
-        // fileSizeStr = fileSizeStr.slice(1)
-        // fileNameStr = fileNameStr.slice(1)
-        // let contDesc = that.description.replace(/\n|\r\n/g,"<br>")
-        // https://blog.csdn.net/xiaobao5214/article/details/68923023/
-
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
-
-        let fileObj = {},params={}
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
 
@@ -260,8 +227,10 @@ let save_leave = (index,text,that) =>{
                     urls : fileObj.urlStr, //附件
                     fileNames: fileObj.fileNameStr, 
                     fileSizes: fileObj.fileSizeStr,
-                    auditUserIds: approver_id, //审批人
-                    receiverIds: chosed_id, //抄送人
+                    auditUserIds, //审批人
+                    receiverIds, //抄送人
+                    auditCompanyIds,
+                    receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -351,7 +320,7 @@ export default {
            save_leave(0, "提交成功", this)
         },
          history_back_click(){
-            if(!this.isUpdate()){
+            if(!this.Util.isUpdate(this.$data,this.oldData)){
                  window.location.href = "epipe://?&mark=history_back"
             }else{
                 this.isShow = true;
@@ -370,29 +339,6 @@ export default {
             this.isShow=false;
             localStorage.removeItem('regular')
             window.location.href = "epipe://?&mark=history_back"
-        },
-        isUpdate(){
-            let data = this.$data;
-            for(let key in data){
-               if(key=='approver_list'||key=='chosed_list'||key=='accessory'){
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-
-                        if(key!='accessory'&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }
-                    }
-                }else if(key!='oldData'&&key!='approver_list'&&key!='chosed_list'&&key!='accessory'){
-                    if(data[key]!=this.oldData[key]){
-                            return true;
-                    }
-                }
-            }
-            return false
         },
         addAccessory:function(){
             window.location.href = "epipe://?&mark=addAccessory"
@@ -550,7 +496,7 @@ export default {
                     that.accessory.push(obj)
                 }
 
-            this.axios.get('/user/info').then(function(res){
+            this.axios.post('/user/current/userinfo').then(function(res){
                 that.departmentName = res.data.b.officeName
                 that.userName = res.data.b.name
                 that.oldData = JSON.parse(JSON.stringify(that.$data))

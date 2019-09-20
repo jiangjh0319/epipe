@@ -3,8 +3,8 @@ export const baseURL = {
 	//mall: "http://192.168.3.209/epmall-front",  //刘春祥本地
 	//mall: "http://192.168.3.167:8888",          //2c 测试环境
 	// mall: "http://192.168.3.167",               //2b 测试环境
-	mall: "https://mall.epipe.cn",              //2c 正式环境
-	//mall: "https://b2b.epipe.cn",              //2b 正式环境
+	// mall: "https://mall.epipe.cn",              //2c 正式环境
+	mall: "https://b2b.epipe.cn",              //2b 正式环境
 	//mall: window.location.href.indexOf("b2b.epipe.cn") > 0 ? "https://b2b.epipe.cn" : "https://mall.epipe.cn"                 //正式环境
 	//mall: window.location.href.indexOf("192.168.3.167:8888") > 0 ? "http://192.168.3.167:8888" : "http://192.168.3.167"     //测试环境
 }

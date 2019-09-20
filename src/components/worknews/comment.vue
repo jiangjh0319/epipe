@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="comment">
-            <p class="comment-title">批示 ({{data.comments.length + comentData.length}})</p>
+            <p class="comment-title">批示 ({{ (data.comments?data.comments.length:0) + comentData.length}})</p>
 
             <div class="comment-main" v-for="item in comentData" :key="item.id">
                 <div class="img_head">
@@ -20,7 +20,7 @@
 
             <div class="comment-main" v-for="item in data.comments" :key="item.id">
                 <div class="img_head">
-                    <img :src="item.userPhoto"/>
+                    <img  :src="item.userPhoto"/>
                 </div>
                 <div style="flex:1">
                     <div class="comment-info">
@@ -33,7 +33,7 @@
                 </div>
             </div> 
 
-            <div class="hint" v-if="!comentData.length&&!data.comments.length">
+            <div class="hint" v-if="!comentData.length&&!(data.comments?data.comments.length:0)">
                 暂无批示内容!
             </div>  
         </div>
@@ -41,8 +41,8 @@
         <div class="comment-input">
         <div style="width:0.625rem">
             <svg style="width: 0.27rem;height: 0.27rem" class="icon" aria-hidden="false">
-                    <use xlink:href="#icon-pishi"></use>
-                </svg>
+                <use xlink:href="#icon-pishi"></use>
+            </svg>
         </div>
         <div class="input" @click="dialog=true" >请输入你的批示意见 !</div>
 

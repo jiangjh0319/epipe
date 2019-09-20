@@ -6,7 +6,8 @@
             :is_relative_approva="is_relative_approva"
             v-on:show_edit='collect'
         ></TopHead>
-        <div style="margin-top:0.43rem">
+        <div style="height:0.43rem;"></div>
+        <div >
             <ul class="list">
                 <li v-if="collect.length" v-for="item in collect" :key="item.id" @click="go_collectArticle(item)">
                     <div class="svg">
@@ -85,28 +86,6 @@
         },
         created() {
             this.fetchData();
-            // let that = this;
-            // this.title = this.$route.query.title;
-            
-            // if(this.$route.query.isCollect){
-            //     this.axios.get('/user/collect/list',{
-            //         params:{
-            //             collecType:'4',
-            //         }
-            //     }).then(res=>{
-            //         that.collect = res.data.b;
-            //     })
-
-            //     return;
-            // }
-
-            // this.axios.get('/wall/articleorthirdcategory/list',{
-            //     params:{
-            //         categoryId:that.$route.query.id,
-            //     }
-            // }).then(res=>{
-            //     that.datas = res.data.b;
-            // })
         },  
         mounted() {
             

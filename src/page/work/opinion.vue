@@ -48,8 +48,10 @@ export default {
                     this.$toast("审批意见不能为空!")
                     return false;
                 }
-                if(this.$route.query.pageType=='consent'){
+                if(this.$route.query.pageType==1){
                     this.submits(2)
+                }else if(this.$route.query.pageType==3){
+                    this.submits(10);
                 }else{
                     this.submits(3);
                 }
@@ -82,9 +84,11 @@ export default {
                             fileName:fileNameStr,
                     }
 
-                    if(type==2){
+                    if(type!=3){
                         params.receiverIds = this.$route.query.receiverIds;
                         params.auditerIds = this.$route.query.auditerIds;
+                        params.auditCompanyIds = this.$route.query.auditCompanyId;
+                        params.receiverCompanyIds = this.$route.query.receiverCompanyId;
                     }
 
                     that.axios({
@@ -103,10 +107,11 @@ export default {
                     }],
                 }).then((res)=>{ 
                         if(res.data.h.code==200){
-                            
 
-                            if(that.$route.query.pageType=='consent'){
+                            if(that.$route.query.pageType==1){
                                 that.$toast('审批通过!')
+                            }else if(that.$route.query.pageType==3){
+                                that.$toast('评论成功!')
                             }else{
                                 that.$toast('已拒绝该审批!')                            
                             }
@@ -124,10 +129,13 @@ export default {
         mounted:function(){
             this.id = this.$route.query.id;
             this.colors = this.$route.query.color;
-            if(this.$route.query.pageType=='consent'){
+            if(this.$route.query.pageType=='1'){
                 this.btnText = '确认同意'
                 this.placeholder = '请输入同意理由'
                 this.textVal ='同意'
+            }else if(this.$route.query.pageType=='3'){
+                this.btnText = '确认评论'
+                this.placeholder = '请输入评论理由'
             }else{
                 this.btnText = '确认拒绝'
                 this.placeholder = '请输入拒绝理由'

@@ -32,7 +32,7 @@
         },
          methods:{
             consent:function(){ //同意
-                this.$emit('consent')
+                this.$emit('consent',1)
             },
             refuse:function(){ //拒绝
                 this.$emit('refuse')

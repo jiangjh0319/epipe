@@ -136,21 +136,25 @@ let save_leave = (index,text,that) =>{
                 }
         }
 
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        let fileObj = {}
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
-        let params = {
+
+         params = {
              Id : that.id, // id
             urls : fileObj.urlStr, //附件
             tripTitle:that.tripTitle, //标题
-            tripReason:that.contractDesc,//出差事由
+            tripReason:that.contractDesc.replace(/\n/g, '<br/>'),//出差事由
             fileNames : fileObj.fileNameStr, //文件名称 
             fileSizes : fileObj.fileSizeStr, //文件大小
-            auditUserIds : approver_id, //审批人
-            receiverIds : chosed_id, //抄送人
+            auditUserIds, //审批人
+            receiverIds, //抄送人
+            auditCompanyIds,
+            receiverCompanyIds,
             draftFlag : index, //草稿还是发送
         }
 
@@ -261,7 +265,7 @@ export default {
             save_leave(0, "提交成功", this)
         },
         history_back_click(){
-             if(!this.isUpdate()){
+             if(!this.Util.isUpdate(this.$data,this.oldData)){
                  window.location.href = "epipe://?&mark=history_back"
             }else{
                 this.isShow = true;
@@ -281,41 +285,7 @@ export default {
             localStorage.removeItem('trip')
             window.location.href = "epipe://?&mark=history_back"
         },
-        isUpdate(){
-            let data = this.$data;
-            for(let key in data){
-               if(key=='approver_list'||key=='chosed_list'||key=='accessory'||key=='datas'||key=='peerArr'){
-                   console.log(key)
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-                        if((key=='approver_list'||key=='chosed_list')&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }else if(key=='datas'&&data[key][i].lon!=this.oldData[key][i].lon){
-                            return true
-                        }else if(key=='peerArr'){
-
-                            if(data[key][0].length!=this.oldData[key][0].length){
-                                return true
-                            }
-                            for(let j=0;j<data[key][0].length;j++){
-                                if(data[key][0][j].userId!=this.oldData[key][0][j].userId){
-                                    return true
-                                }
-                            }
-                        }
-                    }
-                }else if(key!='oldData'){
-                    if(data[key]!=this.oldData[key]){
-                            return true;
-                    }
-                }
-            }
-            return false
-        },
+       
         addAccessory:function(){
             let that = this;
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
@@ -444,8 +414,6 @@ export default {
 		    this.$forceUpdate();
          },
         mounted(){
-
-
                 window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                     var obj = {
                             url,
@@ -471,7 +439,7 @@ export default {
                        that.isDraftFlag = 1;
                         that.accessoryFor(data)
                         that.tripTitle = data.tripTitle;
-                        that.contractDesc = data.tripReason;
+                        that.contractDesc = data.tripReason.replace(/<br\/>/g,'\n') ;
                         that.textNum = data.tripReason.length;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
@@ -559,43 +527,6 @@ export default {
         float:left;
     }
 
-    .accessory{
-
-        li{
-            display:flex;
-            margin-bottom 0.1rem;
-            padding-left 0.15rem;
-         }
-
-        img{
-            width 0.34rem;
-            height 0.34rem;
-            margin-right 0.1rem;
-        }
-
-
-        .accessory-cont{
-            flex 1;
-
-            p{
-                width 2.4rem;
-                font-size 0.14rem;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            }
-
-            span{
-                font-size 0.13rem;
-                color #666
-            }
-        }
-
-        .accessory-delete{
-            width 0.3rem;
-            text-align right;  
-        }
-    }
 
     .add-btn{
         display flex;

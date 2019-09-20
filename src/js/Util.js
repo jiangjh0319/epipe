@@ -123,6 +123,15 @@ const Util = {
     
     return id;
   },
+  getIds:function(arr,idName){
+    console.log(arr,idName)
+      let id = ''
+      for(let i =0;i<arr.length;i++){
+        id+=arr[i][idName]+'|'
+      }
+      console.log(id.slice(0,-1))
+      return id.slice(0,-1)
+  },
   fileFo:function(accessory){
     let obj = {urlStr:"",fileSizeStr:"",fileNameStr:""}
     for(let i=0;i<accessory.length;i++){
@@ -247,6 +256,57 @@ const Util = {
         })
 
       },
+      isUpdate(data,oldData){
+        for(let key in data){
+            if(key=='oldData'||key=='reportTime'||key=='reportTimeStr') continue;
+
+            if(Object.prototype.toString.call(data[key]).indexOf('Array')>-1){
+                let arr = data[key]
+                let arrs = oldData[key]
+                if(arr.length!=arrs.length) return true
+
+                for(let i=0;i<arr.length;i++){
+                        if(Object.prototype.toString.call(arr[i]).indexOf('Array')>-1){
+                            for(let j = 0;j<arr[i].length;j++){
+                                if(arr[i][j]!=arrs[i][j]) return true
+                            }
+                        }else if(Object.prototype.toString.call(arr[i]).indexOf('Object')>-1){
+                            for(let name in arr[i]){
+                                if(arr[i][name]!=arrs[i][name]) return true   
+                            }
+                        }else{
+                            if(arr[i]!=arrs[i]) return true
+                        }
+                }
+
+            }else if(Object.prototype.toString.call(data[key]).indexOf('Object')>-1){
+                let obj = data[key]
+                let objs = oldData[key]
+                for(let name in obj){
+                    if(Object.prototype.toString.call(obj[name]).indexOf('Array')>-1){
+                        for(let j = 0;j<obj[name].length;j++){
+                            if(obj[name][j]!=objs[name][j]) return true
+                        }
+                    }else if(Object.prototype.toString.call(obj[name]).indexOf('Object')>-1){
+                        let o = obj[name]
+                        let b = objs[name]
+                        for(let k in o){
+                            if(o[k]!=b[k]) return true   
+                        }
+                    }else{
+                        if(obj[name]!=objs[name]) return true   
+                    }
+                }
+            }else{
+
+                if(data[key]!=oldData[key]){
+                    return true 
+                } 
+            }
+
+        }
+        return false
+    },
       clientSide(){
         var u = navigator.userAgent;
           if(u.indexOf('Android') > -1 || u.indexOf('Adr') > -1){ //android终端

@@ -151,7 +151,7 @@
             <use xlink:href="#icon-zuoyoujiantou"></use>
           </svg>
         </div>
-        创建组织
+        {{title}}
       </div>
       <div class="form-wrapper">
         <div class="form-item">
@@ -166,7 +166,7 @@
             </router-link>
           </div>
         </div>
-        <div class="form-item">
+        <div class="form-item" v-if="!isInfo">
           <div class="form-title">组织简称</div>
           <div class="form-content">
             <router-link :to="{ path:'/edit', query: { title:  '组织简称',bg: '#499844',value:this.abbreviation} }">
@@ -228,8 +228,8 @@
             </router-link>
           </div>
         </div>
-        <div class="form-item">
-          <div class="form-title">邮箱</div>
+        <div class="form-item" v-if="!isInfo">
+          <div class="form-title" >邮箱</div>
           <div class="form-content">
             <router-link :to="{ path:'/edit', query: { title:  '设置邮箱',bg: '#499844',value:this.email} }">
               <span v-if="email.length > 0">{{email}}</span>
@@ -254,8 +254,9 @@
           <div class="img" :style="{backgroundImage:'url('+img_src+')'}"></div>
         </div>
       </div>
-      <div class="btn-submit" :class="{'btn-active':submit_active}" @click="submit()">提交</div>
-      <div class="tips-wrapper">
+      <div class="btn-submit" v-if="!isInfo" :class="{'btn-active':submit_active}" @click="submit()">提交</div>
+      <div class="btn-submit btn-active" v-else  @click="submit(1)">保存</div>
+      <div class="tips-wrapper" v-if="!isInfo">
         <div  @click="select()">
           <svg class="icon icon-select" aria-hidden="false">
             <use xlink:href="#icon-chenggong" v-if="selected"></use>
@@ -299,13 +300,17 @@
         email: this.$store.state.create.email?this.$store.state.create.email:"",
         submit_active: false,
         selected: true,
-        img_src: this.$store.state.create.img?this.$store.state.create.img:"", //营业执照图片地址
+        img_src: this.$store.state.create.img?this.$store.state.create.img:"1", //营业执照图片地址
         provinceId: this.$store.state.create.provinceId?this.$store.state.create.provinceId:"",  //省份id
         cityId: this.$store.state.create.cityId?this.$store.state.create.cityId:"",  //城市id
         areaId: this.$store.state.create.areaId?this.$store.state.create.areaId:"",  //城区id
         address: this.$store.state.create.address?this.$store.state.create.address:"",  //详细地址
         loading: false,
         isShow:false,
+
+        isInfo:false,
+        title:'创建组织',
+        centerGroupId:''
       }
     },
     methods: {
@@ -357,26 +362,30 @@
         }
       },
       //提交创建组织申请
-      submit(){
+      submit(type){
         if(this.submit_active){
           this.submit_active = false;
           this.loading = true;
-          let vm = this;
+          let vm = this,params={};
 //          alert("地址:"+vm.address+"省份ID:"+vm.provinceId+",城市ID:"+vm.cityId+
 //            ",区域ID:"+vm.areaId+",企业:"+vm.organization+"简称:"+vm.abbreviation+"类型:"+vm.category+"手机:"+vm.phone+"邮箱:"+vm.email);
-          this.axios.post(vm.Service.createOrg + vm.Service.queryString({
-            universalName: vm.organization,
-            abbreviationName: vm.abbreviation,
-            organizationType: vm.category,
-            provinceId: vm.provinceId,
-            cityId: vm.cityId,
-            areaId: vm.areaId,
-            datailAddress: vm.address,
-            contactName: vm.name,
-            contactMobile: vm.phone,
-            contactMail: vm.email,
-            bussinessLicUrl: vm.img_src
-          })).then(function (res) {
+params={
+      universalName: vm.organization,
+      abbreviationName: vm.abbreviation,
+      organizationType: vm.category,
+      provinceId: vm.provinceId,
+      cityId: vm.cityId,
+      areaId: vm.areaId,
+      datailAddress: vm.address,
+      contactName: vm.name,
+      contactMobile: vm.phone,
+      contactMail: vm.email,
+      bussinessLicUrl: vm.img_src
+}
+if(type==1){
+  params.id = this.$route.query.id;
+}
+          this.axios.post(vm.Service.createOrg + vm.Service.queryString(params)).then(function (res) {
             console.log("提交申请",res);
             vm.submit_active = true;
             vm.loading = false;
@@ -435,6 +444,23 @@
           vm.isActive();
         });
       },
+      getOrganInfo(){
+        let vm = this;
+          this.axios.get('organ/user/createorgan/info?officeJoinId='+this.$route.query.id).then(res=>{
+              let data = res.data.b;
+              vm.phone = data.contactMobile;
+              vm.email = data.contactMail;
+              vm.organization = data.universalName
+              vm.category=data.organizationType
+              vm.address =data.detailAddress
+              vm.name = data.contactName
+              vm.provinceId = data.provinceId
+              vm.cityId = data.cityId
+              vm.areaId = data.areaId
+              vm.centerGroupId = data.centerGroupId;
+              // vm.img_src = data.businesslicenseUrl
+          })
+      }
     },
     created(){
       eventBus.$on('getTarget', target => {
@@ -474,7 +500,13 @@
       eventBus.$off('getTarget');
     },
     mounted(){
-      this.userInfo();
+      if(this.$route.query.info){
+        this.getOrganInfo()
+        this.isInfo = this.$route.query.info
+        this.title = this.$route.query.title;
+      }else{
+        this.userInfo();
+      }
       //如果vuex中的has_changed字段为true，则说明数据已经更新，显示弹框，然后重置该值为false
       if(this.$store.state.create.has_changed){
         setTimeout(() =>{

@@ -159,45 +159,14 @@ let save_leave = (index,text,that) =>{
     }else if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
     }else{
-        // let chosed_id = ''; //抄送人
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id  += "|" + that.chosed_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id += "|" + that.chosed_list[i].receiverId
-        //     }
-        // }
-        // chosed_id = chosed_id.slice(1)
 
-        // let approver_id = '' //审批人
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id  += "|" + that.approver_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id  += "|" + that.approver_list[i].auditUserId
-        //     }
-        // }
-        // approver_id = approver_id.slice(1)
-        // let urlStr = '',fileSizeStr = '',fileNameStr = '';
-        // for(let i=0;i<that.accessory.length;i++){
-        //     urlStr+='|'+that.accessory[i].url;
-        //     fileSizeStr+='|'+that.accessory[i].fileSize;
-        //     fileNameStr+='|'+that.accessory[i].fileName;  
-        // }
-        // urlStr = urlStr.slice(1)
-        // fileSizeStr = fileSizeStr.slice(1)
-        // fileNameStr = fileNameStr.slice(1)
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
-
-        let fileObj = {},params={}
         fileObj = that.Util.fileFo(that.accessory)
 
         // let contDesc = that.borrowReason.replace(/\n|\r\n/g,"<br>")
@@ -211,7 +180,7 @@ let save_leave = (index,text,that) =>{
                 data:{
                     Id :that.id, // id
                     borrowTitle:that.borrowTitle,//标题
-                    borrowReason:that.borrowReason, //付款说明
+                    borrowReason:that.borrowReason.replace(/\n/g, '<br/>'), //付款说明
                     borrowAmount:that.borrowerAmount, //付款金额
                     borrowerBank:that.borrowerBank,
                     useDate:that.useDate,//付款时间
@@ -221,8 +190,10 @@ let save_leave = (index,text,that) =>{
                     urls : fileObj.urlStr, //附件
                     fileNames:fileObj.fileNameStr, 
                     fileSizes:fileObj.fileSizeStr,
-                    auditUserIds: approver_id, //审批人
-                    receiverIds: chosed_id, //抄送人
+                    auditUserIds, //审批人
+                    receiverIds, //抄送人
+                    auditCompanyIds,
+                    receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -307,7 +278,7 @@ export default {
            save_leave(0, "提交成功", this)
         },
          history_back_click(){
-            if(!this.isUpdate()){
+            if(!this.Util.isUpdate(this.$data,this.oldData)){
                  window.location.href = "epipe://?&mark=history_back"
             }else{
                 this.isShow = true;
@@ -327,40 +298,12 @@ export default {
             localStorage.removeItem('borrowApply')
             window.location.href = "epipe://?&mark=history_back"
         },
-        isUpdate(){
-            let data = this.$data;
-            for(let key in data){
-               if(key=='approver_list'||key=='chosed_list'||key=='accessory'){
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-
-                        if(key!='accessory'&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }
-                    }
-                }else if(key!='oldData'&&key!='approver_list'&&key!='chosed_list'&&key!='accessory'){
-                    if(data[key]!=this.oldData[key]){
-                            return true;
-                    }
-                }
-            }
-            return false
-        },
         addAccessory:function(){
             window.location.href = "epipe://?&mark=addAccessory"
         },
         deleteFile:function(index){  //删除附件
 
             this.accessory.splice(index,1)
-        },
-        go_fildDetails: function (url) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
         },
         remove_item: function (itme, index,typess) {   //删除
             if(typess){
@@ -489,7 +432,7 @@ export default {
                     that.accessory.push(obj)
                 }
 
-            this.axios.get('/user/info').then(function(res){
+            this.axios.post('/user/current/userinfo').then(function(res){
                 that.departmentName = res.data.b.officeName
                 that.userName = res.data.b.name
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
@@ -513,12 +456,12 @@ export default {
                         that.borrowType = data.borrowTypeCode
                         that.borrowName = data.borrowType;
                         that.borrowerName = data.borrowerName
-                        that.borrowReason = data.borrowReason;
+                        that.borrowReason = data.borrowReason.replace(/<br\/>/g,'\n');
                         that.useDate = data.useDate;
                         that.returnDate = data.returnDate;
                         that.borrowerAccount = data.borrowerAccount;
                         that.borrowerBank=data.borrowerBank;
-                        that.textNum = data.borrowReason.length
+                        that.textNum = that.borrowReason.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
                         that.approver_list = data.auditers;

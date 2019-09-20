@@ -411,23 +411,26 @@
               }
       },
       chose_child(index,num,el,c){
+
           if(this.iscareOf){
 
            if(el.mark_chose){
              this.$toast('该用户为审批人')
              return;
            }
-
+        
             this.$router.push({path:'/deliverExplain',query:{
               id:this.$route.query.id,
               userName:el.name,
               userId:el.userId,
               auditerIds:this.$route.query.auditerIds,
               receiverIds:this.$route.query.receiverIds,
+              auditCompanyId :el.companyId+'|'+this.$route.query.auditCompanyId,
+              receiverCompanyId: this.$route.query.receiverCompanyId,
               type:this.$route.query.type,
               typeName:this.$route.query.typeName,
               applyType:this.$route.query.applyType,
-              color:this.$route.query.bgcolor
+              color:this.$route.query.color
               }})
              return false;
          } 
@@ -566,7 +569,6 @@
         window.history.back()
       },
       chose_select: function (item, index) { //搜索之后选中某个人
-
         if(this.iscareOf){
            if(item.mark_chose){
              this.$toast('该用户为审批人')
@@ -577,9 +579,11 @@
               userName:item.name,
               auditerIds:this.$route.query.auditerIds,
               userId:item.userId,
+              auditCompanyId :item.companyId+'|'+this.$route.query.auditCompanyId,
+              receiverCompanyId: this.$route.query.receiverCompanyId,
               typeName:this.$route.query.typeName,
               applyType:this.$route.query.applyType,
-              color:this.$route.query.bgcolor,
+              color:this.$route.query.color,
               receiverIds:this.$route.query.receiverIds,
               }})
              return false;
@@ -667,7 +671,7 @@
       }
       this.iscareOf = this.$route.query.careOf
         //以上代码判断是由什么入口进入该界面
-      this.bgcolor = this.$route.query.bgcolor
+      this.bgcolor = this.$route.query.bgcolor||this.$route.query.color
       if(this.$route.query.num){ //判断是审批人还是抄送人
         //审批人
         this.type_num = 0;

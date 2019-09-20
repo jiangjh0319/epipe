@@ -13,7 +13,7 @@
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
-                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |details}}</p>
+                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="infor-box">
                     <span>借款事由 </span>
-                    <p>{{dataObj.borrowReason}} </p>
+                    <p v-html="dataObj.borrowReason"></p>
                 </div>
             </div>
 
@@ -125,7 +125,7 @@
         <MoreBtn
           v-show="isShow"
           v-on:approveBack="approveBack"
-          v-on:deliverTo="deliverTo"
+          v-on:deliverTo="consent"
           v-on:revocation="revocation"
           v-on:urge="urge"
           v-on:isShow="isShow=!isShow"
@@ -215,12 +215,20 @@
             approveBack(){ //退回
                  this.$router.push({path:'/approveBack',query:{id:this.dataObj.borrowApplyId,typeName:'borrow',applyType:9,color:'#0fc37c'}})
             },
-            consent:function(){
-              let that = this;
-               let copyStr =  this.appAndCopy(this.newCopy)
-               let apprStr = this.appAndCopy(this.newAppr,'auditUserId')
+            consent:function(type){
+                 let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                 
+                 receiverIds = this.Util.getIds(this.newCopy,'userId')
+                 auditerIds = this.Util.getIds(this.newAppr,'userId')
+                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                 auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                 url = type!=2?'/opinion':'/imchoices';
 
-            this.$router.push({path:'/opinion',query:{id:this.dataObj.borrowApplyId,receiverIds:copyStr,auditerIds:apprStr,color:'#0fc37c',typeName:'borrow',applyType:9,pageType:'consent'}})
+                 params={id:this.dataObj.borrowApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                 color:'#0fc37c',applyType:9,typeName:'borrow',pageType:type,careOf:true,num:1}
+
+                this.$router.push({path:url,query:params})
+
                
             },
             resubmit(){ //再次提交
@@ -263,7 +271,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                     applyId:this.dataObj.borrowApplyId,
                     type:1,
-                    applyType:7,
+                    applyType:9,
                 })).then(function(res){
                         if(res.data.h.code!=200){
                             that.$toast(res.data.h.msg)
@@ -276,11 +284,6 @@
                             },500)     
                         } 
                     })
-            },
-            go_fildDetails: function (url) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
              accessoryFors:function(datas){
               if(!datas||datas.url==null) return false
@@ -327,7 +330,7 @@
                 that.title = that.dataObj.username+'的借款申请'
                 for(let i =0;i<that.dataObj.auditers.length;i++){   
                         if(that.dataObj.auditers[i].status=='2'){
-                            that.leaveType = '0';  //已经拒绝
+                            that.leaveType = '0';  //已经拒绝 
                         }
                         if(that.dataObj.auditers[i].status=='00'){
                             arr.push(that.dataObj.auditers[i])
@@ -359,11 +362,16 @@
                         that.leaveType = '1';
                         return;
                     }
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+                        that.leaveType = '6';
+                        return;
+                    }
 
                     if(that.dataObj.auditStatus == '3'){ //已经撤销
                         that.leaveType = '2'
                         return;
                     }
+                    
             })
 
         },
@@ -372,18 +380,6 @@
             this.newAppr = this.approver_man_state;
          },
         filters:{
-            details:function(value){
-    
-                if(value == '1'){
-                    return '已同意'
-                }else if(value =='0'){
-                    return '已拒绝'
-                }else if(value=='2'){
-                    return '已撤销'
-                }else if(value =='5'){
-                    return '已退回'
-                }
-            },
             nameFor:function(value){
                 if(!value) return ''
                 let arr = value.split('|')

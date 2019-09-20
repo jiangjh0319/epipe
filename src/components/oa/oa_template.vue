@@ -307,7 +307,6 @@
                                     <span>借款事由 :</span>
                                     <p class="line2" style="line-height:0.2rem;">{{item.content  }}</p>
                                 </div>
-                                
                             </div>
                         </div>
                         <div  class="skip" tag="div">

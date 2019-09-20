@@ -44,9 +44,9 @@
                             <div v-if="item.accessory">
                                 <ul class="accessory">
                                     <li  v-for="child in item.accessory" :key="child.url">
-                                        <img @click="go_fildDetails(child.url,child.fileName)"  v-if="child.isImg"  :src="child.url"/>
-                                        <img @click="go_fildDetails(child.url,child.fileName)" v-if="!child.isImg" src="../../assets/wenjian.png"/>
-                                        <div @click="go_fildDetails(child.url,child.fileName)"  class="accessory-cont">
+                                        <img @click="go_fildDetails(child)"  v-if="child.isImg"  :src="child.url"/>
+                                        <img @click="go_fildDetails(child)" v-if="!child.isImg" src="../../assets/wenjian.png"/>
+                                        <div @click="go_fildDetails(child)"  class="accessory-cont">
                                             <p style="margin-bottom:0">{{child.fileName}}</p>
                                             <span>{{child.fileSize | fileSize}}</span>
                                         </div>
@@ -55,33 +55,6 @@
                             </div>
                         </div>
                         
-                        <!-- <div class="reasons" v-if="(item.status!='0'||newAppr.length)&&item.status!=3">
-                            <svg class="icon icon-back" aria-hidden="false" v-if="newAppr.length!=0&&(item.status!=2||item.status!=1)">
-                                <use xlink:href="#icon-jiantou1"></use>
-                            </svg>
-                            <div class="reason" v-if="item.status==2||item.status==1">
-                                {{item.reason}}
-                            </div>
-                        </div> -->
-
-                        <!-- <div class="reasons ss">
-                            <svg  class="icon icon-back" aria-hidden="false" >
-                                <use xlink:href="#icon-jiantou1"></use>
-                             </svg>
-                            <p>{{item.reason}}</p>
-                            <div v-if="item.accessory">
-                                <ul class="accessory">
-                                    <li  v-for="child in item.accessory" :key="child.url">
-                                        <img @click="go_fildDetails(child.url,child.fileName)"  v-if="child.isImg"  :src="child.url"/>
-                                        <img @click="go_fildDetails(child.url,child.fileName)" v-if="!child.isImg" src="../../assets/wenjian.png"/>
-                                        <div @click="go_fildDetails(child.url,child.fileName)"  class="accessory-cont">
-                                            <p style="margin-bottom:0">{{child.fileName}}</p>
-                                            <span>{{child.fileSize | fileSize}}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div> -->
                     </li>
 
                      <li v-for="(it,ind) in newAppr" :key="ind" v-if="dataObj.auditStatus!=3">
@@ -148,9 +121,8 @@
                  }
                  this.show = true;
             },
-             go_fildDetails: function (url,name) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0,name}
+             go_fildDetails: function (item) { //查看图片详情
+                let obj = {index_num: 0, data:[item.url],type:0,name:item.fileName,size:item.fileSize}
                 window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
             affirm(){
@@ -164,17 +136,6 @@
          filters:{
             timeStrSlice:function(value){
                 return value?value.slice(0,-3):value;
-            },
-            details:function(value){
-                if(value == '1'){
-                    return '已同意'
-                }else if(value =='0'){
-                    return '已拒绝'
-                }else if(value=='2'){
-                    return '已撤销'
-                }else if(value =='5'){
-                    return '已退回'
-                }
             },
             statusClass:function(value){
                  switch (value){
@@ -192,6 +153,9 @@
                         break;
                     case '4':
                         return "careOf";
+                        break;
+                    case '5':
+                        return "consent";
                         break;
                     }
             },
@@ -211,6 +175,9 @@
                         break;
                     case '4':
                         return "已退回";
+                        break;
+                    case '5':
+                        return "已评论";
                         break;
                     }
             },

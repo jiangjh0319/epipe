@@ -8,15 +8,33 @@
                 <p style="font-size: 0.16rem;">您的手机网络不太顺畅~</p>
                 <p>请检查网络设置</p>
                 </div>
-                <div class="btn-refresh" @click="reload()">刷新</div>
+                <div class="btn-refresh" @click.stop.prevent="reload()">刷新</div>
             </div>
             </div>
         <section class="back">
+            <div class="add-organization" @click.stop.prevent="organshow=true">
+                <svg style="" class="icon" aria-hidden="false">
+                    <use xlink:href="#icon-tianjia1"></use>
+                </svg>
+
+                <div class="organ-list" v-show="organshow">
+                    <p @click.stop.prevent="openUrl('create')">创建组织</p>
+                    <p @click.stop.prevent="openUrl('search')">搜索组织</p>
+                    <p @click.stop.prevent="openUrl('myOrganization')">我的组织</p>
+                </div>
+            </div>
             <div class="infor">
 
                 <div class="infor-user">
                     <img :src="userData.profileImg"/>
-                    {{userData.name}}
+                    <div>
+                        <p>{{userData.name}}</p> 
+                        <p class="company" @click.stop.prevent="openUrl('selectgroup')">{{companyname}}
+                            <svg style="width: 0.12rem;height: 0.12rem;" class="icon" aria-hidden="false">
+                                <use xlink:href="#icon-xiangyou"></use>
+                            </svg>
+                        </p>
+                    </div>
                 </div>
 
                 <div class="infor-msg">
@@ -26,7 +44,7 @@
                             <p class="infor-date">{{dateString}}</p>
                             <!-- <p class="infor-date">{{token}}</p> -->
                         </div>
-                        <div class="msg-box" @click="message">
+                        <div class="msg-box" @click.stop.prevent="message">
                             <svg style="width: 0.27rem;height: 0.27rem" class="icon" aria-hidden="false">
                                 <use xlink:href="#icon-gonggao"></use>
                             </svg>
@@ -42,7 +60,7 @@
             </div>
 
             <div class="menu">
-                <div class="menu-lf" @click="go_record">
+                <div class="menu-lf" @click.stop.prevent="go_record">
                     <p class="h-title">今日考勤</p>
                     <p class="menu-lf-date">{{toDayCheck!=''?toDayCheck:'未打卡'}}</p>
                     <a >去打卡</a>
@@ -107,8 +125,15 @@
             <div class="menu-item"  :key="index">
                 <p class="item-title"> <i></i> <span>常用应用</span>  <a class="manage" @click="manage">管理</a> </p>
                 <ul>
-                    <li  @click="unfinishAffair()">
+                    <!-- <li  @click="unfinishAffair()">
                          <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                            <use xlink:href="#icon-daibanshiyi"></use>
+                        </svg>
+                        <span class="num" v-if="oaCount">{{oaCount}}</span>
+                        <span>待办事宜</span>
+                    </li> -->
+                    <li @click="unfinishAffair()">
+                        <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
                             <use xlink:href="#icon-daibanshiyi"></use>
                         </svg>
                         <span class="num" v-if="oaCount">{{oaCount}}</span>
@@ -138,8 +163,15 @@
                             <use xlink:href="#icon-gongzuohuibao"></use>
                         </svg>
                         <span>工作汇报</span>
+                        <span class="num redDot" v-if="workRed"></span>
                     </li>
-             
+                    <li v-if="show_app"  @click="to_link('approvalRecords')">
+                         <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                            <use xlink:href="#icon-gongzuohuibao"></use>
+                        </svg>
+                        <span>审批记录</span>
+                        <span class="num redDot" v-if="workRed"></span>
+                    </li>
                     <li v-for="(c,i) in workData[0].apps" @click="go_jump(c)" :key="i" >
                         <img :src="c.icon"/>
                         <span>{{c.name}}</span>
@@ -190,8 +222,12 @@
                companyCount:0,
                payShow:false,
                mask:true,
+               workRed:false,
                noNetwork:false,
                 logo: require("../../assets/no_wifi.png"),
+                companyname:'',
+                organshow:false,
+                show_app:false,
             }
         },
         created() {
@@ -200,13 +236,16 @@
              window["workUpdate"] = () => {
                 that.getCount();
                 that.get_work();
+                that.redDot();
                 that.getTotal();//获取考勤总次数
                 that.today();//获取今日考勤
                 that.getCompanyCount();
             }
 
             window['signUpdate'] =() =>{
+                that.organshow = false
                 that.getCount();
+                that.redDot();
             }
 
             this.setToken(this.Service.getCookie('auth_token'))
@@ -218,6 +257,7 @@
             this.slogan(); // 获取标语
             this.getInfor(); //
             that.getCount()
+            that.redDot();
             that.getCompanyCount();
             this.getUserInfor(); //获取用户名等信息
             this.getTotal();//获取考勤总次数
@@ -260,6 +300,16 @@
             exercise(){
                  window.location.href = "epipe://?&mark=exercise";
             },
+            openUrl(url){
+                console.log(url)
+                    this.organshow = false
+                    window.location.href = "epipe://?&mark="+url;
+            },
+            redDot(){
+                this.axios.get('work/report/new').then(res=>{
+                    this.workRed = res.data.b;
+                })
+            },
             getCount(){
                 let that = this;
                 this.axios.get('/work/wait/list').then(function(res){
@@ -282,21 +332,42 @@
                     that.companyCount = res.data.b 
                  })
             },
+            checkJurisdiction(type,url){
+                console.log(url+this.token)
+                            // window.location.href = url+this.token;
+
+                this.axios.get('/user/system?type='+type).then(res=>{
+                        if(res.data.h.code!==200){
+                            this.$toast(res.data.h.msg)
+                            return false
+                        }else{
+                            if(type==0){
+                                window.location.href = url+this.token;
+                            }else{
+                                // window.location.href = 'epipe://?&mark=crm&url='+res.data.b.url+'#/index?&token='+this.token;
+                                window.location.href = 'epipe://?&mark=crm&url=http://192.168.3.22:8899/#/index?&token='+this.token;
+                            }
+                        }
+                 })
+            },
             go_jump(obj){ //应用跳转
                 if(obj.url.indexOf('openurl')>-1){
                  let url = obj.url.slice(obj.url.indexOf('openurl')+8) 
-               window.location.href ='epipe://?&mark=openurl&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name,url})
-                 return;
-
+                        window.location.href ='epipe://?&mark=openurl&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name,url})
+                        return;
                 }
                 else if(obj.url.indexOf('token=')>-1){
-                    window.location.href = obj.url+this.token;
-                    return;
+                    let type = obj.url.indexOf('mark=mes_app')>-1?1:0;
+                    this.checkJurisdiction(type,obj.url)
                 }else if(obj.url.indexOf('mark=landscape')>-1){
                     window.location.href = obj.url
                     return;
+                }else{
+                     window.location.href = obj.url+'&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name});
                 }
-                window.location.href = obj.url+'&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name});
+            },
+            to_link(url){
+                 window.location.href = "epipe://?&mark="+url;
             },
             total(){
                  window.location.href = "epipe://?&mark=total";
@@ -405,6 +476,7 @@
                         this.payShow = true;
                     }
                         this.mask = false;  //有组织，展示工作台
+                        this.companyname = res.data.b.companyname
             
                 }else{
                     this.mask = false;
@@ -415,6 +487,10 @@
                 this.noNetwork = true; //显示无网络界面
                 this.$toast(err.data.h.msg);
                 });
+
+                this.axios.get('/apply/user/permit/if').then(res=>{
+                    this.show_app = res.data.b;
+                })
             },
         }
 
@@ -422,6 +498,7 @@
 </script>
 
 <style scoped lang="stylus">
+
 
 
  .num{
@@ -438,6 +515,13 @@
     border-radius 50%;
     color #fff;
     padding 0.01rem;
+}
+
+.redDot{
+    width:0.08rem;
+    height:0.08rem;
+    top: -0.03rem;
+    right: 0.13rem;
 }
 
 .company-num{
@@ -476,6 +560,34 @@
         box-sizing border-box;
     }
 
+    .organ-list{
+        position absolute;
+        width:1rem;
+        height 1.1rem;
+        border-radius:0.03rem;
+        top:0.3rem;
+        right:0;
+        background-color #fff;
+
+        p{
+            border-bottom:0.01rem solid #e6e6e6
+            font-size 0.15rem;
+            line-height:0.36rem;
+            text-align:center;
+        }
+
+        p:last-child{
+            border:none
+        }
+    }
+
+    .add-organization{
+        position:absolute;
+        right:0.15rem;
+        top:0.15rem;
+        padding:0.1rem;
+    }
+
     .manage{
         color #609ef7;
         font-size 0.14rem;
@@ -491,9 +603,9 @@
         &-user{
             overflow hidden;
             font-size 0.17rem;
-            line-height 0.5rem;
             margin-bottom 0.15rem;
             letter-spacing 0.02rem;
+            display:flex;
 
             img{
                 box-sizing border-box;
@@ -504,6 +616,11 @@
                 border 0.02rem solid #fff;
                 margin-right 0.06rem;
             }
+        }
+
+        .company{
+            font-size 0.14rem;
+            color:#cfe6db;
         }
 
         &-advertising{

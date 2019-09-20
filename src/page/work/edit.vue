@@ -81,7 +81,7 @@
           </svg>
         </div>
         {{title}}
-        <div class="btn-save" @click.stop.prevent="save()">保存</div>
+        <div class="btn-save" @click.stop.prevent="save()" >保存</div>
       </div>
       <div class="edit-content" v-if="is_name">
         <div class="edit-item">
@@ -139,9 +139,11 @@
         init_value: "",
         loading: false,
         emailSave:true,
+        type:0,
       }
     },
     mounted(){
+      this.type = this.$route.query.type
       this.$nextTick(() =>{
         this.$refs.input.focus();
       });
@@ -185,6 +187,7 @@
       * 更新个人信息
       * */
       updataInfo(key,val){
+        debugger
         let data = {};
         data[key] = val;
         let vm = this;
@@ -327,6 +330,7 @@
       },
       //返回
       goback(){
+
             this.emailSave = false;
             window.history.back(-1);
         

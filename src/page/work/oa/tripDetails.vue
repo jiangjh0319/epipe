@@ -13,7 +13,7 @@
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
-                        <p class="res">{{leaveType |details}}</p>
+                        <p class="res">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
                 </div>
@@ -121,7 +121,7 @@
         <MoreBtn
           v-show="isShow"
           v-on:approveBack="approveBack"
-          v-on:deliverTo="deliverTo"
+          v-on:deliverTo="consent"
           v-on:revocation="revocation"
           v-on:urge="urge"
           v-on:isShow="isShow=!isShow"
@@ -228,11 +228,19 @@
             print(){//打印
                 window.location.href = "epipe://?&mark=print&url="+location.href;
             },
-            consent:function(){ //同意
-               let that = this;
-               let copyStr =  this.appAndCopy(this.newCopy)
-               let apprStr = this.appAndCopy(this.newAppr,'auditUserId')
-               this.$router.push({path:'/opinion',query:{id:this.dataObj.tripId,receiverIds:copyStr,auditerIds:apprStr,color:'#609df6',typeName:'trip',applyType:4,pageType:'consent'}})
+            consent:function(type){ //同意
+             let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                
+                receiverIds = this.Util.getIds(this.newCopy,'userId')
+                auditerIds = this.Util.getIds(this.newAppr,'userId')
+                receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                url = type!=2?'/opinion':'/imchoices';
+
+                params={id:this.dataObj.tripId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                color:'#609df6',applyType:4,typeName:'trip',pageType:type,careOf:true,num:1}
+
+                this.$router.push({path:url,query:params})
             },
             moreBtn(){
                 this.isShow = true;
@@ -362,6 +370,11 @@
 
                     if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 1){ // 已同意
                         that.leaveType = '1';
+                        return;
+                    }
+
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+                        that.leaveType = '6';
                         return;
                     }
 

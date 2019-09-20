@@ -13,7 +13,7 @@
             <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
             <div>
               <p class="nameTl">{{dataObj.username}}</p>
-              <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |details}}</p>
+              <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |oa_details_status}}</p>
               <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
             </div>
           </div>
@@ -114,7 +114,7 @@
     <MoreBtn
       v-show="isShow"
       v-on:approveBack="approveBack"
-      v-on:deliverTo="deliverTo"
+      v-on:deliverTo="consent"
       v-on:revocation="revocation"
       v-on:urge="urge"
       v-on:isShow="isShow=!isShow"
@@ -228,11 +228,19 @@
 				this.isShow = true;
 				this.$forceUpdate();
 			},
-			consent:function(){
-				let that = this;
-				let copyStr =  this.appAndCopy(this.newCopy)
-				let apprStr = this.appAndCopy(this.newAppr,'auditUserId')
-				this.$router.push({path:'/opinion',query:{id:this.dataObj.carApplyId,receiverIds:copyStr,auditerIds:apprStr,color:'#0fc37c',typeName:'car',applyType:12,pageType:'consent'}})
+			consent:function(type){
+              let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                
+                receiverIds = this.Util.getIds(this.newCopy,'userId')
+                auditerIds = this.Util.getIds(this.newAppr,'userId')
+                receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                 url = type!=2?'/opinion':'/imchoices';
+
+                params={id:this.dataObj.carApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                color:'#0fc37c',applyType:12,typeName:'car',pageType:type,careOf:true,num:1}
+
+              this.$router.push({path:url,query:params})
 			},
 			appAndCopy:function(arr,type){
 				if(!type) type='userId'
@@ -266,11 +274,6 @@
 			},
 			goAddress:function(){ //公出地点跳转
 				this.$router.push({path:'/addressMap',query:{lon:this.dataObj.lon,lat:this.dataObj.lat,outsideAddress:this.dataObj.outsideAddress,detailAdress:this.dataObj.detailAdress}})
-			},
-			go_fildDetails: function (url) { //查看图片详情
-				let that = this;
-				let obj = {index_num: 0, data:[url],type:0}
-				window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
 			},
 			print(){//打印
 				window.location.href = "epipe://?&mark=print&url="+location.href;
@@ -359,7 +362,12 @@
 				if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 1){ // 已同意
 					that.leaveType = '1';
 					return;
-				}
+        }
+        
+        if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+            that.leaveType = '6';
+            return;
+        }
 				
 				if(that.dataObj.auditStatus == '3'){ //已经撤销
 					that.leaveType = '2'
@@ -375,18 +383,6 @@
 		filters:{
 			timeStrSlice:function(value){
 				return value?value.slice(0,-3):value;
-			},
-			details:function(value){
-				
-				if(value == '1'){
-					return '已同意'
-				}else if(value =='0'){
-					return '已拒绝'
-				}else if(value=='2'){
-					return '已撤销'
-				}else if(value =='5'){
-					return '已退回'
-				}
 			},
 			nameFor:function(value){
 				if(!value) return ''

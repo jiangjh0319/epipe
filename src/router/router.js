@@ -40,6 +40,20 @@ const Journaldetail = r => require.ensure([], () => r(require('@/page/work/Journ
 const Application = r => require.ensure([], () => r(require('@/page/work/application.vue')), 'group-work')
 const Edit = r => require.ensure([], () => r(require('@/page/work/edit.vue')), 'group-work')
 const Create = r => require.ensure([], () => r(require('@/page/work/create.vue')), 'group-work')
+const MyOrganization = r => require.ensure([], () => r(require('@/page/work/myOrganization.vue')), 'group-work')
+const OrganDetails = r => require.ensure([], () => r(require('@/page/work/organDetails.vue')), 'group-work')
+
+
+
+
+
+
+
+
+
+
+
+const SelectGroup = r => require.ensure([], () => r(require('@/page/work/selectgroup.vue')), 'group-work')
 const Search = r => require.ensure([], () => r(require('@/page/work/search.vue')), 'group-work')
 const Pending = r => require.ensure([], () => r(require('@/page/work/pending.vue')), 'group-work')
 const Department = r => require.ensure([], () => r(require('@/page/work/department.vue')), 'group-work')
@@ -77,6 +91,7 @@ const MallAgreement = r => require.ensure([], () => r(require('@/page/mall/login
 const MallHome = r => require.ensure([], () => r(require('@/page/mall/home/MallHome.vue')), 'group-mall')
 const PlasticList = r => require.ensure([], () => r(require('@/page/mall/home/PlasticList.vue')), 'group-mall')
 const ConduitList = r => require.ensure([], () => r(require('@/page/mall/home/ConduitList.vue')), 'group-mall')
+const PhoneList = r => require.ensure([], () => r(require('@/page/mall/home/phoneList.vue')), 'group-mall')
 const HardwareList = r => require.ensure([], () => r(require('@/page/mall/home/HardwareList.vue')), 'group-mall')
 const SupplyDemandList = r => require.ensure([], () => r(require('@/page/mall/home/SupplyDemandList.vue')), 'group-mall')
 const SupplyDemandDetail = r => require.ensure([], () => r(require('@/page/mall/home/SupplyDemandDetail.vue')), 'group-mall')
@@ -139,7 +154,10 @@ const UnFinishAffairs = r => require.ensure([], () => r(require('@/page/work/oa/
 const MyApply = r => require.ensure([], () => r(require('@/page/work/oa/myApply.vue')), 'group-work')
 const Drafts = r => require.ensure([], () => r(require('@/page/work/oa/drafts.vue')), 'group-work')
 const Imchoices = r => require.ensure([], () => r(require('@/page/work/oa/imchoices.vue')), 'group-work')
+
 const AddressList = r => require.ensure([], () => r(require('@/page/work/addressList.vue')), 'group-work')
+const Address = r => require.ensure([], () => r(require('@/page/work/address.vue')), 'group-work')
+
 const Contract = r => require.ensure([], () => r(require('@/page/work/oa/contract.vue')), 'group-work')
 const ContractDetails = r => require.ensure([], () => r(require('@/page/work/oa/contractDetails.vue')), 'group-work')
 const goOutWork = r => require.ensure([], () => r(require('@/page/work/oa/goOutWork.vue')), 'group-work')
@@ -181,6 +199,9 @@ const CarDetails = r => require.ensure([], () => r(require('@/page/work/oa/carDe
 const ArticleDetails = r => require.ensure([], () => r(require('@/page/work/articleDetails.vue')), 'group-work')
 const Agenda = r => require.ensure([], () => r(require('@/page/work/schedule/agenda.vue')), 'group-work')
 
+const AddGroup = r => require.ensure([], () => r(require('@/page/work/addgroup.vue')), 'group-work')
+
+const SupplierAllBack = r => require.ensure([], () => r(require('@/page/work/supplierAllBack.vue')), 'group-work')
 
 
 
@@ -201,6 +222,9 @@ export default new Router({
     }, {
       path: '/user',
       component: User  //用户中心
+    }, {
+      path: '/supplierAllBack',
+      component: SupplierAllBack  //空白返回
     }, {
       path: '/record',
       component: Record  //考勤记录
@@ -253,7 +277,8 @@ export default new Router({
     },
     {
       path: '/journal',
-      component: Journal  //日志列表
+      component: Journal,  //日志列表
+      meta:{keepAlive: true}
     },
     {
       path: '/imchoice',
@@ -288,7 +313,19 @@ export default new Router({
     },
     {
       path: '/create',  //创建组织
-      component: Create
+      component: Create,
+    },
+    {
+      path: '/myOrganization',  //我的组织
+      component: MyOrganization
+    },
+    {
+      path: '/organDetails',  //我的组织
+      component: OrganDetails
+    },
+    {
+      path: '/selectgroup',  //选择组织
+      component: SelectGroup
     },
     {
       path: '/edit',  //编辑模板页面
@@ -436,7 +473,12 @@ export default new Router({
 	  },
 	  {
 		  path: '/conduitlist', //管道城
-		  component: ConduitList,
+      component: ConduitList,
+      meta: {keepAlive: true}
+    },
+    {
+		  path: '/phonelist', //管道城
+		  component: PhoneList,
 	  },
 	  {
 		  path: '/hardwarelist', //智能硬件
@@ -657,6 +699,10 @@ export default new Router({
     {
       path:'/addressList',//新通讯录
       component : AddressList
+    }, 
+    {
+      path:'/address',//新通讯录
+      component : Address,
     },
     {
       path:'/contract', //合同申请
@@ -834,7 +880,12 @@ export default new Router({
 	  },{
       path:'/articleDetails',
       component:ArticleDetails
-    },{
+    },
+    {
+      path:'/addgroup',//扫码加群
+      component:AddGroup,
+    },
+    {
       path:'/login',
       component:Login
     },{

@@ -18,34 +18,6 @@
                     </span>
                 </infinite-loading>
             </div>
-            <!-- <div v-show="active==2">
-                <OaTemplate v-on:goDetails="goDetails" v-for="(item,index) in finishData" :item=item :key="item.applyId"></OaTemplate>
-                <infinite-loading  spinner="bubbles" :on-infinite="onInfiniter" ref="infiniteLoadingr">
-                    <span slot="no-more" class="no-more">
-                        暂无更多加载
-                    </span>
-                    <span slot="no-results" class="no-results">
-                        暂无更多加载
-                    </span>
-                </infinite-loading>
-                <div v-if="!finishData.length" class="footLine" style="margin-top:2rem;font-size:0.16rem;">
-                    <span style="width:auto">未找到相关结果</span>
-                </div>
-            </div>
-            <div v-show="active==3">
-                <OaTemplate v-on:goDetails="goCopyDetails" v-for="(item,index) in copyData" :isCopy='true' :item=item :key="item.applyId"></OaTemplate>
-                <infinite-loading  spinner="bubbles" :on-infinite="onInfinites" ref="infiniteLoadings">
-                    <span slot="no-more" class="no-more">
-                        暂无更多加载
-                    </span>
-                    <span slot="no-results" class="no-results">
-                            暂无更多加载
-                    </span>
-                </infinite-loading>
-                <div v-if="!copyData.length" class="footLine" style="margin-top:2rem;font-size:0.16rem;">
-                    <span style="width:auto">未找到相关结果</span>
-                </div>
-            </div> -->
         </div>
 
     </section>

@@ -266,7 +266,7 @@
               <svg v-show="p.mark_chose" style="font-size: 0.19rem;padding-right: 0.15rem" class="icon">
                 <use xlink:href="#icon-chenggong"></use>
               </svg>
-              <svg v-show="!p.mark_chose" style="font-size: 0.19rem;padding-right: 0.15rem" class="icon">
+              <svg v-show="!p.mark_chose" style="font-sizae: 0.19rem;padding-right: 0.15rem" class="icon">
                 <use xlink:href="#icon-meiyouxuanzhong"></use>
               </svg>
               <img :src=p.profileImg|man_photo_format v-show="p.profileImg"/>

@@ -10,20 +10,40 @@
             :is_relative_approva="is_relative_approva"
             v-on:show_edit='collect'
         ></TopHead>
-        <div class="banner" style="margin-top:0.43rem;">
+        <div style="height:0.43rem"></div>
+        <div class="banner">
             <img src="../../assets/companyWall.png"/>
         </div>
         <div class="main">
-            <div v-for="(item,index) in list" v-if="item.secondCategory.length" :key="index" style="margin-top:0.15rem;background-color:#fff;">
-                <div class="title">
-                    <i></i>
-                    <span class="line1">{{item.firstCategory.name}}</span>
+            <div style="margin-bottom:0.3rem;" v-if="commData.length">
+                <div class="data_title">公共栏目</div>
+                <div v-for="(item,index) in commData" v-if="item.secondCategory.length" :key="index" style="margin-bottom:0.15rem;background-color:#fff;">
+                    <div class="title">
+                        <i></i>
+                        <span class="line1">{{item.firstCategory.name}}</span>
+                    </div>
+                    <div class="list">
+                        <div class="list-li" v-for="(items,ind) in item.secondCategory" :key="ind" @click="go_articleorthirdcategory(items)">
+                            <img :src="items.pic" style="width:0.27rem;height:0.27rem;"/>
+                            {{items.name |textFor}}
+                            <span style="color:red" v-if="items.unread">({{items.unread}})</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="list">
-                    <div class="list-li" v-for="(items,ind) in item.secondCategory" :key="ind" @click="go_articleorthirdcategory(items)">
-                        <img :src="items.pic" style="width:0.27rem;height:0.27rem;"/>
-                        {{items.name |textFor}}
-                         <span style="color:red" v-if="items.unread">({{items.unread}})</span>
+            </div>
+            <div>
+                <div class="data_title">公司栏目</div>
+                <div v-for="(item,index) in companyData" v-if="item.secondCategory.length" :key="index" style="margin-bottom:0.15rem;background-color:#fff;">
+                    <div class="title">
+                        <i></i>
+                        <span class="line1">{{item.firstCategory.name}}</span>
+                    </div>
+                    <div class="list">
+                        <div class="list-li" v-for="(items,ind) in item.secondCategory" :key="ind" @click="go_articleorthirdcategory(items)">
+                            <img :src="items.pic" style="width:0.27rem;height:0.27rem;"/>
+                            {{items.name |textFor}}
+                            <span style="color:red" v-if="items.unread">({{items.unread}})</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -38,13 +58,24 @@
         data() {
             return{
                 list:[],
+                commData:[],
+                companyData:[],
                 is_relative_approva:{title:'我的收藏',isShow:true}
             }
         },
         created() {
             let _this = this;
             this.axios.get('/wall/front/list').then(res=>{
-                _this.list = res.data.b;
+                // _this.list = res.data.b;
+                let arr = res.data.b;
+
+                arr.forEach(item => {
+                    if(item.firstCategory.commonFlag=='1'){
+                        this.commData.push(item)
+                    }else{
+                        this.companyData.push(item)
+                    }
+                });
             })
         },
         mounted(){
@@ -79,6 +110,13 @@
 </script>
 
 <style scoped lang="stylus">
+
+    .data_title{
+        padding 0.05rem 0.15rem;
+        font-weight:600;
+        font-size:0.17rem;
+        margin-bottom:0.05rem;
+    }
                          
     .banner{
         

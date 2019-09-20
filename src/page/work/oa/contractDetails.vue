@@ -12,7 +12,7 @@
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
-                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |details}}</p>
+                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditName+'的审批'}}</p>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
          <MoreBtn
           v-show="isShow"
           v-on:approveBack="approveBack"
-          v-on:deliverTo="deliverTo"
+          v-on:deliverTo="consent"
           v-on:revocation="revocation"
           v-on:urge="urge"
           v-on:isShow="isShow=!isShow"
@@ -231,11 +231,19 @@ export default {
         query: { id: this.dataObj.contractId, typeName: "contract",applyType:2,color:'#fd545c'}
       });
     },
-    consent: function() {
-      let that = this;
-      let copyStr = this.appAndCopy(this.newCopy);
-      let apprStr = this.appAndCopy(this.newAppr,'auditUserId');
-        this.$router.push({path:'/opinion',query:{id:this.dataObj.contractId,receiverIds:copyStr,auditerIds:apprStr,color:'#fd545c',typeName: "contract",applyType:2,pageType:'consent'}})
+    consent: function(type) {
+         let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                 
+                 receiverIds = this.Util.getIds(this.newCopy,'userId')
+                 auditerIds = this.Util.getIds(this.newAppr,'userId')
+                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                 auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                 url = type!=2?'/opinion':'/imchoices';
+
+                 params={id:this.dataObj.contractId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                 color:'#fd545c',applyType:2,typeName:'contract',pageType:type,careOf:true,num:1}
+
+                this.$router.push({path:url,query:params})
     },
     appAndCopy:function(arr,type){
         if(!type) type='userId'
@@ -275,13 +283,6 @@ export default {
             }, 500);
           }
         });
-    },
-    go_fildDetails: function(url) {
-      //查看图片详情
-      let that = this;
-      let obj = { index_num: 0, data: [url], type: 0 };
-      window.location.href =
-        "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
     },
     accessoryFors: function(datas) {
       if (!datas||datas.url==null) return false;
@@ -371,6 +372,11 @@ export default {
           return;
         }
 
+        if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+            that.leaveType = '6';
+            return;
+        }
+
         if (that.dataObj.auditStatus == "3") {
           //已经撤销
           that.leaveType = "2";
@@ -381,20 +387,6 @@ export default {
   activated() {
     this.newCopy = this.chosed_man_state;
     this.newAppr = this.approver_man_state;
-  },
-  filters: {
-    details: function(value) {
-      if (value == "1") {
-        return "已同意";
-      } else if (value == "0") {
-        return "已拒绝";
-      } else if (value == "2") {
-        return "已撤销";
-      }else if(value =='5'){
-                    return '已退回'
-                }
-    },
-
   },
   computed: mapState(["chosed_man_state", "approver_man_state"])
 };

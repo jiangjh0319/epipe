@@ -144,6 +144,9 @@
                 window["epipe_login_callback"] = auth_token => {
                 window.localStorage.setItem("auth_token", auth_token);
                 }
+                this.axios.get('work/report/new?flag=1').then(res=>{
+                    this.workRot = res.data.b;
+                })
                 window.location.href = "epipe://?&mark=journal"
                 TDGA.onEvent('journal','工作汇报')                
 

@@ -86,27 +86,15 @@ let save_leave = (index,text,that) =>{
     }else{
       
 
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
-
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
-
         let fileObj = {},params={}
         fileObj = that.Util.fileFo(that.accessory)
 
-        // let params = {
-        //             Id :that.id, // id
-        //             theme:that.theme,//主题
-        //             content:that.content, //请示函内容
-        //             Url : fileObj.urlStr, //附件
-        //             fileName:fileObj.fileNameStr, 
-        //             fileSize:fileObj.fileSizeStr,
-        //             auditUserIds: approver_id, //审批人
-        //             receiverIds: chosed_id, //抄送人
-        //             draftFlag : index, //草稿还是发送
-        //     }
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds=""
 
-        // that.Util.oaAxios(that,params,'letter')
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         that.axios({
                 method:"post",
@@ -116,12 +104,14 @@ let save_leave = (index,text,that) =>{
                 },
                 data:{Id :that.id, // id
                     theme:that.theme,//主题
-                    content:that.content, //请示函内容0
+                    content:that.content.replace(/\n/g, '<br/>'), //请示函内容0
                     Url : fileObj.urlStr, //附件
                     fileName:fileObj.fileNameStr, 
                     fileSize:fileObj.fileSizeStr,
-                    auditUserIds: approver_id, //审批人
-                    receiverIds: chosed_id, //抄送人
+                    auditUserIds, //审批人
+                    receiverIds, //抄送人
+                    auditCompanyIds,
+                    receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -263,11 +253,6 @@ export default {
         deleteFile:function(index){  //删除附件
             this.accessory.splice(index,1)
         },
-        go_fildDetails: function (url) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
-        },
         check:function(){
             if(this.theme.length<6||this.theme.length>30){
                 this.$toast('主题内容需6~30字之间')
@@ -378,9 +363,9 @@ export default {
                         that.isDraftFlag = 1;
                         that.accessoryFor(data)
                         that.theme = data.theme;
-                        that.content = data.content;
+                        that.content = data.content.replace(/<br\/>/g,'\n');
                         that.theme = data.theme;
-                        that.textNum = data.content.length;
+                        that.textNum = that.content.length;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
                         that.approver_list = data.auditers;

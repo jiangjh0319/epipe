@@ -13,7 +13,7 @@
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
-                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |details}}</p>
+                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
         <MoreBtn
           v-show="isShow"
           v-on:approveBack="approveBack"
-          v-on:deliverTo="deliverTo"
+          v-on:deliverTo="consent"
           v-on:revocation="revocation"
           v-on:urge="urge"
           v-on:isShow="isShow=!isShow"
@@ -195,21 +195,24 @@
                     }
                     window.location.href = "epipe://?&mark=goWork"
             },
-            deliverTo(){ //转交
-                let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
-                let newCopy = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.documentApplyId,receiverIds:newCopy,careOf:true,typeName:'document',applyType:17,bgcolor:'#609ef7',auditerIds:newApprStr,num:1}})
-            },
             approveBack(){ //退回
                  this.$router.push({path:'/approveBack',query:{id:this.dataObj.documentApplyId,typeName:'document',applyType:17,color:'#609ef7'}})
             },
-            consent:function(){
-              let that = this;
-               let copyStr =  this.appAndCopy(this.newCopy)
-               let apprStr = this.appAndCopy(this.newAppr,'auditUserId')
+            consent:function(type){
 
-            this.$router.push({path:'/opinion',query:{id:this.dataObj.documentApplyId,receiverIds:copyStr,auditerIds:apprStr,color:'#609ef7',typeName:'document',applyType:17,pageType:'consent'}})
-               
+                let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                
+                receiverIds = this.Util.getIds(this.newCopy,'userId')
+                auditerIds = this.Util.getIds(this.newAppr,'userId')
+                receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                 url = type!=2?'/opinion':'/imchoices';
+
+                params={id:this.dataObj.documentApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                color:'#609ef7',applyType:17,typeName:'document',pageType:type,careOf:true,num:1}
+
+                this.$router.push({path:url,query:params})
+
             },
              print(){//打印
                 window.location.href = "epipe://?&mark=print&url="+location.href;
@@ -264,11 +267,6 @@
                             },500)     
                         } 
                     })
-            },
-            go_fildDetails: function (url) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
              accessoryFors:function(datas){
                 if(!datas||datas.url==null) return false
@@ -349,6 +347,11 @@
                         return;
                     }
 
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+                        that.leaveType = '6';
+                        return;
+                    }
+
                     if(that.dataObj.auditStatus == '3'){ //已经撤销
                         that.leaveType = '2'
                         return;
@@ -363,18 +366,6 @@
         filters:{
             timeStrSlice:function(value){
                 return value?value.slice(0,-3):value;
-            },
-            details:function(value){
-    
-                if(value == '1'){
-                    return '已同意'
-                }else if(value =='0'){
-                    return '已拒绝'
-                }else if(value=='2'){
-                    return '已撤销'
-                }else if(value =='5'){
-                    return '已退回'
-                }
             },
             nameFor:function(value){
                 if(!value) return ''

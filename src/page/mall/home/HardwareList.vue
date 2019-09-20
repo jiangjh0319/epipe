@@ -65,8 +65,8 @@
 				filterCondition: false,
 				comprehensiveCondition: false,
 				gcId: 2339028506559488,
-				sortField: 'createTime',
-				sortOrder: 'asc'
+				sortField: 'updateTime',
+				sortOrder: 'desc'
 			}
 		},
 		methods: {

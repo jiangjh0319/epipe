@@ -41,6 +41,16 @@
     margin 0.15rem;
     background-color #fff
   }
+
+  .redact_btn{
+    margin 0 0.15rem;
+    background-color:#fd545c;
+    color:#fff;
+    text-align center
+    line-height 0.4rem;
+    font-size 0.16rem;
+    border-radius 0.05rem;
+  }
 </style>
 <template>
   <section class="padding_bottom_content">
@@ -51,7 +61,7 @@
       v-on:history_back="history_back_click"
      ></TopHead>
     <div style="margin-top: 0.44rem">
-      <TimeTab time_type="week" font_color="#fd545c" v-on:data_time="day_data_time"></TimeTab>
+      <TimeTab time_type="week" :reportTime='reportTime' font_color="#fd545c" v-on:data_time="day_data_time"></TimeTab>
     </div>
     <div>
       <WorkInput
@@ -123,6 +133,10 @@
     >
      </Comment>
 
+    <div v-if="has_journal" class="redact_btn" @click="redact">
+      编 辑
+    </div>
+
     <Dialog
         lfText="保存"
         rgText="不保存"
@@ -192,7 +206,8 @@
                         window.sessionStorage.mark_value = ""
                         window.sessionStorage.next_mark_value = ""
                         window.sessionStorage.work_value = ""
-                        window.location.href = "epipe://?&mark=history_back"
+                        getdetail(that)
+                        // window.location.href = "epipe://?&mark=history_back"
                       }
                     )
                       localStorage.removeItem('weeknews')
@@ -238,11 +253,18 @@
             that.mark_value = data.data.b.remarks.replace(/\n/g, '<br/>')
             that.accessory = that.accessoryFor(data.data.b)
             that.getItem();
-          } else {
+          }else if(data.data.b.isDraft == 0){
             that.journal_detail = data.data.b
             that.chosed_list = data.data.b.receiverData
             that.has_journal = true
             that.accessory = that.accessoryFor(data.data.b)
+            that.oldData.reportTime =''
+
+          }else {
+            that.has_journal = false
+            that.next_work_value = ''
+            that.work_value = data.data.b.workSummary?data.data.b.workSummary.replace(/<br\/>/g,'\n'):''
+            that.getItem();
           }
         }
       }
@@ -277,10 +299,11 @@
         count:0,
         isShow:false,
         accessory:[],
-        oldData:null,
+        oldData:{},
         isCheck:false,
       }
     },
+    inject:['reload'],
     components: {
       TimeTab,
       WorkInput,
@@ -293,13 +316,19 @@
       AccessoryList
     },
     created(){
+      if(this.$route.query.reportTime){
+          this.reportTime = this.$route.query.reportTime
+          // console.log(this.$route.query.reportTime)
+        }else{
+          this.reportTime = new Date()
+        }
     },
 
     methods: {
       day_data_time: function (data, text) { //子组 件接收时间数据
         let that = this;
-        this.reportTime = data
-        this.reportTimeStr = text
+          this.reportTime = data
+          this.reportTimeStr = text
         getdetail(that)
       },
       accessoryFor:function(datas){
@@ -349,15 +378,14 @@
                     if(data[key]!=this.oldData[key]){
                             return true;
                     }
-
-
                 }
             }
-
             return false
         },
        history_back_click(){
-           if(!this.isCheck||!this.isUpdate()){
+
+
+            if(this.oldData.reportTime!=this.reportTime||!this.isCheck||!this.Util.isUpdate(this.$data,this.oldData)){
                  window.location.href = "epipe://?&mark=history_back"
             }else{
                 this.isShow = true;
@@ -431,6 +459,17 @@
           }
         }
       },
+      redact(){//重新编辑
+        this.has_journal = false;
+        this.work_value = this.journal_detail.workSummary
+        this.next_work_value = this.journal_detail.nextPlan
+        this.mark_value = this.journal_detail.remarks
+        this.journal_detail.workSummary = this.journal_detail.workSummary.replace(/<br\/>/g,'\n') 
+        this.journal_detail.nextPlan = this.journal_detail.nextPlan.replace(/<br\/>/g,'\n') 
+        this.journal_detail.remarks = this.journal_detail.remarks.replace(/<br\/>/g,'\n')  
+        this.change_man(this.chosed_list)
+
+      },
       go_imgdetail: function (index) {
         let obj = {index_num: index, data: this.URL, type: this.has_journal ? "0" : "1"}
         window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
@@ -466,7 +505,7 @@
     mounted(){
       let that = this;
      
-      getdetail(that)
+      // getdetail(that)
       window["epipe_removephoto_callback"] = index => { //原生的调用删除图片的方法
         that.URL.splice(parseInt(index), 1)
         if (window.sessionStorage.work_value) {

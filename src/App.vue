@@ -12,14 +12,27 @@
     name: 'app',
     data () {
       return {
-        keepAlive: false
+        keepAlive: true
       }
+    },
+    provide(){
+        return {
+           reload:this.reload,
+        }
     },
     components: {
       
     },
     mounted(){
 
+    },
+    methods:{
+        reload(){
+          this.keepAlive = false;
+          this.$nextTick(function(){
+            this.keepAlive = true;
+          })
+        }
     }
   }
 </script>

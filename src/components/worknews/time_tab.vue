@@ -101,7 +101,7 @@
       }
     },
     props: [
-      'time_type', "font_color"
+      'time_type', "font_color",'reportTime'
     ],
     methods: {
       goleft(){ //向左点击
@@ -119,6 +119,7 @@
             that.$emit('data_time', Util.getNewTime(that.day_top_time_all), that.day_top_time);
           }
         } else if (this.time_type == "week") {
+          console.log(Util.GetPreMonth(Util.getNewTime(new Date())))
           let one_month_time = new Date(Util.GetPreMonth(Util.getNewTime(new Date()))).getTime()
           let mydate = that.day_top_time_all
           let one_month_time_two = new Date(new Date(mydate.getTime() - 24 * 60 * 60 * 1000 * 7))
@@ -127,7 +128,6 @@
           } else {
             that.day_top_time_all = new Date(mydate.getTime() - 24 * 60 * 60 * 1000 * 7)
             console.log(WeekFormat(that.day_top_time_all, "reduce", this.time_type))
-            console.log("123123")
             let start_time_forparam = Util.getNewTime(WeekFormat(that.day_top_time_all, "reduce", this.time_type))
             console.log(start_time_forparam)
             this.start_time = Util.getNewTime(WeekFormat(that.day_top_time_all, "reduce", this.time_type), "月日")
@@ -199,10 +199,15 @@
         that.day_top_time_all = new Date()
         that.$emit('data_time', Util.getNewTime(that.day_top_time_all), that.day_top_time);
       } else if (this.time_type == "week") {
-        let start_time_forparam = Util.getNewTime(WeekFormat(new Date(), "reduce", this.time_type))
-        this.start_time = Util.getNewTime(WeekFormat(new Date(), "reduce", this.time_type), "月日")
-        this.end_time = Util.getNewTime(WeekFormat(new Date(), "add", this.time_type), "月日")
-        that.day_top_time_all = new Date()
+        console.log('============================')
+        console.log(this.reportTime)
+        let start_time_forparam = Util.getNewTime(WeekFormat(new Date(this.reportTime), "reduce", this.time_type))
+        console.log(Util.getNewTime(WeekFormat(new Date(), "reduce", this.time_type)))
+        console.log(Util.getNewTime(WeekFormat(new Date(this.reportTime), "reduce", this.time_type)))
+        console.log('============================')
+        this.start_time = Util.getNewTime(WeekFormat(new Date(this.reportTime), "reduce", this.time_type), "月日")
+        this.end_time = Util.getNewTime(WeekFormat(new Date(this.reportTime), "add", this.time_type), "月日")
+        that.day_top_time_all = new Date(this.reportTime)
         this.end_time = Util.getNewTime(WeekFormat(that.day_top_time_all, "add", this.time_type), "月日")
         that.$emit('data_time', start_time_forparam, this.start_time + " — " + this.end_time);
       } else if (this.time_type == "month") {

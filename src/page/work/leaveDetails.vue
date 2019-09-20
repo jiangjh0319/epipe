@@ -12,7 +12,7 @@
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
-                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" >{{leaveType |details}}</p>
+                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" >{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditName+'的审批'}}</p>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
         <MoreBtn
           v-show="isShow"
           v-on:approveBack="approveBack"
-          v-on:deliverTo="deliverTo"
+          v-on:deliverTo="consent"
           v-on:revocation="revocation"
           v-on:urge="urge"
           v-on:isShow="isShow=!isShow"
@@ -202,11 +202,19 @@
                 this.newAppr.splice(index, 1);
                 this.approver_man(this.newAppr)
             },
-            consent(){ //同意
-                let that = this;
-                let copyStr =  this.appAndCopy(this.newCopy);
-                let apprStr = this.appAndCopy(this.newAppr,'auditUserId');
-                this.$router.push({path:'/opinion',query:{id:this.dataObj.leaveId,receiverIds:copyStr,auditerIds:apprStr,color:'#fd545c',applyType:0,typeName:'leave',pageType:'consent'}})
+            consent(type){ //同意
+                 let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                 
+                 receiverIds = this.Util.getIds(this.newCopy,'userId')
+                 auditerIds = this.Util.getIds(this.newAppr,'userId')
+                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                 auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                 url = type!=2?'/opinion':'/imchoices';
+
+                 params={id:this.dataObj.leaveId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                 color:'#fd545c',applyType:0,typeName:'leave',pageType:type,careOf:true,num:1}
+
+                this.$router.push({path:url,query:params})
             },
             resubmit(){
                  this.$router.replace({path:'/leave',query:{leaveId:this.dataObj.leaveId,resubmit:1}})
@@ -252,11 +260,6 @@
             },
             go_user(id){
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
-            },
-            go_fildDetails: function (url) { //附件
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
              history_back_click(){
                   if(location.href.indexOf('goWork=0')>0){
@@ -332,6 +335,10 @@
                         that.leaveType = '1';
                         return;
                     }
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+                        that.leaveType = '6';
+                        return;
+                    }
 
                 }else{
                     that.$toast(res.data.h.msg)
@@ -348,23 +355,8 @@
                     if(!value) return;
                   return  value.indexOf('.5')>-1?Number(value).toFixed(1):parseInt(value)
             },
-            stateName: function(value){
-                    return value=='0'?'审批中':value=='1'?'已同意':value=='2'?'已拒绝':'';
-            },
             timeStrSlice:function(value){
                 return value?value.slice(0,-3):value;
-            },
-            details:function(value){
-    
-                if(value == '1'){
-                    return '已同意'
-                }else if(value =='0'){
-                    return '已拒绝'
-                }else if(value=='2'){
-                    return '已撤销'
-                }else if(value =='5'){
-                    return '已退回'
-                }
             },
         },
         computed: mapState(["chosed_man_state","approver_man_state"])

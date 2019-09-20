@@ -124,10 +124,12 @@ let save_leave = (index,text,that) =>{
         that.$toast('请输入正确的请假天数')
     }else{
 
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds=""
 
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         let fileObj = {},params={}
         fileObj = that.Util.fileFo(that.accessory)
@@ -138,9 +140,11 @@ let save_leave = (index,text,that) =>{
           beginTime: that.beginTime, //开始时间
           endTime : that.endTime, //结束时间
           leaveDuration : that.leaveDay, //请假天数
-          auditUserIds: approver_id, //审批人
-          receiverIds: chosed_id, //抄送人
-          reason : encodeURI(that.reasonText), //请假事由
+          auditUserIds, //审批人
+          receiverIds, //抄送人
+          auditCompanyIds,
+          receiverCompanyIds,
+          reason : encodeURI(that.reasonText.replace(/\n/g, '<br/>')), //请假事由
           url : fileObj.urlStr, //附件
           fileName :fileObj.fileNameStr, //文件名称 
           fileSize :fileObj.fileSizeStr, //文件大小
@@ -423,7 +427,7 @@ export default {
                      that.leaveDay = datas.leaveDuration.slice(0,-1)
                      that.leaveName = datas.leaveType;
                      that.leaveIndex = datas.leaveTypecode;
-                     that.reasonText = datas.reason;
+                     that.reasonText = datas.reason.replace(/<br\/>/g,'\n');
                      that.chosed_list = datas.receivers;
                      that.textNum = that.reasonText.length;
                      that.change_man(that.chosed_list);

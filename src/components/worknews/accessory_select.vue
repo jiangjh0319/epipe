@@ -4,9 +4,9 @@
         <div style="padding-bottom:0.15rem">
             <ul class="accessory">
                 <li  v-for="(item,index) in accessory" :key="index">
-                    <img @click="go_fildDetails(item.url,item.fileName)" v-if="item.isImg"  :src="item.url"/>
-                    <img @click="go_fildDetails(item.url,item.fileName)" v-if="!item.isImg" src="../../assets/wenjian.png"/>
-                    <div @click="go_fildDetails(item.url,item.fileName)"  class="accessory-cont">
+                    <img @click="go_fildDetails(item)" v-if="item.isImg"  :src="item.url"/>
+                    <img @click="go_fildDetails(item)" v-if="!item.isImg" src="../../assets/wenjian.png"/>
+                    <div @click="go_fildDetails(item)"  class="accessory-cont">
                         <p >{{item.fileName}}</p>
                         <span>{{item.fileSize | fileSizes}}</span>
                     </div>
@@ -53,9 +53,9 @@
             //  颜色  选中的联系人数据  
             ],
         methods:{
-            go_fildDetails: function (url,name) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0,name}
+            go_fildDetails: function (item) { //查看图片详情
+                let obj = {index_num: 0, data:[item.url],type:0,name:item.fileName,size:item.fileSize}
+
                 window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
             deleteFile:function(index){  //删除附件

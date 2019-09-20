@@ -3,9 +3,9 @@
     <div class="styles infor" v-if="accessory.length">
         <ul class="accessory">
             <li  v-for="(item,index) in accessory" :key="index">
-                <img @click="go_fildDetails(item.url,item.fileName)" v-if="item.isImg"  :src="item.url"/>
-                <img @click="go_fildDetails(item.url,item.fileName)" v-if="!item.isImg" src="../../assets/wenjian.png"/> 
-                <div @click="go_fildDetails(item.url,item.fileName)"  class="accessory-cont">
+                <img @click="go_fildDetails(item)" v-if="item.isImg"  :src="item.url"/>
+                <img @click="go_fildDetails(item)" v-if="!item.isImg" src="../../assets/wenjian.png"/> 
+                <div @click="go_fildDetails(item)"  class="accessory-cont">
                     <p style="text-align:left">{{item.fileName}}</p>
                     <span>{{item.fileSize | fileSize}}</span>
                 </div>
@@ -25,18 +25,17 @@
         filters:{
             fileSize:function(value){
               value = value-0
-            if(value<5500){
-                value = value/1024
-                return value.toFixed(2)+'KB';
+                if(value<5500){
+                    value = value/1024
+                    return value.toFixed(2)+'KB';
+                }
+                value = value/1024/1024
+                return value.toFixed(2)+'MB';
             }
-            value = value/1024/1024
-            return value.toFixed(2)+'MB';
-          }
         },
         methods:{
-           go_fildDetails: function (url,name) { //附件
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0,name}
+           go_fildDetails: function (item) { //附件
+                let obj = {index_num: 0, data:[item.url],type:0,name:item.fileName,size:item.fileSize}
                 window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
         }

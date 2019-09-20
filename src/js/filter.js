@@ -25,6 +25,20 @@ Vue.filter("home_time_format", function (value) {  //首页头条那边时间戳
   return new Date(value).getFullYear() + '-' + (new Date(value).getMonth() + 1) + '-' + new Date(value).getDate()
 });
 
+Vue.filter("oa_details_status", function (value) { 
+    if(value == '1'){
+        return '已同意'
+    }else if(value =='0'){
+        return '已拒绝'
+    }else if(value=='2'){
+        return '已撤销'
+    }else if(value =='5'){
+        return '已退回'
+    }else if(value == '6'){
+        return '已评论'
+    }
+});
+
 Vue.filter("escape2Html", function (str) {  //解码html标签
   if(str) return;
   var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"','ldquo':'"','rdquo':'"','mdash':'_'};
@@ -36,6 +50,6 @@ Vue.filter("timeSlice", function (value) {  //时间截取后三位 （秒）
   return value.slice(0,-3)
 });
 
-Vue.filter("timeSlice9", function (value) {  //时间截取后三位 （秒）
+Vue.filter("timeSlice9", function (value) {  //时间截取后9位 （秒）
   return value.slice(0,-9)
 });

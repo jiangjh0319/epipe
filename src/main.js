@@ -60,6 +60,8 @@ FastClick.attach(document.body)
 
 window.eventBus = new Vue();
 /* eslint-disable no-new */
+
+
 new Vue({
   el: "#app",
   router,
@@ -67,3 +69,4 @@ new Vue({
   template: "<App/>",
   components: {App}
 });
+

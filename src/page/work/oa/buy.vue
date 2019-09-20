@@ -179,15 +179,16 @@ let save_leave = (index,text,that) =>{
             }
         }
 
-         let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
+         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        let fileObj = {}
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
+
         fileObj = that.Util.fileFo(that.accessory)
-        
 
-        let params = {
+        params = {
             Id : that.id, // id
             urls : fileObj.urlStr, //附件
             userBuyApplyTheme:that.userBuyApplyTheme, //
@@ -197,8 +198,10 @@ let save_leave = (index,text,that) =>{
             userBuyApplyRemarks:that.userBuyApplyRemarks,
             fileNames : fileObj.fileNameStr, //文件名称s
             fileSizes : fileObj.fileSizeStr, //文件大小
-            auditUserIds : approver_id, //审批人
-            receiverIds : chosed_id, //抄送人
+            auditUserIds, //审批人
+            receiverIds, //抄送人
+            auditCompanyIds,
+            receiverCompanyIds,
             draftFlag : index, //草稿还是发送
         }
 
@@ -318,91 +321,6 @@ export default {
             localStorage.removeItem('buy')
             window.location.href = "epipe://?&mark=history_back"
         },
-        isUpdate(){
-            let data = this.$data;
-            let oldData = this.oldData
-            for(let key in data){
-                // if(key!='oldData')
-                if(key=='oldData') continue;
-
-                if(Object.prototype.toString.call(data[key]).indexOf('Array')>-1){
-                    let arr = data[key]
-                    let arrs = oldData[key]
-                    if(arr.length!=arrs.length) return true
-
-                    for(let i=0;i<arr.length;i++){
-                            if(Object.prototype.toString.call(arr[i]).indexOf('Array')>-1){
-                                for(let j = 0;j<arr[i].length;j++){
-                                    if(arr[i][j]!=arrs[i][j]) return true
-                                }
-                            }else if(Object.prototype.toString.call(arr[i]).indexOf('Object')>-1){
-                                for(let name in arr[i]){
-                                    if(arr[i][name]!=arrs[i][name]) return true   
-                                }
-                            }else{
-                                if(arr[i]!=arrs[i]) return true
-                            }
-                    }
-
-                }else if(Object.prototype.toString.call(data[key]).indexOf('Object')>-1){
-                    let obj = data[key]
-                    let objs = oldData[key]
-                    for(let name in obj){
-                        if(Object.prototype.toString.call(obj[name]).indexOf('Array')>-1){
-                            for(let j = 0;j<obj[name].length;j++){
-                                if(obj[name][j]!=objs[name][j]) return true
-                            }
-                        }else if(Object.prototype.toString.call(obj[name]).indexOf('Object')>-1){
-                            let o = obj[name]
-                            let b = objs[name]
-                            for(let k in o){
-                                if(o[k]!=b[k]) return true   
-                            }
-                        }else{
-                            if(obj[name]!=objs[name]) return true   
-                        }
-                    }
-                }else{
-                    if(data[key]!=oldData[key]) return true
-                }
-
-            //    if(key=='approver_list'||key=='chosed_list'||key=='accessory'||key=='datas'){
-            //         if(data[key].length!=this.oldData[key].length){
-            //             return true
-            //         }
-            //         for(let i=0;i<data[key].length;i++){
-            //             if((key=='approver_list'||key=='chosed_list')&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-            //                 return true
-            //             }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-            //                 return true
-            //             }else if(key=='datas'){
-            //                 for(let j=0;j<data['datas'].length;j++){
-            //                     let obj = data['datas'][j]
-            //                     let objs = this.oldData['datas'][j]
-            //                     for(let name in obj){
-            //                         if(obj[name]!=objs[name]){
-            //                             return true;
-            //                         }
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }else if(key=='buy'){
-            //         let obj = data['buy']
-            //         for(let key in obj){
-            //             if(obj[key]!=obj[key]){
-            //                 return true
-            //             }
-            //         }
-            //     }else if(key!='oldData'){
-                  
-            //         if(data[key]!=this.oldData[key]){
-            //                 return true;
-            //         }
-            //     }
-            }
-            return false
-        },
         addAccessory:function(){
             let that = this;
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
@@ -419,12 +337,6 @@ export default {
         deleteFile:function(index){  //删除附件
             this.accessory.splice(index,1)
         },
-        go_fildDetails: function (url) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
-        },
-        
         remove_item: function (itme, index,typess) {   //删除
             if(typess){
                 this.approver_list.splice(index, 1);
@@ -498,7 +410,7 @@ export default {
         },
         history_back_click:function(){
                 // window.location.href = "epipe://?&mark=history_back&url=myApply"
-                if(!this.isUpdate()){
+                if(!this.Util.isUpdate(this.$data,this.oldData)){
                      window.location.href = "epipe://?&mark=history_back"
                 }else{
                     this.isShow = true;

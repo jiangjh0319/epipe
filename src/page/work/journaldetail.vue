@@ -92,6 +92,16 @@
     background-color #fff
   }
 
+  .redact_btn{
+    margin 0 0.15rem;
+    background-color:#fd545c;
+    color:#fff;
+    text-align center
+    line-height 0.4rem;
+    font-size 0.16rem;
+    border-radius 0.05rem;
+  }
+
 </style>
 <template>
   <section class="padding_bottom_content">
@@ -166,6 +176,11 @@
         >
 
         </Comment>
+
+        <!-- <div  class="redact_btn" >
+        编 辑
+      </div> -->
+
       </div>
     </div>
   </section>
@@ -241,7 +256,6 @@
       let that = this;
       let _id = this.$route.query.id
       this.axios.get(this.Service.reportDetail, {params: {id: _id}}).then(function (data) {
-        console.log(data)
         if (data.data.h.code = 200) {
           that.detail = data.data.b
           that.chosed_list = data.data.b.receiverData

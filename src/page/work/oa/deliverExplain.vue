@@ -17,8 +17,8 @@
                     <ul class="accessory">
                         <li  v-for="(item,index) in accessory" :key="index">
                             <img @click=" (item.url)" v-if="item.isImg"  :src="item.url"/>
-                            <img @click="go_fildDetails(item.url)" v-if="!item.isImg" src="../../../assets/wenjian.png"/>
-                            <div @click="go_fildDetails(item.url)"  class="accessory-cont">
+                            <img @click="go_fildDetails(item)" v-if="!item.isImg" src="../../../assets/wenjian.png"/>
+                            <div @click="go_fildDetails(item)"  class="accessory-cont">
                                 <p >{{item.fileName}}</p>
                                 <span>{{item.fileSize | fileSize}}</span>
                             </div>
@@ -81,17 +81,22 @@ export default {
                     fileSizeStr = fileSizeStr.slice(1)
                     fileNameStr = fileNameStr.slice(1)
 
-                 this.axios.post('/work/audit'+that.Service.queryString({
-                    applyId:this.id,
-                    type:4,
-                    applyType:this.$route.query.applyType,
-                    url:urlStr,
-                    fileSize:fileSizeStr,
-                    fileName:fileNameStr,
-                    reason:encodeURI(this.textVal),
-                    auditerIds:this.$route.query.userId+'|'+this.$route.query.auditerIds,
-                    receiverIds:this.$route.query.receiverIds
-                })).then(function(res){
+                    let param = {
+                        applyId:this.id,
+                        type:4,
+                        applyType:this.$route.query.applyType,
+                        url:urlStr,
+                        fileSize:fileSizeStr,
+                        fileName:fileNameStr,
+                        reason:encodeURI(this.textVal),
+                        auditerIds:this.$route.query.userId+'|'+this.$route.query.auditerIds,
+                        receiverIds:this.$route.query.receiverIds,
+                        auditCompanyIds :this.$route.query.auditCompanyId,
+                        receiverCompanyIds: this.$route.query.receiverCompanyId,
+                    }
+                    param.auditerIds=param.auditerIds[param.auditerIds.length-1]=='|'?param.auditerIds.slice(0,-1):param.auditerIds
+                    param.auditCompanyIds=param.auditCompanyIds[param.auditCompanyIds.length-1]=='|'?param.auditCompanyIds.slice(0,-1):param.auditCompanyIds
+                 this.axios.post('/work/audit'+that.Service.queryString(param)).then(function(res){
                     if(res.data.h.code==200){
                         that.$toast('转交成功!')
                         setTimeout(()=>{
@@ -118,9 +123,9 @@ export default {
             deleteFile:function(index){  //删除附件
                  this.accessory.splice(index,1)
             },
-            go_fildDetails: function (url) { //查看图片详情
+            go_fildDetails: function (item) { //查看图片详情
                     let that = this;
-                    let obj = {index_num: 0, data:[url],type:0}
+                    let obj = {index_num: 0, data:[item.url],type:0,size:item.fileSize}
                     window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
             addAccessory:function(){

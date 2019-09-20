@@ -146,48 +146,13 @@ let save_leave = (index,text,that) =>{
     else if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
     }else{
-        // let chosed_id = ''; //抄送人
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id = chosed_id + "|" + that.chosed_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.chosed_list.length; i++) {
-        //         chosed_id = chosed_id + "|" + that.chosed_list[i].receiverId
-        //     }
-        // }
-        // chosed_id = chosed_id.slice(1)
 
-        // let approver_id = '' //审批人
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        // if(!that.isDraftFlag){
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id = approver_id + "|" + that.approver_list[i].userId
-        //     }
-        // }else{
-        //     for (let i = 0; i < that.approver_list.length; i++) {
-        //         approver_id = approver_id + "|" + that.approver_list[i].auditUserId
-        //     }
-        // }
-        // approver_id = approver_id.slice(1)
-
-        // let urlStr = '',fileSizeStr = '',fileNameStr = '';//附件
-
-        // for(let i=0;i<that.accessory.length;i++){
-
-        //     urlStr+='|'+that.accessory[i].url;
-        //     fileSizeStr+='|'+that.accessory[i].fileSize;
-        //     fileNameStr+='|'+that.accessory[i].fileName;  
-        // }
-        // urlStr = urlStr.slice(1)
-        // fileSizeStr = fileSizeStr.slice(1)
-        // fileNameStr = fileNameStr.slice(1)
-
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
-
-        let fileObj = {},params={}
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
         let peerNames='',peerUserIds='';
@@ -197,7 +162,7 @@ let save_leave = (index,text,that) =>{
             peerUserIds+=that.peerArr[j].userId+'|'
         }
 
-        let contDesc = that.contractDesc.replace(/\n|\r\n/g,"<br>")
+        let contDesc = that.contractDesc.replace(/\n/g, '<br/>')
         peerNames = peerNames.slice(0,-1)
         peerUserIds = peerUserIds.slice(0,-1)
 
@@ -214,13 +179,15 @@ let save_leave = (index,text,that) =>{
                     fileSize : fileObj.fileSizeStr, //文件大小
                     beginTime : that.beginTime, //开始时间
                     endTime : that.endTime, //结束时间
-                    outSideReason:that.outSideReason,
+                    outSideReason:that.outSideReason.replace(/\n/g, '<br/>'),
                     applyContent : contDesc, //附加内容
                     outsideAddress: that.address, //公出地点
                     lon : that.lon, //经度
                     lat : that.lat, //纬度
-                    auditUserIds : approver_id, //审批人
-                    receiverIds : chosed_id, //抄送人
+                    auditUserIds, //审批人
+                    receiverIds, //抄送人
+                    auditCompanyIds,
+                    receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
                     peerNames: peerNames, //同行人员名称
                     peerUserIds: peerUserIds, //同行人员Id
@@ -306,31 +273,8 @@ export default {
         save_btn(){ //保存草稿
            save_leave(1, "存入草稿成功", this)
         },
-        isUpdate(){
-            let data = this.$data;
-            for(let key in data){
-               if(key=='approver_list'||key=='chosed_list'||key=='accessory'||key=='peerArr'){
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-
-                        if(key!='accessory'&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }
-                    }
-                }else if(key!='oldData'&&key!='approver_list'&&key!='chosed_list'&&key!='accessory'&&key!='peerArr'){
-                    if(data[key]!=this.oldData[key]){
-                            return true;
-                    }
-                }
-            }
-            return false
-        },
         history_back_click(){
-            if(!this.isUpdate()){
+            if(!this.Util.isUpdate(this.$data,this.oldData)){
                 window.location.href = "epipe://?&mark=history_back"
             }else{
                 this.isShow = true;
@@ -569,7 +513,7 @@ export default {
                         }
                        that.isDraftFlag = 1;
                         that.accessoryFor(data)
-                        that.outSideReason = data.outsideReason;
+                        that.outSideReason = data.outsideReason.replace(/\n/g, '<br/>');
                         that.lon = data.lon;
                         that.lat = data.lat;
                         that.beginTime = data.beginTime;
@@ -578,8 +522,8 @@ export default {
                         that.address = data.outsideAddress;
                         that.outsideType  = data.outsideType;
                         that.outsideIndex  = data.outsideValue
-                        that.contractDesc = data.applyContent
-                        that.textNum = data.applyContent.length
+                        that.contractDesc = data.applyContent.replace(/\n/g, '<br/>')
+                        that.textNum = that.contractDesc.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
                         that.approver_list = data.auditers;

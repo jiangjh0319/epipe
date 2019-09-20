@@ -7,8 +7,8 @@
                 </div>
                 <div class="items bor_bottom" @click="getSite()" >
                     出差地点
-                    <p style="text-align:right">
-                        <span class="nullValue omit">{{datas[index].destination}}</span>
+                    <p >
+                        <span class="nullValue">{{datas[index].destination}}</span>
                         <svg class="icon icon-back" aria-hidden="false">
                             <use xlink:href="#icon-right"></use>
                         </svg>
@@ -188,7 +188,6 @@
 
              input{
                  box-sizing border-box
-                 float right;
                  width 2.1rem;
                  height 0.44rem;
                  border none;
@@ -245,7 +244,8 @@
         //      box-shadow 0 0 0.2rem rgba(238,65,54,.1);
     }
     .input_group>div{
-            overflow hidden;
+            display:flex;
+            justify-content:space-between; 
             padding 0 0.15rem;
         }
 
@@ -256,12 +256,10 @@
         padding-bottom:0.08rem;
 
         span:first-child{
-            float:left;
             color:#609df6;
         }
 
         span:last-child{
-            float:right;
         }
     }
 
@@ -298,6 +296,5 @@
         text-overflow:ellipsis;
         white-space: nowrap;
         text-align:right;
-        float:left;
     }
 </style>

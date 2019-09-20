@@ -27,6 +27,9 @@ const BuyDetails = r => require.ensure([], () => r(require('@/page/work/oa/buyDe
 
 const Material = r => require.ensure([], () => r(require('@/page/work/oa/material.vue')), 'group-foo')
 const MaterialDetails = r => require.ensure([], () => r(require('@/page/work/oa/materialDetails.vue')), 'group-foo')
+const MoreEmployee = r => require.ensure([], () => r(require('@/page/work/oa/more_employee.vue')), 'group-foo')
+const Menu = r => require.ensure([], () => r(require('@/page/work/oa/menu.vue')), 'group-foo')
+
 
 // const Position = r => require.ensure([], () => r(require('@/page/work/oa/position.vue')), 'group-foo')
 // const PositionDetails = r => require.ensure([], () => r(require('@/page/work/oa/positionDetails.vue')), 'group-foo')
@@ -134,5 +137,13 @@ export default [
         path:'/materialDetails', //采购详情
         component:MaterialDetails,
 		meta: {keepAlive: true}
+    },
+    {
+        path:'/more_employee', //更多应聘条件
+        component:MoreEmployee,
+    },
+    {
+        path:'/menu', //菜单
+        component:Menu,
     },
 ]

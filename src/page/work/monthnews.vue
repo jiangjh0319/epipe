@@ -41,6 +41,15 @@
     margin 0.15rem;
     background-color #fff
   }
+  .redact_btn{
+    margin 0 0.15rem;
+    background-color:#0fc37c;
+    color:#fff;
+    text-align center
+    line-height 0.4rem;
+    font-size 0.16rem;
+    border-radius 0.05rem;
+  }
 </style>
 <template>
   <section class="padding_bottom_content">
@@ -119,6 +128,10 @@
       :data='journal_detail'
     >
      </Comment>
+
+     <div v-if="has_journal" class="redact_btn" @click="redact">
+      编 辑
+    </div>
 
 
     <Dialog
@@ -236,11 +249,21 @@
             that.mark_value = data.data.b.remarks.replace(/\n/g, '<br/>')
             that.accessory = that.accessoryFor(data.data.b)
             that.getItem();
-          } else {
+          }
+          else if(data.data.b.isDraft == 0){
             that.journal_detail = data.data.b
             that.chosed_list = data.data.b.receiverData
             that.has_journal = true
             that.accessory = that.accessoryFor(data.data.b)
+            that.oldData.reportTime =''
+
+          }else {
+            that.has_journal = false
+            that.work_value = data.data.b.workSummary?data.data.b.workSummary.replace(/<br\/>/g,'\n'):''
+            // that.work_value = data.data.b.workSummary.replace(/<br\/>/g,'\n')  
+            that.next_work_value = ''
+            that.getItem();
+
           }
         }
       }
@@ -273,7 +296,7 @@
         journal_detail: {},
         isShow:false,
         accessory:[],
-        oldData:null,
+        oldData:{},
         isCheck:false,
       }
     },
@@ -333,44 +356,21 @@
                 }
                 return arrs
             },
-      isUpdate(){
-            let data = this.$data;
-            if(!this.oldData) return false;
-            if(this.oldData['reportTime']!=this.reportTime) return false;
-
-            for(let key in data){
-               if(key=='chosed_list_two'||key=='chosed_list'||key=='URL'){
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-
-                        if(key!='accessory'&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }
-                    }
-
-                }else if(key=='journal_detail'){
-                    let obj = data[key]
-                    for(let keys in obj ){
-                        if(obj[keys]!=this.oldData[key][keys]){
-                          return true
-                        }
-                    }
-                }else if(key!='oldData'&&key!='accessory'){
-                    if(data[key]!=this.oldData[key]){
-                            console.log(data[key],this.oldData[key],key)
-                            return true;
-                    }
-                }
-            }
-            return false
+      
+        redact(){
+           this.has_journal = false;
+          this.work_value = this.journal_detail.workSummary
+          this.next_work_value = this.journal_detail.nextPlan
+          this.mark_value = this.journal_detail.remarks
+          this.journal_detail.workSummary = this.journal_detail.workSummary.replace(/<br\/>/g,'\n') 
+          this.journal_detail.nextPlan = this.journal_detail.nextPlan.replace(/<br\/>/g,'\n') 
+          this.journal_detail.remarks = this.journal_detail.remarks.replace(/<br\/>/g,'\n')  
+          this.change_man(this.chosed_list)
         },
       history_back_click(){
-        console.log(this.isCheck,this.isUpdate())
-            if(!this.isCheck||!this.isUpdate()){
+
+            if(this.oldData.reportTime!=this.reportTime||!this.isCheck||!this.Util.isUpdate(this.$data,this.oldData)){
+            // if(!this.isCheck||!this.isUpdate()){
                  window.location.href = "epipe://?&mark=history_back"
             }else{
                 this.isShow = true;
@@ -419,10 +419,6 @@
             }
           }
         }
-      },
-      go_imgdetail: function (index) {
-        let obj = {index_num: index, data: this.URL, type: this.has_journal ? "0" : "1"}
-        window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
       },
       left_click_button: function () {
         let that = this;

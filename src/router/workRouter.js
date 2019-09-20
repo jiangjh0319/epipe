@@ -10,6 +10,7 @@ const Plan = r => require.ensure([], () => r(require('@/page/work/schedule/plan.
 const MeetingDetails = r => require.ensure([], () => r(require('@/page/work/schedule/meetingDetails.vue')), 'group-foo')
 const MemoDetails = r => require.ensure([], () => r(require('@/page/work/schedule/memoDetails.vue')), 'group-foo')
 const PlanDetails = r => require.ensure([], () => r(require('@/page/work/schedule/planDetails.vue')), 'group-foo')
+const ApprovalRecords = r => require.ensure([], () => r(require('@/page/work/approvalRecords.vue')), 'group-foo')
 
 
 
@@ -39,6 +40,12 @@ export default [
     {
         path:'/planDetails', //日程详情
         component:PlanDetails,
+    },
+    {
+        path:'/approvalRecords', //审批记录
+        component:ApprovalRecords,
+        meta: {keepAlive: true}
+
     },
     
     

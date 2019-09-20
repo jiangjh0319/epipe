@@ -13,7 +13,7 @@
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
-                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |details}}</p>
+                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
                 </div>
@@ -53,22 +53,26 @@
                     <p>{{dataObj.arrivalDate.slice(0,-8)}}</p>
                 </div>
                 <div class="infor-box">
+                    <span>是否新增 </span>
+                    <p>{{dataObj.isNew}}</p>
+                </div>
+                <div class="infor-box">
                     <span>申请理由 </span>
-                    <p>{{dataObj.employeeReason}}</p>
+                    <p v-html="dataObj.employeeReason"></p>
                 </div>
             </div>
             <p class="content-title">应聘条件</p>
 
             <div class="styles infor">
-                <div class="infor-box">
+                <div class="infor-box" v-if="dataObj.sex">
                     <span>性&emsp;&emsp;别 </span>
                     <p>{{dataObj.sex}}</p>
                 </div>
-                 <div class="infor-box">
+                 <div class="infor-box" v-if="dataObj.marriage">
                     <span>婚&emsp;&emsp;姻 </span>
                     <p>{{dataObj.marriage}}</p>
                 </div>
-                 <div class="infor-box">
+                 <div class="infor-box" v-if="dataObj.age">
                     <span>年&emsp;&emsp;龄 </span>
                     <p>{{dataObj.age}}</p>
                 </div>
@@ -76,45 +80,33 @@
                     <span>学&emsp;&emsp;历 </span>
                     <p>{{dataObj.education}}</p>
                 </div>
-                <div class="infor-box">
+                <div class="infor-box" v-if="major">
                     <span>专&emsp;&emsp;业 </span>
                     <p>{{dataObj.major}}</p>
                 </div>
-                <div v-if="dataObj.qualifications" class="infor-box">
+                <div v-if="dataObj.qualifications"  class="infor-box">
                     <span>资格证书 </span>
                     <p>{{dataObj.qualifications}}</p>
                 </div>
-                <div v-if="dataObj.computerLevel" class="infor-box" >
+                <div v-if="dataObj.computerLevel"  class="infor-box" >
                     <span style="letter-spacing:0.05rem">计算机 </span>
                     <p>{{dataObj.computerLevel}}</p>
                 </div>
-                <div v-if="dataObj.foreignLevel" class="infor-box">
+                <div v-if="dataObj.foreignLevel"  class="infor-box">
                     <span>外语水平 </span>
                     <p>{{dataObj.foreignLevel}}</p>
                 </div>
-                <div class="infor-box">
-                    <span>经验技能 </span>
-                    <p>{{dataObj.skill}}</p>
-                </div>
-                <div v-if="dataObj.writings" class="infor-box">
+                <div v-if="dataObj.writings"  class="infor-box">
                     <span>公文写作 </span>
                     <p>{{dataObj.writings}}</p>
-                </div>
-                <div class="infor-box">
-                    <span>必要条件 </span>
-                    <p>{{dataObj.condition}}</p>
                 </div>
                 <div v-if="dataObj.priority" class="infor-box">
                     <span>优先录用 </span>
                     <p>{{dataObj.priority}}</p>
                 </div>
-                <div v-if="dataObj.other" class="infor-box">
-                    <span>其他要求 </span>
-                    <p>{{dataObj.other}}</p>
-                </div>
-                <div class="infor-box">
+                <div class="infor-box" v-if="dataObj.responsibility">
                     <span>工作职责 </span>
-                    <p>{{dataObj.responsibility}}</p>
+                    <p v-html="dataObj.responsibility"></p>
                 </div>
 
             </div>
@@ -174,7 +166,7 @@
         <MoreBtn
           v-show="isShow"
           v-on:approveBack="approveBack"
-          v-on:deliverTo="deliverTo"
+          v-on:deliverTo="consent"
           v-on:revocation="revocation"
           v-on:urge="urge"
           v-on:isShow="isShow=!isShow"
@@ -256,21 +248,23 @@
                     }
                     window.location.href = "epipe://?&mark=goWork"
             },
-            deliverTo(){ //转交
-                let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
-                let newCopy = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.employeeApplyId,receiverIds:newCopy,careOf:true,typeName:'employee',applyType:13,bgcolor:'#609df6',auditerIds:newApprStr,num:1}})
-            },
             approveBack(){ //退回
                  this.$router.push({path:'/approveBack',query:{id:this.dataObj.employeeApplyId,typeName:'employee',applyType:13,color:'#609df6'}})
             },
-            consent:function(){
-              let that = this;
-               let copyStr =  this.appAndCopy(this.newCopy)
-               let apprStr = this.appAndCopy(this.newAppr,'auditUserId')
+            consent:function(type){
 
-            this.$router.push({path:'/opinion',query:{id:this.dataObj.employeeApplyId,receiverIds:copyStr,auditerIds:apprStr,color:'#609df6',typeName:'employee',applyType:13,pageType:'consent'}})
-               
+                let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                
+                receiverIds = this.Util.getIds(this.newCopy,'userId')
+                auditerIds = this.Util.getIds(this.newAppr,'userId')
+                receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                 url = type!=2?'/opinion':'/imchoices';
+
+                params={id:this.dataObj.employeeApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                color:'#609df6',applyType:13,typeName:'employee',pageType:type,careOf:true,num:1}
+
+              this.$router.push({path:url,query:params})
             },
             resubmit(){ //再次提交
                 this.$router.replace({path:'/employee',query:{employeeId:this.dataObj.employeeApplyId,resubmit:1}})
@@ -409,6 +403,10 @@
                         that.leaveType = '1';
                         return;
                     }
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+                        that.leaveType = '6';
+                        return;
+                    }
 
                     if(that.dataObj.auditStatus == '3'){ //已经撤销
                         that.leaveType = '2'
@@ -422,18 +420,6 @@
             this.newAppr = this.approver_man_state;
          },
         filters:{
-            details:function(value){
-    
-                if(value == '1'){
-                    return '已同意'
-                }else if(value =='0'){
-                    return '已拒绝'
-                }else if(value=='2'){
-                    return '已撤销'
-                }else if(value =='5'){
-                    return '已退回'
-                }
-            },
             nameFor:function(value){
                 if(!value) return ''
                 let arr = value.split('|')

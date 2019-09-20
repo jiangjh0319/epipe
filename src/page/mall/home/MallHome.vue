@@ -30,7 +30,7 @@
         </div>
         <p class="tab-title">管道城</p>
       </router-link>
-      <router-link to="/HWphone" tag="div" class="nav-part-2b-item">
+      <router-link to="/phonelist" tag="div" class="nav-part-2b-item">
         <div class="icon-container">
           <img src="../../../assets/huawei.png" alt="华为专场">
         </div>
@@ -111,7 +111,7 @@
             el: '.swiper-pagination',
           }
         },
-        mallType:{type:'2c'},
+        mallType:{type:'2b'},
         banner: [],
         floors: [],
         imgPrefix: "",

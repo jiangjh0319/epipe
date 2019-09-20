@@ -1,8 +1,9 @@
 <template>
     <div  class="dialog" @touchmove.prevent @click="show">
-        <div class="dialog_box" :style="{'height':(myself?'2rem':'1.2rem')}">
+        <div class="dialog_box" :style="{'height':(myself?'2.4rem':'1.2rem')}">
             <div class="dialog_option" @click="approveBack">退回</div>
             <div class="dialog_option" @click="deliverTo">转交</div>
+            <div class="dialog_option" @click="comment">评论</div>
             <div class="dialog_option" v-if="myself" @click="urge">催办</div>
             <div class="dialog_option" v-if="myself" @click="revocation">撤销</div>
             <div class="dialog_option" @click="print">打印</div>
@@ -17,7 +18,10 @@
                 this.$emit('approveBack')
             },
             deliverTo(){ //转交
-                this.$emit('deliverTo')
+                this.$emit('deliverTo',2)
+            },
+            comment(){
+                this.$emit('deliverTo',3)
             },
             show(){
                 this.$emit('isShow')

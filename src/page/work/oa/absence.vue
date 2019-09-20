@@ -124,29 +124,33 @@ let save_leave = (index,text,that) =>{
             }
         }
 
-        let approver_id = '',chosed_id = ''
-        chosed_id = that.Util.people(that.isDraft,that.chosed_list,1).slice(1)
+        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds=""
 
-        approver_id = that.Util.people(that.isDraft,that.approver_list,2).slice(1)
+        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         let fileObj = {}
         fileObj = that.Util.fileFo(that.accessory)
 
 
         let params = {
-             Id : that.id, // id
+            Id : that.id, // id
             urls : fileObj.urlStr, //附件
             absenceTitle:that.absenceTitle, //标题
             fileNames : fileObj.fileNameStr, //文件名称s
             fileSizes : fileObj.fileSizeStr, //文件大小
-            auditUserIds : approver_id, //审批人
-            receiverIds : chosed_id, //抄送人
+            auditUserIds, //审批人
+            receiverIds, //抄送人
+            auditCompanyIds,
+            receiverCompanyIds,
             draftFlag : index, //草稿还是发送
         }
 
         that.datas.forEach((item,index)=>{
             params['absenceList['+index+'].absenceDate'] = item.absenceDate
-            params['absenceList['+index+'].absenceReason'] = item.absenceReason
+            params['absenceList['+index+'].absenceReason'] = item.absenceReason.replace(/\n/g, '<br/>')
         })
 
         that.axios({
@@ -220,8 +224,8 @@ export default {
                 modalShow:false,
 
                 datas:[{
-                    absenceDate : '请选择日期',  //报销日期
-                    absenceReason : '',//报销明细描述
+                    absenceDate : '请选择日期',  //
+                    absenceReason : '',//
                 }],
                 oldData:null,
             }
@@ -264,30 +268,6 @@ export default {
             localStorage.removeItem('absence')
             window.location.href = "epipe://?&mark=history_back"
         },
-        isUpdate(){
-            let data = this.$data;
-            for(let key in data){
-               if(key=='approver_list'||key=='chosed_list'||key=='accessory'||key=='datas'){
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-                        if((key=='approver_list'||key=='chosed_list')&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }else if(key=='datas'&&data[key][i].absenceDate!=this.oldData[key][i].absenceDate){
-                            return true
-                        }
-                    }
-                }else if(key!='oldData'){
-                    if(data[key]!=this.oldData[key]){
-                            return true;
-                    }
-                }
-            }
-            return false
-        },
         surplusNum(){
             let that = this;
             this.axios.get('/work/absence/limit').then(res=>{ //key总次数 value剩余次数
@@ -326,12 +306,6 @@ export default {
             this.datas[index].absenceDate = date;
             this.$forceUpdate
         },
-        go_fildDetails: function (url) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
-        },
-        
         remove_item: function (itme, index,typess) {   //删除
             if(typess){
                 this.approver_list.splice(index, 1);
@@ -375,7 +349,7 @@ export default {
             },
         history_back_click:function(){
                 // window.location.href = "epipe://?&mark=history_back&url=myApply"
-                if(!this.isUpdate()){
+                if(!this.Util.isUpdate(this.$data,this.oldData)){
                      window.location.href = "epipe://?&mark=history_back"
                 }else{
                     this.isShow = true;
@@ -440,7 +414,7 @@ export default {
             this.oldData = JSON.parse(JSON.stringify(this.$data))
 
             let that = this;
-            this.axios.get('/user/info').then(function(res){
+            this.axios.post('/user/current/userinfo').then(function(res){
                 that.departmentName = res.data.b.officeName
                 that.userName = res.data.b.name
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
@@ -474,7 +448,7 @@ export default {
                        if(!that.$route.query.resubmit){
                                 that.id = data.absenceApplyId;
                         }
-                       that.isDraftFlag = 1;
+                        that.isDraftFlag = 1;
                         that.accessoryFor(data)
                         that.absenceTitle = data.absenceTitle;
                         that.chosed_list = data.receivers;
@@ -485,7 +459,7 @@ export default {
                         data.absenceList.forEach((item,i) =>{
                              arr.push({
                                 absenceDate : item.absenceDate.slice(0,-3),  //报销日期
-                                absenceReason : item.absenceReason,//报销明细描述
+                                absenceReason : item.absenceReason.replace(/<br\/>/g,'\n'),//报销明细描述
                             })
                         })
 

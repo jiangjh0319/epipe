@@ -42,6 +42,16 @@
     background-color #fff
   }
 
+  .redact_btn{
+    margin 0 0.15rem;
+    background-color:#609ef7;
+    color:#fff;
+    text-align center
+    line-height 0.4rem;
+    font-size 0.16rem;
+    border-radius 0.05rem;
+  }
+
   
 </style>
 <template>
@@ -113,9 +123,11 @@
       v-if="has_journal"
       :data='journal_detail'
     >
-
-
     </Comment>
+
+    <div v-if="has_journal" class="redact_btn" @click="redact">
+      编 辑
+    </div>
 
     <Dialog
         lfText="保存"
@@ -232,11 +244,17 @@
             that.mark_value = data.data.b.remarks.replace(/\n/g, '<br/>')
             that.accessory = that.accessoryFor(data.data.b)
             that.getItem();
-          } else {
-            that.journal_detail = data.data.b
+          }else if(data.data.b.isDraft == 0){
+             that.journal_detail = data.data.b
             that.chosed_list = data.data.b.receiverData
             that.has_journal = true
             that.accessory = that.accessoryFor(data.data.b)
+            that.oldData.reportTime =''
+          }else {
+            that.has_journal = false
+            that.mark_value = ''
+            that.work_value = data.data.b.workSummary.replace(/\n/g, '<br/>')
+            that.getItem();
           }
         }
       }
@@ -268,7 +286,7 @@
         journal_detail: {},
         isShow:false,
         accessory:[],
-        oldData:null,
+        oldData:{},
         isCheck:false,
 
       }
@@ -294,6 +312,15 @@
         this.reportTimeStr = text
         getdetail(that)
       },
+      redact(){//重新编辑
+        this.has_journal = false;
+        this.work_value = this.journal_detail.workSummary
+        this.mark_value = this.journal_detail.remarks
+        this.journal_detail.workSummary = this.journal_detail.workSummary.replace(/<br\/>/g,'\n') 
+        this.journal_detail.remarks = this.journal_detail.remarks.replace(/<br\/>/g,'\n')  
+        this.change_man(this.chosed_list)
+
+      },
       text_change: function (data, title) { //实时监听工作内容输入
         if (title == "工作总结") {
           window.sessionStorage.work_value = data
@@ -310,11 +337,11 @@
         }
       },
       accessoryFor:function(datas){
-                if(!datas.urls) return [];
-               let urlArr = datas.urls.split('|')
-               let fileSizeArr = datas.fileSizes.split('|')
-               let fileNameArr = datas.fileNames.split('|')
-               let arrs = [];
+            if(!datas.urls) return [];
+            let urlArr = datas.urls.split('|')
+            let fileSizeArr = datas.fileSizes.split('|')
+            let fileNameArr = datas.fileNames.split('|')
+            let arrs = [];
                 for(let i=0;i<urlArr.length;i++){
                     let bool = this.Util.isImg(urlArr[i])
                     arrs.push({
@@ -326,46 +353,11 @@
                 }
                 return arrs
             },
-        isUpdate(){
-            let data = this.$data;
-            if(!this.oldData) return
-            if(this.oldData['reportTime']!=this.reportTime) return false;
-
-            for(let key in data){
-               if(key=='chosed_list_two'||key=='chosed_list'||key=='URL'){
-                    if(data[key].length!=this.oldData[key].length){
-                        return true
-                    }
-                    for(let i=0;i<data[key].length;i++){
-
-                        if(key!='accessory'&&data[key][i].auditUserId!=this.oldData[key][i].auditUserId){
-                            return true
-                        }else if(key=='accessory'&&data[key][i].url!=this.oldData[key][i].url){
-                            return true
-                        }
-                    }
-
-                }else if(key=='journal_detail'){
-                    let obj = data[key]
-                    for(let keys in obj ){
-                        if(obj[keys]!=this.oldData[key][keys]){
-                          return true;
-                        }
-                    }
-                }else if(key!='oldData'&&key!='accessory'){
-                    if(data[key]!=this.oldData[key]){
-                            console.log(data[key],this.oldData[key],key)
-                            return true;
-                    }
-                }
-            }
-
-            return false
-        },
+    
        history_back_click(){
-        console.log(this.isCheck,this.isUpdate())
 
-             if(!this.isCheck||!this.isUpdate()){
+             if(this.oldData.reportTime!=this.reportTime||!this.isCheck||!this.Util.isUpdate(this.$data,this.oldData)){
+
                  window.location.href = "epipe://?&mark=history_back"
                  
             }else{
@@ -471,7 +463,6 @@
      * 被keep live了
      */
     activated(){
-      console.log('why')
       this.chosed_list = this.chosed_man_state
       if (window.sessionStorage.work_value) {
         this.journal_detail = Object.assign(this.journal_detail, {workSummary: window.sessionStorage.work_value})

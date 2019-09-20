@@ -13,7 +13,7 @@
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
-                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{dataObj.auditStatus |details}}</p>
+                        <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{dataObj.auditStatus |oa_details_status}}</p>
                         <p class="res" v-if="(leaveType==3||leaveType==4)&dataObj.auditStatus!=2">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                 </div>
                  <div class="infor-box">
                     <span>原&emsp;&emsp;因 </span>
-                    <p>{{item.absenceReason }} </p>
+                    <p v-html="item.absenceReason"></p>
                 </div>
             </div>
 
@@ -104,7 +104,7 @@
         <MoreBtn
           v-show="isShow"
           v-on:approveBack="approveBack"
-          v-on:deliverTo="deliverTo"
+          v-on:deliverTo="consent"
           v-on:revocation="revocation"
           v-on:urge="urge"
           v-on:isShow="isShow=!isShow"
@@ -186,21 +186,23 @@
                     }
                     window.location.href = "epipe://?&mark=goWork"
             },
-            deliverTo(){ //转交
-                let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
-                let newCopy = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.absenceApplyId,receiverIds:newCopy,careOf:true,typeName:'absence',applyType:11,bgcolor:'#f80',auditerIds:newApprStr,num:1}})
-            },
             approveBack(){ //退回
                  this.$router.push({path:'/approveBack',query:{id:this.dataObj.absenceApplyId,typeName:'absence',applyType:11,color:'#f80'}})
             },
-            consent:function(){
-              let that = this;
-               let copyStr =  this.appAndCopy(this.newCopy)
-               let apprStr = this.appAndCopy(this.newAppr,'auditUserId')
-                console.log(copyStr)
-            this.$router.push({path:'/opinion',query:{id:this.dataObj.absenceApplyId,receiverIds:copyStr,auditerIds:apprStr,color:'#f80',typeName:'absence',applyType:11,pageType:'consent'}})
-               
+            consent:function(type){
+                let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
+                 
+                 receiverIds = this.Util.getIds(this.newCopy,'userId')
+                 auditerIds = this.Util.getIds(this.newAppr,'userId')
+                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                 auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
+                 url = type!=2?'/opinion':'/imchoices';
+
+                 params={id:this.dataObj.absenceApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                 color:'#f80',applyType:11,typeName:'absence',pageType:type,careOf:true,num:1}
+
+                this.$router.push({path:url,query:params})
+
             },
             resubmit(){ //再次提交
                 this.$router.replace({path:'/absence',query:{absenceId:this.dataObj.absenceApplyId,resubmit:1}})
@@ -242,7 +244,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                     applyId:this.dataObj.absenceApplyId,
                     type:1,
-                    applyType:7,
+                    applyType:11,
                 })).then(function(res){
                         if(res.data.h.code!=200){
                             that.$toast(res.data.h.msg)
@@ -255,11 +257,6 @@
                             },500)     
                         } 
                     })
-            },
-            go_fildDetails: function (url) { //查看图片详情
-                let that = this;
-                let obj = {index_num: 0, data:[url],type:0}
-                window.location.href = "epipe://?&mark=imgdetail&url=" + JSON.stringify(obj);
             },
              accessoryFors:function(datas){
                 if(!datas||datas.url==null) return false
@@ -341,6 +338,10 @@
                         that.leaveType = '1';
                         return;
                     }
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+                        that.leaveType = '6';
+                        return;
+                    }
 
                     if(that.dataObj.auditStatus == '3'){ //已经撤销
                         that.leaveType = '2'
@@ -353,22 +354,6 @@
             this.newCopy = this.chosed_man_state;
             this.newAppr = this.approver_man_state;
          },
-        filters:{
-       
-            details:function(value){
-    
-                if(value == '1'){
-                    return '已同意'
-                }else if(value =='2'){
-                    return '已拒绝'
-                }else if(value=='3'){
-                    return '已撤销'
-                }else if(value =='5'){
-                    return '已退回'
-                }
-            },
-          
-        },
         computed: mapState(["chosed_man_state","approver_man_state"])
     }
 </script>

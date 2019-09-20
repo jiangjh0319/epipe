@@ -16,6 +16,7 @@ const state = {
   token:'',
   oaCount:0,
   reimburse:[{typeName:'请选择类型',type:-1}],
+  permissionsusers:[],
 }
 
 const mutations = {
@@ -24,6 +25,9 @@ const mutations = {
   },
   remburseData(state,obj){
     state.reimburse[obj.index] = obj.value; 
+  },
+  permissions(state,array){ //权限用户
+    state.permissionsusers = array
   },
   change_man(state,array){  //抄送人替换
     state.chosed_man_state=array;
