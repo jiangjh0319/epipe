@@ -192,10 +192,8 @@ import { setTimeout } from 'timers';
                             }],
                         }).then((res)=>{ 
                             if (res.data.b.data.length == 0) {
-                                console.log(111111111111)
                                 that.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
                             } else if (res.data.b.data) {
-                                console.log(22222222222222222)
                                 let arr = that.dataFor(res.data.b.data)
                                 that.list = that.list.concat(arr)
                                 that.pageNo++;

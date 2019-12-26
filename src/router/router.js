@@ -49,10 +49,6 @@ const OrganDetails = r => require.ensure([], () => r(require('@/page/work/organD
 
 
 
-
-
-
-
 const SelectGroup = r => require.ensure([], () => r(require('@/page/work/selectgroup.vue')), 'group-work')
 const Search = r => require.ensure([], () => r(require('@/page/work/search.vue')), 'group-work')
 const Pending = r => require.ensure([], () => r(require('@/page/work/pending.vue')), 'group-work')

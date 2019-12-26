@@ -115,7 +115,7 @@
 <script>
   import {mapState, mapMutations} from 'vuex';
   import TopHead from "../../components/topheader.vue"    //引入导航栏
-  export default{
+  export default{ 
     components:{
       TopHead,
     },

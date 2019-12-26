@@ -52,7 +52,7 @@
             >
             </Accessory>
             
-            <ApproverMan 
+            <!-- <ApproverMan 
                 :has_journal="!has_journal"
                 color="#f80"
                 :data_list=approver_list
@@ -60,16 +60,25 @@
                 :special_class='1'
                 :isGroup = true
                 type= 1
-            ></ApproverMan>
+            ></ApproverMan> -->
+
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=1
+            ></ApproMan>
 
             <CopeMan 
-                :has_journal="!has_journal"
+                :has_journal="!showCopy"
                 color="#f80"
                 :data_list=chosed_list
                 v-on:remove_item="remove_item"
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
+
             ></CopeMan>
         </div>
             <WorkButton
@@ -103,7 +112,7 @@ let save_leave = (index,text,that) =>{
         that.$toast('物品用途不能低于2个或超过100个字符')
     }else if(that.materialReceiveRemarks!=''&&(that.materialReceiveRemarks.length<6||that.materialReceiveRemarks.length>1000)){
         that.$toast('领用详情不能低于6个或超过1000个字符')
-    }else if(that.approver_list.length == 0){
+    }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
 
@@ -120,11 +129,12 @@ let save_leave = (index,text,that) =>{
          let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        // auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        // auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
-        
+
+        let appObj = that.Util.approverFormat(that.allApprovers)
 
          params = {
             Id : that.id, // id
@@ -133,9 +143,12 @@ let save_leave = (index,text,that) =>{
             materialReceiveRemarks:that.materialReceiveRemarks,
             fileNames : fileObj.fileNameStr, //文件名称s
             fileSizes : fileObj.fileSizeStr, //文件大小
-            auditUserIds, //审批人
+            auditUserIds:appObj.userIdsStr, //审批人
+            applyLinkIds:appObj.applyLinkIdsStr,
+
             receiverIds, //抄送人
-            auditCompanyIds,
+            auditCompanyIds:appObj.companyIdsStr,
+            linkAuditNum:appObj.numStr,
             receiverCompanyIds,
             draftFlag : index, //草稿还是发送
         }
@@ -193,7 +206,7 @@ import WorkButton  from '../../../components/worknews/work_button.vue'   //提�
 import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
 import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
 import ReiTemplate  from '../../../components/worknews/reiTemplate.vue'    //报销组件
-import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+import ApproMan  from '../../../components/oa/approver_template.vue'    //审批人
 import TopHead  from '../../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
 
@@ -214,12 +227,16 @@ export default {
                 userName:'',
                 isShow:false,
                 oldData:null,
+                allApprovers:[],
+                addressListIndex:-1,
+                showCopy:0,
+
             }
         },
         components: {
             WorkButton,
             CopeMan,
-            ApproverMan,
+            ApproMan,
             TopHead,
             Accessory,
             ReiTemplate,
@@ -247,6 +264,17 @@ export default {
             this.isShow=false;
             localStorage.removeItem('material')
             window.location.href = "epipe://?&mark=history_back"
+        },
+        go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+            let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:1,amount:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
         },
         addAccessory:function(){
             let that = this;
@@ -360,9 +388,28 @@ export default {
             }
             this.oldData = JSON.parse(JSON.stringify(this.$data))
             let that = this;
+
+            if(that.$route.query.resubmit!='1'){
+
+                this.axios.get('/process/apply/enter?req=21').then((res)=>{
+                    let data = res.data.b;
+
+                    this.allApprovers = data.links;
+                    this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+
+                    if(data.receivers.length>0){
+                            this.chosed_list = data.receivers
+                            this.change_man(this.chosed_list);
+                    }
+                })
+            }
+            
         },
         activated(){
-            this.approver_list = this.approver_man_state
+            // this.approver_list = this.approver_man_state
+            if(this.addressListIndex>0){
+                this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }
             this.chosed_list = this.chosed_man_state
          },
         mounted(){
@@ -395,9 +442,9 @@ export default {
                         that.materialReceiveRemarks = data.materialReceiveRemarks;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list)
-                        that.approver_list = data.auditers;
-                        that.approver_man(that.approver_list);
                         that.material = data.list
+                        that.allApprovers = data.links;
+
                         that.textNum = data.materialReceiveRemarks.length;
 
                         that.oldData = JSON.parse(JSON.stringify(that.$data))

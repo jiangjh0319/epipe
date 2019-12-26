@@ -9,8 +9,19 @@
         <div class="content">
             <div class="styles">
                 <span class="title">主题</span>
-                <input  v-model="theme" placeholder="请输入主题"/>
+                <input style="text-align:right;"  v-model="theme" placeholder="请输入主题"/>
             </div>
+             <router-link :to="{ path:'/option', query: {indexs:letterIndex,type:'letter',color:'#ff8800',getType:1,title:'请示类别'}}" class="styles" tag="div">
+                <div class="items">
+                    请示类别
+                    <p>
+                        <span class="nullValue">{{letterType}}</span>
+                    <svg class="icon icon-back" aria-hidden="false">
+                            <use xlink:href="#icon-right"></use>
+                    </svg>
+                    </p>
+                </div>
+           </router-link>
 
             <div class="styles">
                 <p class="title">请示函内容</p>
@@ -79,6 +90,9 @@ let save_leave = (index,text,that) =>{
     }else if(that.theme.length<2||that.theme.length>100){
         that.$toast('主题内容需2~100字之间')
     }
+    else if(that.letterIndex<0){
+        that.$toast('请选择请示类别')
+    }
     else if(that.content==''){
         that.$toast('请示函内容不能为空')
     }else if(that.approver_list.length == 0){
@@ -104,6 +118,7 @@ let save_leave = (index,text,that) =>{
                 },
                 data:{Id :that.id, // id
                     theme:that.theme,//主题
+                    letterType:that.letterIndex,
                     content:that.content.replace(/\n/g, '<br/>'), //请示函内容0
                     Url : fileObj.urlStr, //附件
                     fileName:fileObj.fileNameStr, 
@@ -172,6 +187,8 @@ export default {
                 isShow:false,
                 textNum : 0,  //请假输入字数
                 oldData:null,
+                letterType:'请选择',
+                letterIndex:-1,
                 
             }
         },
@@ -333,6 +350,12 @@ export default {
                 this.approver_man(this.$data.approver_list)
                 this.change_man(this.$data.chosed_list)
             }
+
+            eventBus.$on('leaveType', res =>{
+                if(res.name=='') return;
+                this.letterIndex = res.index;
+                this.letterType = res.name;
+            })
             this.oldData = JSON.parse(JSON.stringify(this.$data))
         },
         mounted(){
@@ -365,6 +388,8 @@ export default {
                         that.theme = data.theme;
                         that.content = data.content.replace(/<br\/>/g,'\n');
                         that.theme = data.theme;
+                        that.letterIndex = data.letterType;
+                        that.letterType = data.letterTypeName; 
                         that.textNum = that.content.length;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
@@ -374,6 +399,9 @@ export default {
                     })
                     return
             }
+        },
+        beforeDestroy() {
+            eventBus.$off('leaveType');
         },
         computed: mapState(["chosed_man_state","approver_man_state"])
         
@@ -394,6 +422,23 @@ export default {
              box-shadow 0 0 0.2rem rgba(238,65,54,.1);
              background-color #fff;
              overflow hidden
+
+             .items{
+                height 0.44rem;
+                line-height 0.44rem;
+                font-size 0.15rem;
+                color #333;
+                font-weight bold;
+
+                p{
+                    float right 
+                }
+
+                .nullValue{
+                    color #999;
+                    font-size 0.14rem;
+                }
+            }
 
              input{
                  float right;

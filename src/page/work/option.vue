@@ -6,6 +6,8 @@
         :title=title
         mark='mark'
         v-on:history_back='history_back'
+        :is_relative_approva="is_relative_approva"
+        v-on:show_edit='show_edit'
         ></TopHead>
         <div class="main">
             <div style="height:0.59rem;"></div>
@@ -17,6 +19,21 @@
                         </span>
                         <svg class="icon icon-back" aria-hidden="false" v-if="index==indexs-1">
                             <use xlink:href="#icon-xuanzhong1"></use>
+                        </svg>
+                    </div>
+                </li>
+            </ul>
+            <ul class="list" v-if="type=='wantPri'">
+                <li v-for="(item,index) in data" @click="item.choose=!item.choose" :key="index">
+                    <div class="li">
+                        <span>
+                        {{item.key}} 
+                        </span>
+                        <svg class="icon icon-back" aria-hidden="false" v-if="item.choose">
+                            <use xlink:href="#icon-xuanzhong"></use>
+                        </svg>
+                        <svg class="icon icon-back" aria-hidden="false" v-else>
+                                <use xlink:href="#icon-meiyouxuanzhong"></use>
                         </svg>
                     </div>
                 </li>
@@ -49,7 +66,11 @@ export default {
             t_name: "",
             type:'outsign',
             title:'请假类型',
-            color:'#fd545c'
+            color:'#fd545c',
+            is_relative_approva:{
+                isShow:false,
+                title:'确认'
+            }
          }
         },
         components : {
@@ -59,6 +80,20 @@ export default {
             clickEvent(index,name){
                 this.t_index = index;
                 this.t_name = name;
+                window.history.back(-1);
+            },
+            show_edit(){
+                let indexStr = '',nameStr=''
+                 this.data.forEach(item=>{
+                    if(item.choose){
+                        indexStr+=item.value+'|'
+                        nameStr+=item.key+','
+                    }
+                });
+                this.t_index =indexStr?indexStr.slice(0,-1):'-1';
+                this.t_name =nameStr?nameStr.slice(0,-1):'请选择';
+                console.log(  this.t_index,  this.t_name)
+
                 window.history.back(-1);
             },
             updata(){
@@ -78,9 +113,9 @@ export default {
           this.color = this.$route.query.color
           let that = this;
           this.type = this.$route.query.type;
+
           if(this.$route.query.getType==1){
                 this.title = this.$route.query.title;
-                console.log(this.$route.query)
                 this.axios.get('/work/'+ this.$route.query.type +'/type').then(function(res){
                     if(res.data.h.code =200 ) that.data = res.data.b;
 
@@ -158,7 +193,36 @@ export default {
                 this.axios.get('/work/changeposition/offices?userId='+this.$route.query.userId).then(function(res){
                     if(res.data.h.code =200 ) that.data = res.data.b;
                 })
+         }else if(this.type=='moveReason'){
+                this.title = '异动原因';
+                this.axios.get('/move/erpprimove/reason').then(function(res){
+                    if(res.data.h.code =200 ) that.data = res.data.b;
+                })
+         }else if(this.type=="moveType"){
+                this.title = '异动类型';
+                this.axios.get('/move/erpprimove/type').then(function(res){
+                    if(res.data.h.code =200 ) that.data = res.data.b;
+                })
+         }else if(this.type=='wantPri'){
+                this.title = '权限';
+                this.is_relative_approva.isShow = true;
+                this.axios.get('/move/erpprimove/wantPri').then((res)=>{
+                    let data = res.data.b;
+                    let  arr= this.$route.query.indexs+'';
+                    arr=arr.split('|')
+                    data.forEach(element => {
+                        element.choose = false;
+
+                        arr.forEach(item=>{
+                            if(item==element.value){
+                                element.choose = true;
+                            }
+                        })
+                    });
+                    this.data= data;
+            })
          }
+
           else{
            this.axios.get('/work/leave/type/list').then(function(res){
                 if(res.data.h.code =200 ) that.data = res.data.b.data;

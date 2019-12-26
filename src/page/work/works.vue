@@ -172,6 +172,13 @@
                         <span>审批记录</span>
                         <span class="num redDot" v-if="workRed"></span>
                     </li>
+                    <li  @click="to_link('cloud_file')">
+                         <!-- <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                            <use xlink:href="#icon-gongzuohuibao"></use>
+                        </svg> -->
+                        <img src="../../assets/file.png"/>
+                        <span>我的云盘</span>
+                    </li>
                     <li v-for="(c,i) in workData[0].apps" @click="go_jump(c)" :key="i" >
                         <img :src="c.icon"/>
                         <span>{{c.name}}</span>
@@ -216,7 +223,7 @@
                userData:{}, //用户信息
                signTotal:{}, //考勤统计
                toDayCheck:'', //今日考勤
-               token:'',
+               tokenStr:'',
                oaCount:0,
                copyCount:0,
                companyCount:0,
@@ -247,9 +254,8 @@
                 that.getCount();
                 that.redDot();
             }
-
-            this.setToken(this.Service.getCookie('auth_token'))
-            this.token = this.Service.getCookie('auth_token')
+            this.getToken()
+            // this.token = this.Service.getCookie('auth_token')
 
             this.Util.getOa(this)
 
@@ -272,6 +278,16 @@
             ]),
             unfinishAffair(){
                  window.location.href = "epipe://?&mark=unfinishAffair";
+            },
+            getToken(){
+                let str = this.Service.getCookie('auth_token')
+
+                if(!str){
+                    str = localStorage.getItem('auth_token')
+                }
+                
+                this.setToken(str)
+                this.tokenStr = str
             },
             finishAffair(){
                  window.location.href = "epipe://?&mark=finishAffair";
@@ -333,19 +349,27 @@
                  })
             },
             checkJurisdiction(type,url){
-                console.log(url+this.token)
-                            // window.location.href = url+this.token;
+                let str = url.slice(url.indexOf('url='))
+                             this.getToken()
+
+                // str.slice(0,str.indexOf('?&'))
+                str.slice(4,str.indexOf('?&'))
+                // console.log(window.location.href = 'epipe://?&mark=crm&url='+str+this.token)
 
                 this.axios.get('/user/system?type='+type).then(res=>{
                         if(res.data.h.code!==200){
                             this.$toast(res.data.h.msg)
                             return false
                         }else{
+
                             if(type==0){
-                                window.location.href = url+this.token;
+                                if(!this.tokenStr){
+                                    this.$toast('token失效')
+                                    return
+                                }
+                                    window.location.href = url+this.tokenStr
                             }else{
-                                // window.location.href = 'epipe://?&mark=crm&url='+res.data.b.url+'#/index?&token='+this.token;
-                                window.location.href = 'epipe://?&mark=crm&url=http://192.168.3.22:8899/#/index?&token='+this.token;
+                                window.location.href = 'epipe://?&mark=crm&url='+res.data.b.url+'#/index?&token='+this.tokenStr
                             }
                         }
                  })
@@ -451,14 +475,6 @@
                     })
             },
             getInfor(){
-                // const userToken = this.Service.getCookie("auth_token");
-                // if(userToken){
-                // this.axios.get('/user/info/by/token',{params: {token:userToken}}).then(res =>{
-                //     if(res.data.h.code === 200 && res.data.b.centerGroupId){
-                //         // this.getFactory(res.data.b.centerGroupId);
-                //     }
-                // });
-                // }
             },
             //判断用户是否有组织
             organization(){

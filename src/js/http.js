@@ -6,16 +6,17 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 5000;
 
+
 const dev = 'http://192.168.3.166:8280/member/v1'; //测试
-// const dev = 'http://192.168.3.181:8280/member/v3'; // 闵文杰
-// const dev = 'http://192.168.3.40:8080/member/v1'; // 闵文杰
+// const dev = 'http://192.168.3.224:8079/member/v2'; // 习节祥
+// const dev = 'http://192.168.3.40:8080/member/v4'; //
 // const dev = 'http://192.168.3.29:8280/member/v1'; //自动化测试
 // const dev = 'http://192.168.3.241:8882/member/v1'; //自动化测试
 const product = 'https://apps.epipe.cn/member/v1';//正式环境
 // const product = "http://21874u8g05.iask.in:19054/member/v1"; //正式
 axios.defaults.baseURL = window.location.href.indexOf("apps.epipe.cn")>0 ? product : dev;
 // axios.defaults.baseURL = product;
-
+    
 function getCookie(name) {
   var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
   if (arr = document.cookie.match(reg)){
@@ -23,7 +24,7 @@ function getCookie(name) {
     return str;
   }else{
     return null;
-  }
+  } 
 };
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;'

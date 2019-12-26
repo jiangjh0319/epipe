@@ -67,6 +67,7 @@
     <section class="no-login">
       <div class="banner-wrapper">
         <img :src="imgUrl" alt="" class="banner">
+      <div class="tips">您还没有加入组织哟~</div>
       </div>
       <div class="input-bar" @click="linkSearch()">
         <svg class="icon icon-search" aria-hidden="false">
@@ -74,7 +75,6 @@
         </svg>
         输入组织名称搜索加入
       </div>
-      <div class="tips">您还没有加入组织哟~</div>
       <div class="create-org" @click="linkCreate()">创建组织</div>
     </section>
   </div>

@@ -289,15 +289,12 @@
 
       if(!this.permissionsusers.length) return false
 
-      if(this.permissionsusers[this.permissionsusers.length-1].mark_chose){
-        this.select_title = '我的'
-        arr[5]=''
-      }
-      
-      if(this.permissionsusers[this.permissionsusers.length-2].mark_chose){
+      if(this.permissionsusers[0].mark_chose){
         this.select_title = '所有用户'
-        arr[4] = ''
-
+        arr[4]=''
+      }else if(this.permissionsusers[1].mark_chose){
+        this.select_title = '我的'
+        arr[5] = ''
       }else{
         for(let i=0;i<this.permissionsusers.length;i++){
            let item = this.permissionsusers[i] 
@@ -354,7 +351,7 @@
       }
 
       this.top_mark = false;
-
+      console.log(arr)
       let dataArr = []
 
       arr.forEach((item,index)=>{

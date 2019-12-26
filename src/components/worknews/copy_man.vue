@@ -92,7 +92,7 @@
           <img :src=item.profileImg|man_photo_format v-if="item.profileImg.length>1"/>
           <div v-html="item.name"></div>
         </li>
-        <li v-if="has_journal" class="day_chose_ul3_li" @click="go_imchoice">
+        <li v-if="has_journal&&!showAdd" class="day_chose_ul3_li" @click="go_imchoice">
           <svg style="font-size: 0.33rem;margin-top: 0.085rem" class="icon" aria-hidden="false">
             <use xlink:href="#icon-tianjiarenyuan"></use>
           </svg>
@@ -110,7 +110,7 @@
       }
     },
     props: [
-      'color', 'data_list', 'has_journal','special_class','types','isGroup','hint'
+      'color', 'data_list', 'has_journal','special_class','types','isGroup','hint','showAdd'
     //  颜色  选中的联系人数据  
     ],
     methods: {

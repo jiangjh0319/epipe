@@ -49,6 +49,10 @@ Vue.use(Toast);
 Vue.use(Alert);
 Vue.use(wcSwiper);
 
+import Vconsole from 'vconsole'
+let vConsole = new Vconsole()
+Vue.use(vConsole)
+
 
 
 //日历插件
