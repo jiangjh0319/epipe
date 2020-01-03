@@ -18,8 +18,8 @@
                     <input placeholder="请输入部门" v-model="userInfo.officeName"  v-else  />
                 </div>
                 <div class="bor_bottom">
-                    <span class="title">职位</span>
-                    <input placeholder="请输入职位" v-model="userInfo.userPosition" />
+                    <span class="title">岗位</span>
+                    <input placeholder="请输入岗位" v-model="userInfo.userPosition" />
                 </div>
             </div>
             <div class="styles input_group">
@@ -117,7 +117,7 @@ let save_leave = (index,text,that) =>{
     }else if(that.userInfo.officeName==''){
         that.$toast('请输入人员部门')
     }else if(that.userInfo.userPosition==''){
-        that.$toast('请输入人员职位')
+        that.$toast('请输入人员岗位')
     }else if(that.moveReasonCode<0){
         that.$toast('请选择异动原因')
     }else if(that.moveTypeCode<0){

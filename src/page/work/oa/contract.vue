@@ -71,6 +71,7 @@
               v-on:address="go_address"
               v-on:del_poeple="del_poeple"
               hintType=2
+              :isMore=true
             ></ApproMan>
 
             <CopeMan 

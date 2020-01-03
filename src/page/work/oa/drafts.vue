@@ -811,11 +811,11 @@
                                     <p class="line1">{{item.targetName}}</p>
                                 </div>
                                 <div class="request_infor lineHeight">
-                                    <span>调岗前部门/职位 :</span>
+                                    <span>调岗前部门/岗位 :</span>
                                     <p class="line1">{{item.exOffAndPosi}}</p>
                                 </div>
                                 <div class="request_infor lineHeight">
-                                    <span>调岗后部门/职位 :</span>
+                                    <span>调岗后部门/岗位 :</span>
                                     <p class="line1">{{item.afterOffAndPosi}}</p>
                                 </div>
                                 <div class="request_infor lineHeight">

@@ -47,7 +47,7 @@
                     <p>{{dataObj.exOfficeName}}</p>
                 </div>
                  <div class="infor-box" v-if="dataObj.exPosition!=''">
-                    <span>职位名称&emsp; </span>
+                    <span>岗位名称&emsp; </span>
                     <p>{{dataObj.exPosition}} </p>
                 </div>
                  <div class="infor-box" >
@@ -65,7 +65,7 @@
                     <p>{{dataObj.afterOfficeName}}</p>
                 </div>
                  <div class="infor-box" >
-                    <span>调岗后职位 </span>
+                    <span>调岗后岗位 </span>
                     <p>{{dataObj.afterPosition}} </p>
                 </div>
                  <div class="infor-box" >

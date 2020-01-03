@@ -49,7 +49,7 @@
                     <p>{{dataObj.position}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>职务类别 </span>
+                    <span>岗位类别 </span>
                     <p>{{dataObj.positionType}} </p>
                 </div>
                  <div class="infor-box">

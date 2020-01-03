@@ -184,7 +184,7 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
-                 this.$router.push({path:'/opinion',query:{id:this.dataObj.erpprimoveApplyId,typeName:'erpPermission',applyType:7,color:'#f80'}})
+                 this.$router.push({path:'/opinion',query:{id:this.dataObj.erpprimoveApplyId,typeName:'erpPermission',applyType:22,color:'#f80'}})
             },
             history_back_click:function(){
                     if(location.href.indexOf('goWork=0')>0){
@@ -196,10 +196,10 @@
             deliverTo(){ //转交
                 let newApprStr = this.appAndCopy(this.dataObj.links,'auditUserId')
                 let newCopy = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.erpprimoveApplyId,receiverIds:newCopy,careOf:true,typeName:'erpPermission',applyType:7,bgcolor:'#f80',auditerIds:newApprStr,num:1}})
+                this.$router.push({path:'/imchoices',query:{id:this.dataObj.erpprimoveApplyId,receiverIds:newCopy,careOf:true,typeName:'erpPermission',applyType:22,bgcolor:'#f80',auditerIds:newApprStr,num:1}})
             },
             approveBack(){ //退回
-                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.erpprimoveApplyId,typeName:'erpPermission',applyType:7,color:'#f80'}})
+                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.erpprimoveApplyId,typeName:'erpPermission',applyType:22,color:'#f80'}})
             },
             consent:function(type){
                 let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
@@ -232,7 +232,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                     applyId:this.dataObj.erpprimoveApplyId,
                     type:6,
-                    applyType:7,
+                    applyType:22,
                 })).then(function(res){
                     if(res.data.h.code==200){
                         that.$toast('催办成功!')
@@ -261,7 +261,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                     applyId:this.dataObj.erpprimoveApplyId,
                     type:1,
-                    applyType:7,
+                    applyType:22,
                 })).then(function(res){
                         if(res.data.h.code!=200){
                             that.$toast(res.data.h.msg)
@@ -312,10 +312,6 @@
              go_user(id){
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
-
-            approverSet(arr){
-
-            }
         },
         created() {
         },
@@ -331,7 +327,7 @@
                 let arr= [];
                 let newArr = [];
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
-                that.title = that.dataObj.userName+'的erp权限异动申请'
+                that.title = that.dataObj.username+'的erp权限异动申请'
 
                 arr = res.data.b.links;
                 

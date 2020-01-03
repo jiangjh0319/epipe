@@ -146,7 +146,7 @@ export default {
                     if(res.data.h.code =200 ) that.data = res.data.b;
                 })
           }else if(this.type =='position'){
-                this.title = '职位类型';
+                this.title = '岗位类型';
                 this.axios.get('/work/position/type').then(function(res){
                     if(res.data.h.code =200 ) that.data = res.data.b;
                 })

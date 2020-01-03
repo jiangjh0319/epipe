@@ -27,11 +27,11 @@
                     <input style="color:#666" v-model="employeeNo" placeholder="请输入员工编号"/>
                 </div>
                 <div class="bor_bottom">
-                    <span class="title">职务</span>
-                    <input style="color:#666" v-model="position" placeholder="请输入职务名称"/>
+                    <span class="title">岗位</span>
+                    <input style="color:#666" v-model="position" placeholder="请输入岗位名称"/>
                 </div>
                 <router-link :to="{ path:'/option', query: {indexs:positionCode,type:'position',color:'#609df6'}}"  class="bor_bottom choose" tag="div">
-                    <span class="title">职务类别</span>
+                    <span class="title">岗位类别</span>
                     <p>
                         <span class="nullValue">{{positionType}}</span>
                         <svg class="icon icon-back" aria-hidden="false">
@@ -153,7 +153,7 @@ let save_leave = (index,text,that) =>{
     }else if(isNaN(that.employeeNo)){
         that.$toast('员工编号为数字')
     }else if(that.position.length<2||that.position.length>30){
-        that.$toast('职务不能低于2个或超过30个字符')
+        that.$toast('岗位不能低于2个或超过30个字符')
     }else if(that.hireDate=='请选择入职日期'){
         that.$toast('请选择入职日期')
     }else if(that.dimissionDate=='请选择离职日期'){
@@ -167,7 +167,7 @@ let save_leave = (index,text,that) =>{
     }else if(that.dimissionDesc.length<6||that.dimissionDesc.length>1000){
         that.$toast('离职原因不能低于6个或超过1000个字符')
     }else if(that.positionCode<0){
-        that.$toast('请选择职务类型')
+        that.$toast('请选择岗位类型')
     }else if(that.dimissionCode<0){
         that.$toast('请选择离职类型')
     }else if(that.dimissionDesc.length<6){
@@ -195,7 +195,7 @@ let save_leave = (index,text,that) =>{
                     dimissionDesc:that.dimissionDesc.replace(/\n/g, '<br/>'), //离职原因
                     employeeNo:that.employeeNo, //员工编号
                     education:that.education, //学历
-                    position:that.position,// 职务
+                    position:that.position,// 岗位
                     hireDate:that.hireDate,//入职时间
                     dimissionDate:that.dimissionDate,//离职日期
                     positionType:that.positionCode,
@@ -266,13 +266,13 @@ export default {
                 dimissionTitle : '', // 标题
                 departmentName : '',//
                 employeeNo : '', //员工编号
-                position:'',//职务
+                position:'',//岗位
                 education:'',//学历
                 hireDate:'请选择入职日期',//入职日期
                 dimissionDate:'请选择离职日期',//离职日期
                 contractEndDate:'请选择合同终止日期',//合同终止日期
                 userName : '',//用印承办人
-                positionType:'请选择职务类型',
+                positionType:'请选择岗位类型',
                 positionCode:-1,
                 dimissionCode:-1 ,
                 dimissionType:'请选择离职类型',

@@ -23,8 +23,8 @@
             </div>
             <div class="styles input_group">
                 <div class="bor_bottom">
-                    <span class="title">职务</span>
-                    <input style="color:#666" v-model="position" placeholder="请输入职务"/>
+                    <span class="title">岗位</span>
+                    <input style="color:#666" v-model="position" placeholder="请输入岗位"/>
                 </div>
                 <div class="bor_bottom">
                     <span class="title">年龄</span>
@@ -157,9 +157,9 @@ let save_leave = (index,text,that) =>{
     }else if(that.regularTitle.length>100 ||that.regularTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
     }else if(that.position == ''){
-	    that.$toast('职务不能为空')
+	    that.$toast('岗位不能为空')
     }else if(that.position.length>30){
-	    that.$toast('职务不能超过30字符')
+	    that.$toast('岗位不能超过30字符')
     }else if(that.birthPlace == ''){
 	    that.$toast('籍贯不能为空')
     }else if(that.birthPlace.length>10){
