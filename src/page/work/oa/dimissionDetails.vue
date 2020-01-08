@@ -77,6 +77,12 @@
                     <p v-html="dataObj.dimissionDesc"></p>
                 </div>
             </div>
+            
+            <div class="styles infor">
+                <div class="infor-box">
+                    <span style="color:#609EF7" @click="hanlderToleaveEvaluation">查看离职评价及办理意见</span>
+                </div>
+            </div>
 
             <AccessoryList :accessory='accessory'>
             </AccessoryList>
@@ -322,6 +328,9 @@
              go_user(id){
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
+            hanlderToleaveEvaluation(){
+                this.$router.push({path:'/leaveEvaluation',query:{dimissionApplyId:'83e1704131e311ea98024ccc6ac12eca'}})
+            }
         },
         created() {
         },

@@ -95,12 +95,13 @@
             return{
                 mark :'marks',
                 title:'离职评价及办理',
-                listData:[
-                    {name:'波尔本',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {name:'王宝山',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {name:'黄波',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {name:'谢丽',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'}
-                ]
+                superleadName:'',//直属领导
+                monitorName:'',//监交人
+                hrName:'',//hr
+                superleadComment:'',
+                monitorComment:'',
+                hrComment:'',
+                hrSuggestDismTime:''
             }
         },
         
@@ -110,15 +111,23 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
         history_back_click:function(){
-                    if(location.href.indexOf('goWork=0')>0){
-                        window.location.href = "epipe://?&mark=history_back"
-                        return
-                    }
-                    window.location.href = "epipe://?&mark=goWork"
+                    // if(location.href.indexOf('goWork=0')>0){
+                    //     window.location.href = "epipe://?&mark=history_back"
+                    //     return
+                    // }
+                    // window.location.href = "epipe://?&mark=goWork"
+                    history.back();
             },
         },
         created() {
+            this.axios.post('/work/dismisstion/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
+                if(res.data.h.code==200){
+                    console.log(res.data.b)
 
+                }else{
+                    this.$toast(res.data.h.msg)
+                }
+            })
         }
  
     }
