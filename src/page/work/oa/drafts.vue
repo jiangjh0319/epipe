@@ -991,6 +991,7 @@
                                 data.push(obj)
                             }
                             that.draftsData = data;
+                            
                  })
         },
         methods:{

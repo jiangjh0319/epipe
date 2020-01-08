@@ -2,8 +2,8 @@
  * Created by lenovo on 2017/6/12.
  */
 const Service = {
-  host: "http://3msapi.epipe.cn/api",
-  // host: "http://192.168.3.166:8181/api", //测试
+  // host: "http://3msapi.epipe.cn/api",
+  host: "http://192.168.3.166:8181/api", //测试
   newHomeNews: "/topnews/getWaterfallPagedList",//新版首页新闻
   detailNewHomeNews: "/content/getDetails",//新版首页新闻详情
   content_show: "/content/show/index", //首页广告图

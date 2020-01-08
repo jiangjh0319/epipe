@@ -3,18 +3,14 @@
         <TopHead
         mark = 'mark'
         bgcolor = '#609df6'
-        title="人员需求" 
+        title="招聘审批" 
         v-on:history_back="history_back_click"
          ></TopHead>
         <div class="content">
             <div class="styles input_group">
                 <div class="bor_bottom">
-                    <span class="title"><span class="required">*</span>文件标题</span>
-                    <input placeholder="请输入标题"  v-model="employeeTitle" />
-                </div>
-                  <div>
-                    <span class="title">申请人</span>
-                    <input placeholder="请输入申请人"  v-model="userName" disabled/>
+                    <span class="title"><span class="required">*</span>招聘职位</span>
+                    <input placeholder="请输入招聘职位"  v-model="approvalPosition" disabled />
                 </div>
                 <div class="bor_bottom">
                     <span class="title">所属部门</span>
@@ -22,144 +18,58 @@
                 </div>
             </div>
             <div class="styles input_group">
-                <div class="bor_bottom choose" @click="go_push(isComplie,'isComplie','编制')">
-                    <span class="title"><span class="required">*</span>编制</span>
-                    <p>
-                        <span class="nullValue">{{isComplieName}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
+                <div class="bor_bottom">
+                    <span class="title"><span class="required">*</span>候选人名称</span>
+                    <input placeholder="请输入候选人名称"  v-model="candidateName" disabled />
                 </div>
 
-                <div class="bor_bottom choose" @click="go_push(isNew,'isNew','是否新增',isComplie)">
-                    <span class="title"><span class="required">*</span>是否新增</span>
-                    <p>
-                        <span class="nullValue">{{isNewName}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>
-
-                <div class="bor_bottom" @click="go_push(isPosition,'isPosition','招聘岗位')">
-                    <span class="title"><span class="required">*</span>招聘岗位</span>
-                    <input style="color:#666" v-model="position" placeholder="请选择招聘岗位名称" disabled/>
-                        <svg class="icon icon-back" aria-hidden="false" style="position:absolute;right:0.15rem;top:0.17rem;">
-                            <use xlink:href="#icon-right"></use>
-                        </svg>
+                <div class="bor_bottom">
+                    <span class="title"><span class="required">*</span>工作年限</span>
+                    <input placeholder="请输入工作年限"  v-model="workYear" disabled />
                 </div>
                 <div class="bor_bottom">
-                    <span class="title"><span class="required">*</span>需求人数</span>
-                    <input style="color:#666" v-model="num" placeholder="请输入需求人数"/>
+                    <span class="title"><span class="required">*</span>学历</span>
+                    <input placeholder="请输入学历"  v-model="educationFormal" disabled />
                 </div>
-    
-                 <div class="bor_bottom choose" @click.stop="getTime(0)">
-                     <span class="title"><span class="required">*</span>希望到岗日期</span>
-                    <p>
-                        <span class="nullValue">{{arrivalDate}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
+                <div class="bor_bottom">
+                    <span class="title"><span class="required">*</span>毕业院校</span>
+                    <input placeholder="请输入毕业院校"  v-model="college" disabled />
                 </div>
-              
+            </div>
+            <div class="styles input_group">
+                <div class="bor_bottom">
+                    <span class="title"><span class="required"></span>电话</span>
+                    <input placeholder="请输入电话"  v-model="telephone" disabled />
+                </div>
+
+                <div class="bor_bottom">
+                    <span class="title"><span class="required"></span>邮箱</span>
+                    <input placeholder="请输入邮箱"  v-model="email" disabled />
+                </div>
+                <div class="bor_bottom">
+                    <span class="title"><span class="required"></span>面试时间</span>
+                    <input placeholder="请输入面试时间"  v-model="interviewTime" disabled />
+                </div>
             </div>
 
+            <div class="styles input_group">
+                <div class="bor_bottom" @click="handlerTointerviewDetail">
+                    <span class="title">面试评价</span>
+                    <span class="interviewDetial">查看面试评价详情</span>
+                    <svg class="icon icon-back" aria-hidden="false" style="position:absolute;right:0.15rem;top:0.17rem;">
+                        <use xlink:href="#icon-right"></use>
+                    </svg>
+                </div>
+            </div>
             <div class="styles" style="padding:0 0.15rem;">
-                <p class="title"><span class="required">*</span>申请理由</p>
-                <textarea v-model.trim="employeeReason" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入申请理由,限定1000字">
+                <p class="title"><span class="required"></span>备注：</p>
+                <textarea v-model.trim="remark" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入备注,限定1000字">
 
                 </textarea>
                 <div class="record_box">
                         <span>{{textNum}}/1000</span>
                 </div>
             </div>
-            <p class="content-title">应聘条件</p>
-
-            <div class="styles input_group">
-                <router-link :to="{ path:'/option', query: {indexs:sex,type:'sex',color:'#609df6'}}"  class="bor_bottom choose" tag="div">
-                    <span class="title">性别</span>
-                    <p>
-                        <span class="nullValue">{{sexType}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </router-link>
-                <router-link :to="{ path:'/option', query: {indexs:marriage,type:'marriage',color:'#609df6'}}"  class="bor_bottom choose" tag="div">
-                    <span class="title">婚姻</span>
-                    <p>
-                        <span class="nullValue">{{marriageType}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </router-link>
-                <!-- <div class="bor_bottom">
-                    <span class="title">年龄</span>
-                    <input placeholder="请输入年龄范围"  v-model="age" />
-                </div> -->
-                 <router-link :to="{ path:'/option', query: {indexs:age,type:'age',title:'年龄',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
-                    <span class="title">年龄</span>
-                    <p>
-                        <span class="nullValue">{{ageName}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </router-link>
-                <router-link :to="{ path:'/option', query: {indexs:education,type:'education',title:'学历类型',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
-                    <span class="title"><span class="required">*</span>学历</span>
-                    <p>
-                        <span class="nullValue">{{educationName}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </router-link>
-                <div class="bor_bottom">
-                    <span class="title">专业</span>
-                    <input placeholder="请输入专业要求" style="color:#666"  v-model="major" />
-                </div>
-                <router-link :to="{ path:'/option', query: {indexs:highestEducation,type:'highestEducation',title:'最高学历毕业学校',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
-                    <span class="title"><span class="required">*</span>最高学历毕业学校</span>
-                    <p>
-                        <span class="nullValue">{{highestEducationName}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </router-link>
-                <router-link :to="{ path:'/option', query: {indexs:jobExperience,type:'jobExperience',title:'工作经验',color:'#609df6',getType:1}}"  class="bor_bottom choose" tag="div">
-                    <span class="title"><span class="required">*</span>工作经验</span>
-                    <p>
-                        <span class="nullValue">{{jobExperienceName}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </router-link>
-                <div class="bor_bottom choose" @click.stop="moreSelect">
-                    <span class="title">更多</span>
-                     <p>
-                        <span class="nullValue"></span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>
-            </div>
-            <div class="styles" style="padding:0 0.15rem;">
-                <p class="title"><span class="required">*</span>工作职责</p>
-                <textarea v-model.trim="responsibility" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入详细工作职责">
-
-                </textarea>
-                <div class="record_box">
-                        <span>{{responsibilityNum}}/1000</span>
-                </div>
-            </div>
-
             <Accessory
                 :accessory ='accessory'
             >
@@ -212,15 +122,15 @@ let reg = /^[\u4e00-\u9fa5]+$/;
 var regs =/^[1-9]+\d*$/;
 let rule = /^[A-Za-z0-9]+$/;
 let save_leave = (index,text,that) =>{
-    if(that.employeeTitle== ''){
+    if(that.approvalPosition== ''){
         that.$toast('文件标题不能为空')
-    }else if(that.employeeTitle.length>100 ||that.employeeTitle.length<2){
-        that.$toast('文件标题不能低于2个或超过100个字符')
     }
-    // else if(that.arrivalDate == '请选择到岗日期'){
-    //     that.$toast('请选择到岗日期')
+    // else if(that.approvalPosition.length>100 ||that.approvalPosition.length<2){
+    //     that.$toast('文件标题不能低于2个或超过100个字符')
     // }
-    else if(that.num==''){
+    else if(that.arrivalDate == '请选择到岗日期'){
+        that.$toast('请选择到岗日期')
+    }else if(that.num==''){
         that.$toast('需求人数不能为空')
     }else if(isNaN(that.num)){
         that.$toast('需求人数为数字')
@@ -243,17 +153,15 @@ let save_leave = (index,text,that) =>{
         that.$toast('工作职责不能为空')
     }else if(that.responsibility.length>1000){
         that.$toast('工作职责不能超过1000字')
-    }else if(that.employeeReason == ''){
+    }else if(that.remark == ''){
         that.$toast('申请理由不能为空')
     }else if(that.major.length>30){
         that.$toast('专业要求内容不能超过30个字符')
-    }else if(that.employeeReason.length>1000||that.employeeReason.length<6){
+    }else if(that.remark.length>1000||that.remark.length<6){
         that.$toast('申请理由不能少于6个或超过1000字符')
-    }
-    // else if(that.approver_list.length == 0){
-    //     that.$toast('请选择审批人')
-    // }
-    else{
+    }else if(that.approver_list.length == 0){
+        that.$toast('请选择审批人')
+    }else{
 
 
         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
@@ -272,8 +180,8 @@ let save_leave = (index,text,that) =>{
                 },
                 data:{
                     Id :that.id, // id
-                    employeeTitle:that.employeeTitle,//标题
-                    employeeReason:that.employeeReason.replace(/\n/g, '<br/>'), //申请理由
+                    approvalPosition:that.approvalPosition,//标题
+                    remark:that.remark.replace(/\n/g, '<br/>'), //申请理由
                     position:that.position, //招聘岗位
                     num:that.num, //招聘人数
                     arrivalDate:that.arrivalDate,//到岗时间
@@ -350,9 +258,18 @@ export default {
         data(){
             return{
                 id:'',
-                employeeTitle : '', // 标题
-                departmentName : '',//用印部门
-                position : '请选择', //招聘岗位
+                approvalPosition : '', // 招聘职位
+                departmentName : '',//所属部门
+                candidateName: '',  //候选人名称
+                workYear:'',//工作年限
+                educationFormal:'',//学历
+                college:'',//毕业学院
+                telephone:'',//电话
+                email:'',//邮箱
+                interviewTime:'',//面试时间
+                remark:'',//备注
+
+                position : '', //招聘岗位
                 num:'',//招聘人数
                 arrivalDate:'请选择到岗日期', //到岗日期
                 returnDate:'请选择预计归还日期', //
@@ -372,8 +289,7 @@ export default {
                 age:'',//年龄
                 ageName:'请选择',//年龄
                 isNew:-1,
-                isComplie:-3,//编制序号
-                isPosition:-6,//招聘岗位序号
+                isComplie:-1,//编制序号
                 isComplieName:'请选择',
                 isNewName:'请选择',
                 highestEducation:'',
@@ -432,18 +348,9 @@ export default {
         addAccessory:function(){
             window.location.href = "epipe://?&mark=addAccessory"
         },
-        go_push(indexs,type,title,isComplie){
-            console.log(indexs,type,title,isComplie)
-            if(type=='isComplie'){
-                this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title}})
-            }else if(type=='isNew'&isComplie==2){
-
-            }else if(type=='isPosition'){
-                this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title}})
-            }
-            else{
-                this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title,getType:1}})
-            }
+        go_push(indexs,type,title){
+            console.log(indexs,type,title)
+            this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title,getType:1}})
 
         },
         deleteFile:function(index){  //删除附件
@@ -523,16 +430,19 @@ export default {
                 }
 
                 this.$router.push({path:'/more_employee',query:params})
+            },
+            handlerTointerviewDetail(){
+                this.$router.push({path:'/interviewDetail'})
             }
         },
          watch:{
-            employeeReason : function(){
-                if(this.employeeReason.length>1000){
+            remark : function(){
+                if(this.remark.length>1000){
                     this.$toast("最多输入1000字~")
-                    this.employeeReason = this.employeeReason.slice(0,1000)
+                    this.remark = this.remark.slice(0,1000)
                     return
                 }
-                this.textNum = this.employeeReason.length
+                this.textNum = this.remark.length
             },
             responsibility : function(){
                 if(this.responsibility.length>1000){
@@ -573,23 +483,7 @@ export default {
                 }else if(res.type=='isNew'){
                     this.isNew = res.index
                     this.isNewName = res.name
-                }else if(res.type=='isComplie'){
-                   
-                    if(res.name=='编制外'){
-                        this.isNewName = '新增'
-                        this.isNew = 0
-                        this.isComplie = res.index
-                        this.isComplieName = res.name
-                    }else{
-                        this.isComplie = res.index
-                        this.isComplieName = res.name
-                        this.isNewName = '请选择'
-                    }
-                }else if(res.type=='isPosition'){
-                        this.position = res.name
-                        this.isPosition = res.index
-                }
-                else if(res.type=='jobExperience'){
+                }else if(res.type=='jobExperience'){
                     this.jobExperience = res.index
                     this.jobExperienceName = res.name
                 }else if(res.type=='highestEducation'){
@@ -638,10 +532,10 @@ export default {
                         }
                         that.isDraftFlag = 1;
                         that.accessoryFor(data)
-                        that.employeeTitle = data.employeeTitle;
+                        that.approvalPosition = data.approvalPosition;
                         that.position = data.position;
                         that.num = data.num;
-                        that.employeeReason = data.employeeReason.replace(/<br\/>/g,'\n');
+                        that.remark = data.remark.replace(/<br\/>/g,'\n');
                         that.arrivalDate = data.arrivalDate.slice(0,-8);
                         that.sex = data.sexCode//性别
                         that.sexType = data.sex//性别
@@ -666,7 +560,7 @@ export default {
                         that.priority= data.priority //优先录用
                         that.responsibility= data.responsibility.replace(/<br\/>/g,'\n') //工作职责
 
-                        that.textNum = data.employeeReason.length
+                        that.textNum = data.remark.length
                         that.responsibilityNum = data.responsibility.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
@@ -733,6 +627,10 @@ export default {
                  font-size 0.15rem;
                  color #333;
                  font-weight:bold;
+             }
+             .interviewDetial{
+                 margin-left 0.5rem;
+                 color #609DF6;
              }
         }
     }

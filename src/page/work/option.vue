@@ -57,6 +57,7 @@ export default {
         },
         methods : {          
             clickEvent(index,name){
+                // console.log(index,name)
                 this.t_index = index;
                 this.t_name = name;
                 window.history.back(-1);
@@ -83,7 +84,7 @@ export default {
                 console.log(this.$route.query)
                 this.axios.get('/work/'+ this.$route.query.type +'/type').then(function(res){
                     if(res.data.h.code =200 ) that.data = res.data.b;
-
+                    console.log('data：',that.data)
                 })
           }else if(this.type=='outsign'){
                 this.title = '公出类型';
@@ -158,6 +159,12 @@ export default {
                 this.axios.get('/work/changeposition/offices?userId='+this.$route.query.userId).then(function(res){
                     if(res.data.h.code =200 ) that.data = res.data.b;
                 })
+         }else if(this.type=='isComplie'){
+             this.title = '编制';
+             that.data = [{key:'编制内',value:1},{key:'编制外',value:2}]
+         }else if(this.type=='isPosition'){
+             this.title = '岗位招聘';
+             that.data = [{key:'技术部',value:1},{key:'运营部',value:2}]
          }
           else{
            this.axios.get('/work/leave/type/list').then(function(res){

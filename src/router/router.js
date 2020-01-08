@@ -195,6 +195,13 @@ const CompanyWallList = r => require.ensure([], () => r(require('@/page/work/com
 const Car = r => require.ensure([], () => r(require('@/page/work/oa/car.vue')), 'group-work')
 const Employee = r => require.ensure([], () => r(require('@/page/work/oa/employee.vue')), 'group-work')
 const EmployeeDetails = r => require.ensure([], () => r(require('@/page/work/oa/employeeDetails.vue')), 'group-work')
+
+const RecruitmentApproval = r =>require.ensure([],()=>r(require('@/page/work/oa/recruitmentApproval.vue')),'group-work')
+const RecruitmentApprovalDetial = r =>require.ensure([],()=>r(require('@/page/work/oa/recruitmentApprovalDetial.vue')),'group-work')
+const InterviewDetail = r =>require.ensure([],()=>r(require('@/page/work/oa/interviewDetail.vue')),'group-work')
+const PositiveComments = r =>require.ensure([],()=>r(require('@/page/work/oa/positiveComments.vue')),'group-work')
+const LeaveEvaluation = r =>require.ensure([],()=>r(require('@/page/work/oa/leaveEvaluation.vue')),'group-work')
+
 const CarDetails = r => require.ensure([], () => r(require('@/page/work/oa/carDetails.vue')), 'group-work')
 const ArticleDetails = r => require.ensure([], () => r(require('@/page/work/articleDetails.vue')), 'group-work')
 const Agenda = r => require.ensure([], () => r(require('@/page/work/schedule/agenda.vue')), 'group-work')
@@ -202,6 +209,8 @@ const Agenda = r => require.ensure([], () => r(require('@/page/work/schedule/age
 const AddGroup = r => require.ensure([], () => r(require('@/page/work/addgroup.vue')), 'group-work')
 
 const SupplierAllBack = r => require.ensure([], () => r(require('@/page/work/supplierAllBack.vue')), 'group-work')
+
+
 
 
 
@@ -866,7 +875,7 @@ export default new Router({
       component:Car,
 		  meta: {keepAlive: true}
     },{
-      path:'/employee',//用人
+      path:'/employee',//人员需求
       component:Employee,
       meta: {keepAlive: true}
     },{
@@ -891,6 +900,26 @@ export default new Router({
     },{
       path:'/agenda',
       component:Agenda,
+    },
+    {
+      path:'/recruitmentApproval',//招聘审批
+      component:RecruitmentApproval,
+    },
+    {
+      path:'/recruitmentApprovalDetial',//招聘审批详情
+      component:RecruitmentApprovalDetial,
+    },
+    {
+      path:'/interviewDetail',//面试评价详情
+      component:InterviewDetail,
+    },
+    {
+      path:'/positiveComments',//转正明细及意见
+      component:PositiveComments,
+    },
+    {
+      path:'/leaveEvaluation',//离职评价及办理意见
+      component:LeaveEvaluation,
     },
     ...routeData
   ],
