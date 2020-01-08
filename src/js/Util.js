@@ -124,13 +124,52 @@ const Util = {
     return id;
   },
   getIds:function(arr,idName){
-    console.log(arr,idName)
       let id = ''
       for(let i =0;i<arr.length;i++){
         id+=arr[i][idName]+'|'
       }
-      console.log(id.slice(0,-1))
       return id.slice(0,-1)
+  },
+  deliverIds(arr,idName){
+    let idStr = ''
+
+    arr.forEach(item=>{
+      if(item.flow&&item.status=='00'){
+        idStr+=item[idName]+'|'
+      }else if(item.auditers){
+        item.auditers.forEach(el=>{
+          if(el.status=='00'){
+            idStr+=el[idName]+'|'
+          }
+        })
+      }
+    })
+
+      return idStr.slice(0,-1)
+
+  },
+  approverFormat(arr){//审批人数据格式化
+    let data = {numStr:'',userIdsStr:'',companyIdsStr:'',applyLinkIdsStr:''} 
+    arr.forEach(item => {
+        data.numStr+=item.auditers.length+'|'
+        data.applyLinkIdsStr+=item.id+'|'
+        item.auditers.forEach(el=>{
+            data.userIdsStr += el.userId+'|'
+            data.companyIdsStr += el.companyId+'|'
+        })
+    });
+    data.numStr = data.numStr.slice(0,-1)
+    data.userIdsStr = data.userIdsStr.slice(0,-1)
+    data.companyIdsStr = data.companyIdsStr.slice(0,-1)
+    data.applyLinkIdsStr = data.applyLinkIdsStr.slice(0,-1)
+    return data;
+  },
+  checkApprovers(arr){
+    for (let index = 0; index < arr.length; index++) {
+        if(arr[index].auditers.length<1&&arr[index].approvalUserType==3) return true
+    }
+
+    return false
   },
   fileFo:function(accessory){
     let obj = {urlStr:"",fileSizeStr:"",fileNameStr:""}
@@ -215,46 +254,7 @@ const Util = {
     //  })
   },
   oaAxios:function(that,params,type){
-    that.axios({
-        method:"post",
-        url:"/work/"+type+"/save",
-        headers:{
-            'Content-type': 'application/x-www-form-urlencoded'
-        },
-        data:params,
-        transformRequest: [function (data) {
-                let ret = ''
-                for (let it in data) {
-                ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-                }
-                return ret
-            }],
-        }).then((res)=>{                    
-
-            if(res.data.h.code!=200){
-                that.$toast(res.data.h.msg)
-            }else if(res.data.h.code == 200){
-                if(index){
-                    that.$toast('已保存至草稿箱!')
-                    setTimeout(()=>{
-                      if(that.$route.query.letterId){
-                            window.location.href = "epipe://?&mark=goWork"
-                        }else{
-                            window.location.href = "epipe://?&mark=history_back" 
-                        }
-                    },700)
-                }else{
-                    that.$toast('提交成功！')
-                    window.location.href = "epipe://?&mark=workUpdate";
-                    setTimeout(()=>{
-                        window.location.href = "epipe://?&mark=submitLetter&_id="+res.data.b;
-                    },500)
-                    localStorage.removeItem(type)
-                
-                }
-            }
-        })
-
+   
       },
       isUpdate(data,oldData){
         for(let key in data){

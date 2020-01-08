@@ -74,24 +74,22 @@
             >
             </Accessory>
             
-            <ApproverMan 
-                :has_journal="!has_journal"
-                color="#f80"
-                :data_list=approver_list
-                v-on:remove_item="remove_item"
-                :special_class='1'
-                :isGroup = true
-                type = 10
-            ></ApproverMan>
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=10
+            ></ApproMan>
 
             <CopeMan 
-                :has_journal="!has_journal"
+                :has_journal="!showCopy"
                 color="#f80"
                 :data_list=chosed_list
                 v-on:remove_item="remove_item"
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
             ></CopeMan>
         </div>
         <WorkButton
@@ -155,16 +153,18 @@ let save_leave = (index,text,that) =>{
         that.$toast('付款事由不能为空')
     }else if(that.payReason.length>1000||that.payReason.length<6){
         that.$toast('付款事由不能少于6个或超过1000字符')
-    }else if(that.approver_list.length == 0){
+    }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
-        
          let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
+
+        params = that.Util.approverFormat(that.allApprovers)
+        // auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
+        // auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+
         fileObj = that.Util.fileFo(that.accessory)
         // let contDesc = that.payReason.replace(/\n|\r\n/g,"<br>")
         // https://blog.csdn.net/xiaobao5214/article/details/68923023/
@@ -187,9 +187,12 @@ let save_leave = (index,text,that) =>{
                     urls : fileObj.urlStr, //附件
                     fileNames: fileObj.fileNameStr, 
                     fileSizes: fileObj.fileSizeStr,
-                     auditUserIds, //审批人
                     receiverIds, //抄送人
-                    auditCompanyIds,
+                    receiverCompanyIds,
+                    auditUserIds:params.userIdsStr, //审批人
+                    auditCompanyIds:params.companyIdsStr,
+                    applyLinkIds:params.applyLinkIdsStr,
+                    linkAuditNum:params.numStr,
                     receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
                     },
@@ -201,23 +204,6 @@ let save_leave = (index,text,that) =>{
                         return ret
                     }],
                 }).then((res)=>{
-        // that.axios.post('/work/pay/save' + encodeURI(that.Service.queryString({
-        //   Id :that.id, // id
-        //   payTitle:that.payTitle,//标题
-        //   payReason:that.payReason, //付款说明
-        //   payType : that.payType,//付款方式
-        //   payAmount:that.payAmount, //付款金额
-        //   bankName:that.bankName,
-        //   payDate:that.payDate,//付款时间
-        //   bankAcount:that.bankAcount,
-        //   receiverName:that.receiverName, //收款人
-        //   urls : urlStr, //附件
-        //   fileNames:fileNameStr, 
-        //   fileSizes:fileSizeStr,
-        //   auditUserIds: approver_id, //审批人
-        //   receiverIds: chosed_id, //抄送人
-        //   draftFlag : index, //草稿还是发送
-        // }))).then(function (res){
             if(res.data.h.code!=200){
                 that.$toast(res.data.h.msg)
             }else if(res.data.h.code == 200){
@@ -249,7 +235,8 @@ import {mapState, mapMutations} from 'vuex';
 import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
 import WorkButton  from '../../../components/worknews/work_button.vue'   //提交按钮
 import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
-import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+// import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+import ApproMan  from '../../../components/oa/approver_template.vue'    
 import TopHead  from '../../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
 
@@ -262,6 +249,7 @@ export default {
                 departmentName : '',//用印部门
                 payAmount : '', //付款金额
                 payDate:'请选择付款日期', //付款日期
+                // payDate:'2019-12-03', //付款日期
                 userName : '',//用印承办人
                 receiverName:'',//收款人
                 bankAcount:'', //银行账户
@@ -269,18 +257,23 @@ export default {
                 payReason : '',//用印说明
                 chosed_list : [], //抄送人
                 approver_list : [], //审批人
+                allApprovers:[],
                 accessory : [],
                 isDraftFlag : 0, //判断是不是草稿
                 textNum : 0,
                 payType:-1,
                 payName:'请选择付款方式',
                 isShow:false,
+                addressListIndex:-1,
+                showCopy:0,
+                showGroup:false,
+                
             }
         },
         components: {
             WorkButton,
             CopeMan,
-            ApproverMan,
+            ApproMan,
             TopHead,
             Accessory,
             Dialog
@@ -300,6 +293,17 @@ export default {
                 this.isShow = true;
             }
         },
+        go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+            let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:1,amount:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
+        },
         lf_click(){
             this.isShow=false;
             if(this.$route.query.payApplyId&&!this.$route.query.resubmit){
@@ -318,7 +322,6 @@ export default {
             window.location.href = "epipe://?&mark=addAccessory"
         },
         deleteFile:function(index){  //删除附件
-
             this.accessory.splice(index,1)
         },
         go_fildDetails: function (url) { //查看图片详情
@@ -406,7 +409,9 @@ export default {
           }  
         },
         activated(){
-            this.approver_list = this.approver_man_state
+            if(this.addressListIndex>0){
+                this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }
             this.chosed_list = this.chosed_man_state
          },
          created() {
@@ -439,6 +444,17 @@ export default {
                     that.accessory.push(obj)
                 }
 
+            this.axios.get('/process/apply/enter?req=7').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = data.links;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
+            })
+
             this.axios.post('/user/current/userinfo').then(function(res){
                 that.departmentName = res.data.b.officeName
                 that.userName = res.data.b.name
@@ -468,8 +484,9 @@ export default {
                         that.textNum = data.payReason.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.approver_list = data.auditers;
-                        that.approver_man(that.approver_list);
+                        that.allApprovers = data.links;
+                        // that.approver_list = data.auditers;
+                        // that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

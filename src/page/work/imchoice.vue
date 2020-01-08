@@ -372,6 +372,7 @@
             this.change_man(this.chose_array)
 
         }else{
+
             if(this.datalist.offices[index].persons[num].mark_chose){
               
               let flag = true;

@@ -392,7 +392,7 @@
                     this.for(arr[i],flag)
                   }
               }
-          }else if(item.staff.length!=0){
+          }else if(item.staff&&item.staff.length!=0){
             let arr = item.staff
             for(let i=0;i<arr.length;i++){
                 arr[i].mark_chose = flag;
@@ -551,7 +551,6 @@
           let datas = data.data.b
           let arrs = that.peerData;
 
-            datas.push({name:'所有用户',allInFlag:true})
 
             datas.forEach(element => {
                 element.mark_chose = false
@@ -584,6 +583,8 @@
                     })
             });
 
+            datas.unshift({name:'我的',allInFlag:true,staff:[],mark_chose:false})
+            datas.unshift({name:'所有用户',allInFlag:true,staff:[],mark_chose:false})
 
             // if(this.permissionsusers.length!=0){
 

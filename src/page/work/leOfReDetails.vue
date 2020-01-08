@@ -26,6 +26,10 @@
                     <span >部&emsp;&emsp;门</span>
                     <p>{{dataObj.officeName}}</p>
                 </div>
+                 <div class="infor-box" v-if="dataObj.letterType">
+                    <span >请示类别</span>
+                    <p>{{dataObj.letterTypeName}}</p>
+                </div>
                 <div class="infor-box">
                     <span>主&emsp;&emsp;题</span>
                     <p>{{dataObj.theme}}</p>

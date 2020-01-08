@@ -31,8 +31,8 @@ const MoreEmployee = r => require.ensure([], () => r(require('@/page/work/oa/mor
 const Menu = r => require.ensure([], () => r(require('@/page/work/oa/menu.vue')), 'group-foo')
 
 
-// const Position = r => require.ensure([], () => r(require('@/page/work/oa/position.vue')), 'group-foo')
-// const PositionDetails = r => require.ensure([], () => r(require('@/page/work/oa/positionDetails.vue')), 'group-foo')
+const ErpPermission = r => require.ensure([], () => r(require('@/page/work/oa/erpPermission.vue')), 'group-foo')
+const ErpPermissionDetails = r => require.ensure([], () => r(require('@/page/work/oa/erpPermissionDetails.vue')), 'group-foo')
 
 // const Position = r => require.ensure([], () => r(require('@/page/work/oa/position.vue')), 'group-foo')
 // const PositionDetails = r => require.ensure([], () => r(require('@/page/work/oa/positionDetails.vue')), 'group-foo')
@@ -136,6 +136,16 @@ export default [
     {
         path:'/materialDetails', //采购详情
         component:MaterialDetails,
+		meta: {keepAlive: true}
+    },
+    {
+        path:'/erpPermission', //
+        component:ErpPermission,
+		meta: {keepAlive: true}
+    },
+    {
+        path:'/erpPermissionDetails', //
+        component:ErpPermissionDetails,
 		meta: {keepAlive: true}
     },
     {

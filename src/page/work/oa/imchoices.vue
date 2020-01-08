@@ -435,6 +435,15 @@
              return false;
          } 
 
+        if(this.$route.query.amount){
+
+            this.approver_array.push(el)
+            this.approver_man(this.approver_array)
+            window.history.back()
+            
+            return false;
+        }
+
         let array = []
         if(c!='department'){
             this.datalist[index].offices[num].staff[c].mark_chose = !this.datalist[index].offices[num].staff[c].mark_chose  //设置这个人是否被选中
@@ -554,7 +563,6 @@
       history_back: function () {
         if(this.states=='pro'){
             let str = JSON.stringify(this.chose_array)
-            console.log(str)
             window.location.href = "epipe://?&data="+str;
         }else{
           window.history.back()
@@ -588,6 +596,14 @@
               }})
              return false;
          } 
+        
+        if(this.$route.query.amount){
+
+            this.approver_array.push(item)
+            this.approver_man(this.approver_array)
+            window.history.back()
+            return false;
+        }
 
         let that = this;
         if (!item.mark_chose) {
@@ -666,6 +682,7 @@
     mounted(){
       
       this.states = this.$route.query.state;
+      this.showGroup = !this.$route.query.showGroup;
       if(this.states=='pro'){
         this.showGroup = false;
       }

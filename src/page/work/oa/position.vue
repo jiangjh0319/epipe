@@ -32,8 +32,8 @@
                 </div>
 
                 <div class="bor_bottom choose" >
-                     <span class="title">职位名称</span>
-                    <input v-model="applicant.userPosition" placeholder="请输入职位名称"/>
+                     <span class="title">岗位名称</span>
+                    <input v-model="applicant.userPosition" placeholder="请输入岗位名称"/>
                 </div>
                 <div class="bor_bottom choose" @click="getTime(0)">
                      <span class="title">入职时间</span>
@@ -71,8 +71,8 @@
                      </p>
                 </div>
                 <div class="bor_bottom choose" > 
-                     <span class="title">调岗后职位</span>
-                    <input v-model="afterPosition" placeholder="请输入调岗后职位">
+                     <span class="title">调岗后岗位</span>
+                    <input v-model="afterPosition" placeholder="请输入调岗后岗位">
                 </div>
                 <div class="bor_bottom choose" @click="getTime(1)">
                      <span class="title">调岗日期</span>
@@ -147,13 +147,13 @@ let save_leave = (index,text,that) =>{
     else if(that.applicant.hireDate=='请选择入职日期'||!that.applicant.hireDate){
         that.$toast('选择入职日期')
     }else if(that.applicant.userPosition&&that.applicant.userPosition.length>20){
-        that.$toast('你输入的职位名称不能超过20字')
+        that.$toast('你输入的岗位名称不能超过20字')
     }else if(that.changeDate=="请选择调岗时间"){
         that.$toast('请选择调岗时间')
     }else if(that.afterPosition==''){
-        that.$toast('请输入调岗后职位')
+        that.$toast('请输入调岗后岗位')
     }else if(that.afterPosition.length>20){
-        that.$toast('职位名称不能超过20字')
+        that.$toast('岗位名称不能超过20字')
     }else if(that.afterOfficeId<0){
         that.$toast('请选择调岗后部门')
     }else if(that.reason.length>1000||that.reason.length<6){

@@ -44,10 +44,14 @@
                             <time >{{item.applyTime | timeFormat}}</time>
                         </div>
                         <div class="affairs_infor">
-                        <div class="request_infor lineHeight">
-                            <span>主&emsp;&emsp;题 :</span>
-                            <p class="line1">{{item.theme}}</p>
-                        </div>
+                            <div class="request_infor lineHeight">
+                                <span>主&emsp;&emsp;题 :</span>
+                                <p class="line1">{{item.theme}}</p>
+                            </div>
+                            <div class="request_infor lineHeight" v-if="item.letterType">
+                                <span>请示类别 :</span>
+                                <p class="line1">{{item.letterTypeName}}</p>
+                            </div>
                             <div class="request_infor margin10">
                                 <span>请示内容 :</span>
                                 <p class="line2" style="line-height:0.2rem;" v-html="item.content"></p>
@@ -610,11 +614,11 @@
                                     <p class="line1">{{item.targetName}}</p>
                                 </div>
                                 <div class="request_infor lineHeight">
-                                    <span>调岗前部门/职位 :</span>
+                                    <span>调岗前部门/岗位 :</span>
                                     <p class="line1">{{item.exOffAndPosi}}</p>
                                 </div>
                                 <div class="request_infor lineHeight">
-                                    <span>调岗后部门/职位 :</span>
+                                    <span>调岗后部门/岗位 :</span>
                                     <p class="line1">{{item.afterOffAndPosi}}</p>
                                 </div>
                                 <div class="request_infor lineHeight">
@@ -682,6 +686,37 @@
                                 <div class="request_infor lineHeight" v-if="item.num">
                                     <span>数&emsp;&emsp;量 :</span>
                                     <p class="line1">{{item.num }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                </div>
+            </div>
+            <div v-else-if="item.typecode == 23" @click="goDetails(item.applyId,item.fianlStatus,'erpPermission')"   class="affairs_item" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的权限异动申请</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>姓&emsp;&emsp;名 :</span><p class="line1">{{item.applyName}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>部&emsp;&emsp;门 :</span>
+                                    <p class="line1">{{item.applyDept}}</p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>异动原因 :</span>
+                                    <p class="line1">{{item.moveReason}}</p>
+                                </div>
+                                <div class="request_infor lineHeight" >
+                                    <span>异动类型 :</span>
+                                    <p class="line1">{{item.moveType }}</p>
                                 </div>
                             </div>
                         </div>
