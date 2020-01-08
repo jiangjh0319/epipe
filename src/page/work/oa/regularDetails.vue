@@ -30,9 +30,13 @@
             </div>
             <div class="styles infor">
                 <div class="infor-box">
-                    <span >申请人 &emsp;&emsp;&emsp;</span>
+                    <span >转正员工姓名</span>
                     <p>{{dataObj.username}}</p>
                 </div>
+                <!-- <div class="infor-box">
+                    <span >申请人 &emsp;&emsp;&emsp;</span>
+                    <p>{{dataObj.username}}</p>
+                </div> -->
                 <div class="infor-box">
                     <span>所属部门 &emsp;&emsp;</span>
                     <p>{{dataObj.officeName}}</p>
@@ -89,7 +93,7 @@
             <AccessoryList :accessory='accessory'>
             </AccessoryList>
 
-            <Approver
+            <!-- <Approver
              :dataObj = dataObj
              :refuseIndex = refuseIndex
              :newAppr = newAppr
@@ -97,6 +101,13 @@
              color="#609df6"
              :amount='amount'
 
+             >
+            </Approver> -->
+
+            <Approver
+            :datas = dataObj
+            :endIndex = endIndex
+             :refuseIndex = refuseIndex
              >
             </Approver>
 
@@ -169,7 +180,9 @@
     import TopHead  from '../../../components/topheader.vue'  //header导航栏
     import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
     import AccessoryList  from '../../../components/oa/accessoryList.vue'  //附件
-    import Approver  from '../../../components/oa/approverDetails.vue'  // 审批人
+    // import Approver  from '../../../components/oa/approverDetails.vue'  // 审批人
+    import Approver  from '../../../components/oa/approver_details_template.vue'  // 审批人
+
     import Copy  from '../../../components/oa/copyDetails.vue'  // 抄送人
     import OaBtn  from '../../../components/oa/oa_btn.vue'  // 动作按钮
     import MoreBtn  from '../../../components/oa/more_btn.vue'  // 更多弹窗
@@ -198,6 +211,8 @@
                 myself:false,
                 isBackout:false,
                 amount:0,
+                approverData:[],
+                endIndex:999,
 
             }
         },
@@ -234,10 +249,13 @@
             consent:function(type){
                  let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
                 
+                if(type==2){
+                     auditerIds = this.Util.deliverIds(this.dataObj.links,'userId')
+                     auditCompanyId = this.Util.deliverIds(this.dataObj.links,'companyId')
+                }
+
                 receiverIds = this.Util.getIds(this.newCopy,'userId')
-                auditerIds = this.Util.getIds(this.newAppr,'userId')
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
-                auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
                 url = type!=2?'/opinion':'/imchoices';
 
                 params={id:this.dataObj.regularApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
@@ -344,28 +362,73 @@
             let that = this;
             this.regularId = this.$route.query.regularId;
             let pusthId = this.$route.query.pushId
-            this.axios.get('/work/regular/info?regularApplyId='+this.regularId+'&pushId='+pusthId).then(function(res){
+            this.axios.get('/work/regular/info?regularApplyId='+this.regularId+'&pushId='+pusthId).then((res)=>{
                 that.dataObj = res.data.b;
-                let arr=[];
+                let arr=[],newArr=[];
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
                 that.title = that.dataObj.username+'的转正申请'
-                for(let i =0;i<that.dataObj.auditers.length;i++){   
-                        if(that.dataObj.auditers[i].status=='2'){
-                            that.leaveType = '0';  //已经拒绝
-                        }
-                        if(that.dataObj.auditers[i].status=='00'){
-                            arr.push(that.dataObj.auditers[i])
-                        }else{
-                            that.amount++;
-                        }
 
-                        if(that.dataObj.auditers[i].accessory!=null){
-                            that.dataObj.auditers[i].accessory = that.accessoryFors(that.dataObj.auditers[i].accessory)
+                arr = res.data.b.links;
+                
+                 arr.forEach(item=>{
+                     for(let i =0;i<item.auditers.length;i++){
+                          if(item.auditers[i].accessory!=null){
+                                item.auditers[i].accessory = that.accessoryFors(item.auditers[i].accessory)
                         }
+                     }
+                })
+
+                for(let i=0;i<arr.length;i++){
+                      let ar = JSON.parse(JSON.stringify(arr[i]))
+                    ar.auditers = [];
+                    let data = arr[i].auditers;
+
+                    if(arr[i].admins.length){
+                        let flow = arr[i]
+                        flow.auditers = arr[i].admins;
+                        flow.admins = [];
+                        flow.linkType = 4;
+                        arr.splice(i,0,flow)
                     }
 
-                    that.newAppr = arr
-                    that.approver_man(arr)
+
+                    data.forEach(item=>{
+                        if(item.status!=='00'&&item.status!='0'){
+                            item.flow = true;
+                            newArr.push(item)
+                        }else{
+                            item.hide = true;
+                            ar.auditers.push(item)
+                        }
+
+                        if(item.status=='0'){
+
+                            ar.status = '0'
+                        }
+                    })
+
+                    if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
+                        ar.auditers[0].flow = true
+                        newArr.push(ar.auditers[0])
+                    }else if(ar.auditers.length>0){
+                        newArr.push(ar)
+                    }
+
+
+                    if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                        newArr.push(ar)
+                    }
+                }
+               
+
+                for (let i = 0; i < newArr.length; i++) {
+
+                    if(newArr[i].status&&newArr[i].status=='2'){
+                        this.endIndex = i;
+                        this.leaveType = '0';  //已经拒绝
+                    }
+                }
+                    this.dataObj.links = newArr;
 
                     if(that.dataObj.userId==that.dataObj.auditUserId){
                         that.myself=true;
@@ -379,12 +442,12 @@
                         return;
                     }
 
-                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 1){ // 已同意
+
+                    if(that.dataObj.links[that.dataObj.links.length-1].status == 1){ // 已同意
                         that.leaveType = '1';
                         return;
                     }
-
-                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
+                    if(that.dataObj.links[that.dataObj.links.length-1].status == 5){ // 已评论
                         that.leaveType = '6';
                         return;
                     }

@@ -343,27 +343,6 @@ export default {
                 }
 
             },
-             getTime(){ //获取原生时间
-                let that = this;
-                window.location.href = "epipe://?&mark=getLeaveTime";
-                window["epipe_leavetime_callback"] = str => {
-                        let flag = false; 
-                        let date = null;
-                    if(str.indexOf('/')>0){
-                        flag = true;
-                        date = that.tiemF(str)
-                        str = str.split(/[- : \/]/);
-                    }else{
-                        date = new Date(str)
-                    }
-                    that.payDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str; 
-                }
-            },
-             tiemF(timeStr){ //传入原生的时间格式化
-                timeStr+=':00';
-                timeStr = timeStr.split(/[- : \/]/);
-                return new Date(timeStr[0],timeStr[1]-1,timeStr[2],timeStr[3],timeStr[4])
-             },
         },
          watch:{
             applyReason : function(){
@@ -413,7 +392,6 @@ export default {
                     this.moveReasonCode = res.index
                     this.moveReason = res.name
                 }else if(res.type=='wantPri'){
-                    console.log(res)
                     this.wantPri = res.index
                     this.wantPriName = res.name
                 }else{

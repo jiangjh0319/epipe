@@ -296,7 +296,7 @@
       }
     },
     props: [
-      'color', 'data_list', 'has_journal','special_class','isGroup','type','title','minTitle'
+      'color', 'data_list', 'has_journal','special_class','isGroup','type','title','minTitle','flag'
     //  颜色  选中的联系人数据  
     ],
     methods: {
@@ -309,7 +309,11 @@
         this.more_prople = !this.more_prople
       },
       go_imchoice: function () {
+        if(this.flag){
+          this.$emit('add_people')
+        }else{
           this.$router.push({path: 'imchoices', query: {bgcolor:this.color,num:1}})
+        }
       },
       remove_man: function (item, index) {
         if (this.has_journal) {
