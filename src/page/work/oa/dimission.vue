@@ -282,12 +282,12 @@ export default {
                 employeeNo : '', //员工编号
                 position:'',//岗位
                 education:'',//学历
-                // hireDate:'请选择入职日期',//入职日期
-                // dimissionDate:'请选择离职日期',//离职日期
-                // contractEndDate:'请选择合同终止日期',//合同终止日期
-                hireDate:'2019-1-12',//入职日期
-                dimissionDate:'2020-1-12',//离职日期
-                contractEndDate:'2020-1-12',//合同终止日期
+                hireDate:'请选择入职日期',//入职日期
+                dimissionDate:'请选择离职日期',//离职日期
+                contractEndDate:'请选择合同终止日期',//合同终止日期
+                // hireDate:'2019-1-12',//入职日期
+                // dimissionDate:'2020-1-12',//离职日期
+                // contractEndDate:'2020-1-12',//合同终止日期
 
                 userName : '',//用印承办人
                 positionType:'请选择岗位类型',

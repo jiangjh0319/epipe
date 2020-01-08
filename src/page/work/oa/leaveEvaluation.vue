@@ -11,74 +11,57 @@
                 <div class="two_style">
                     <div class="dao_s">
                         <div class="sex_s">直属领导</div>
-                        <div class="name_s">黄陂</div>
+                        <div class="name_s">{{superleadName}}</div>
                     </div>
                      <div class="line_s"></div>
                     <div class="opinion">
                         <div class="sex_s_a">导师意见</div>
-                        <div class="name_s_a">此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验能够支撑整个项目的进展工作反馈度比较高能够支撑整个项目的进展工作反馈度比较高。做过比较多的项目，能够支撑整个项目的进展工作反馈度比较高。</div>
+                        <div class="name_s_a">{{superleadComment}}</div>
                     </div>
                 </div>
                 <div class="two_style">
                     <div class="dao_s">
                         <div class="sex_s">监交人</div>
-                        <div class="name_s">黄陂</div>
+                        <div class="name_s">{{monitorName}}</div>
                     </div>
                     <div class="line_s"></div>
                     <div class="opinion">
                         <div class="sex_s_a">监交人意见</div>
-                        <div class="name_s_a">此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验能够支撑整个项目的进展工作反馈度比较高能够支撑整个项目的进展工作反馈度比较高。做过比较多的项目，能够支撑整个项目的进展工作反馈度比较高。</div>
+                        <div class="name_s_a">{{monitorComment}}</div>
                     </div>
                 </div>
                  <div class="two_style">
                     <div class="dao_s">
                         <div class="sex_s">HR</div>
-                        <div class="name_s">黄陂</div>
+                        <div class="name_s">{{hrName}}</div>
                     </div>
                     <div class="line_s"></div>
                     <div class="opinion">
                         <div class="sex_s_a">HR建议</div>
-                        <div class="name_s_a">此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验能够支撑整个项目的进展工作反馈度比较高能够支撑整个项目的进展工作反馈度比较高。做过比较多的项目，能够支撑整个项目的进展工作反馈度比较高。</div>
+                        <div class="name_s_a">{{hrComment}}</div>
                     </div>
                     <div class="opinionTime">
-                        <div class="levtime">建议离职日期</div><div class="levtime">2020-1-6</div>
+                        <div class="levtime">建议离职日期</div><div class="levtime">{{hrSuggestDismTime}}</div>
                     </div>
                 </div>
                 <div class="row_m">
                     交接信息明细
                 </div>
-                <div class="two_style">
+                <div class="two_style" v-for="(item,index) in listDatas" :key="index">
                     <div class="dao_s">
                         <div class="sex_s">工作项</div>
-                        <div class="name_s">办公软件及电脑</div>
+                        <div class="name_s">{{item.handovertitle}}</div>
                     </div>
                     <div class="line_s"></div>
                     <div class="opinion">
                         <div class="sex_s_a">交接明细</div>
-                        <div class="name_s_a">此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验能够支撑整个项目的进展工作反馈度比较高能够支撑整个项目的进展工作反馈度比较高。做过比较多的项目，能够支撑整个项目的进展工作反馈度比较高。</div>
+                        <div class="name_s_a">{{item.handoverdetail}}</div>
                     </div>
                     <div class="opinion_Info">
-                        <div class="levtime">交接人</div><div class="levtime_in">灞波儿奔</div>
+                        <div class="levtime">交接人</div><div class="levtime_in">{{item.handoverpersonname}}</div>
                     </div>
                     <div class="opinion_Info">
-                        <div class="levtime">交接日期</div><div class="levtime_in">2019-12-28 15:20:33</div>
-                    </div>
-                </div>
-                 <div class="two_style">
-                    <div class="dao_s">
-                        <div class="sex_s">工作项</div>
-                        <div class="name_s">办公软件及电脑</div>
-                    </div>
-                    <div class="line_s"></div>
-                    <div class="opinion">
-                        <div class="sex_s_a">交接明细</div>
-                        <div class="name_s_a">此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验能够支撑整个项目的进展工作反馈度比较高能够支撑整个项目的进展工作反馈度比较高。做过比较多的项目，能够支撑整个项目的进展工作反馈度比较高。</div>
-                    </div>
-                    <div class="opinion_Info">
-                        <div class="levtime">交接人</div><div class="levtime_in">灞波儿奔</div>
-                    </div>
-                    <div class="opinion_Info">
-                        <div class="levtime">交接日期</div><div class="levtime_in">2019-12-28 15:20:33</div>
+                        <div class="levtime">交接日期</div><div class="levtime_in">{{item.handovertime}}</div>
                     </div>
                 </div>
             </div>
@@ -101,7 +84,8 @@
                 superleadComment:'',
                 monitorComment:'',
                 hrComment:'',
-                hrSuggestDismTime:''
+                hrSuggestDismTime:'',
+                listDatas:[]
             }
         },
         
@@ -123,6 +107,14 @@
             this.axios.post('/work/dismisstion/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
                 if(res.data.h.code==200){
                     console.log(res.data.b)
+                    this.superleadName =res.data.b.superleadName;
+                     this.monitorName =res.data.b.monitorName;
+                      this.hrName =res.data.b.hrName;
+                       this.superleadComment =res.data.b.superleadComment;
+                        this.monitorComment =res.data.b.monitorComment;
+                         this.hrComment =res.data.b.hrComment;
+                          this.hrSuggestDismTime =res.data.b.hrSuggestDismTime;
+                          this.listDatas = res.data.b.handOverList;
 
                 }else{
                     this.$toast(res.data.h.msg)
@@ -179,6 +171,7 @@
                      .sex_s_a{
                      padding-left 0.15rem;
                      padding-top 0.1rem;
+                     padding-bottom 0.1rem;
                      font-size 0.16rem;
                      color:#333;
                    }
@@ -193,6 +186,7 @@
                .opinionTime{
                    display flex;
                    padding-bottom 0.2rem;
+                   padding-top: 0.1rem;
                     .levtime{
                         padding-left 0.15rem;
                         font-size 0.16rem;
