@@ -905,6 +905,7 @@ export default new Router({
     {
       path:'/recruitmentApprovalDetial',//招聘审批详情
       component:RecruitmentApprovalDetial,
+      meta: {keepAlive: true}
     },
     {
       path:'/interviewDetail',//面试评价详情

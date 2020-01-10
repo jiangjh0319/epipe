@@ -12,7 +12,7 @@
                 <div class="content_head">
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
-                        <p class="nameTl">{{dataObj.username}}</p>
+                        <p class="nameTl">{{dataObj.candidateName}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
@@ -25,41 +25,41 @@
                 </div>
                 <div class="infor-box">
                     <span>招聘职位</span>
-                    <p>{{dataObj.reimburseApplyTitle}}</p>
+                    <p>{{dataObj.position}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门</span>
-                    <p>{{dataObj.reimburseApplyTitle}}</p>
+                    <p>{{dataObj.department}}</p>
                 </div>
             </div>
             <div class="styles infor">
                 <div class="infor-box">
                     <span >应聘人姓名</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{dataObj.candidateName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>工作年限</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{dataObj.workingLife}}</p>
                 </div>
                 <div class="infor-box">
                     <span>学历</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{dataObj.education}}</p>
                 </div>
                 <div class="infor-box">
                     <span>毕业院校</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{dataObj.university}}</p>
                 </div>
                 <div class="infor-box">
                     <span>电话</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{dataObj.phone}}</p>
                 </div>
                 <div class="infor-box">
                     <span>邮箱</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{dataObj.email}}</p>
                 </div>
                 <div class="infor-box">
                     <span>面试时间</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <p>{{dataObj.interviewTime}}</p>
                 </div>
             </div>
             <!-- <div v-for="(item,index) in dataObj.list" :key="index">
@@ -195,7 +195,7 @@
                 refuseSvgIndex:-1,
                 mark :'marks',
                 accessory:[],
-                reimburseId:'',
+                interviewId:'',
                 newCopy:[], //新增抄送人
                 newAppr:[], //新增审批人
                 head:'native',
@@ -218,7 +218,7 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
-                 this.$router.push({path:'/opinion',query:{id:this.dataObj.reimburseId,typeName:'reimburse',applyType:6,color:'#0fc37c'}})
+                 this.$router.push({path:'/opinion',query:{id:this.dataObj.interviewId,typeName:'interview',applyType:6,color:'#0fc37c'}})
             },
             history_back_click:function(){
                     if(location.href.indexOf('goWork=0')>0){
@@ -233,10 +233,10 @@
             deliverTo(){ //转交
                 let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
                 let newCopy = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.reimburseId,receiverIds:newCopy,careOf:true,typeName:'reimburse',applyType:6,bgcolor:'#0fc37c',auditerIds:newApprStr,num:1}})
+                this.$router.push({path:'/imchoices',query:{id:this.dataObj.interviewId,receiverIds:newCopy,careOf:true,typeName:'interview',applyType:6,bgcolor:'#0fc37c',auditerIds:newApprStr,num:1}})
             },
             approveBack(){ //退回
-                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.reimburseId,typeName:'reimburse',applyType:6,color:'#0fc37c'}})
+                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.interviewId,typeName:'interview',applyType:6,color:'#0fc37c'}})
             },
             consent:function(type){
                  let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
@@ -247,20 +247,20 @@
                 auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
                 url = type!=2?'/opinion':'/imchoices';
 
-                params={id:this.dataObj.reimburseId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
-                color:'#0fc37c',applyType:6,typeName:'reimburse',pageType:type,careOf:true,num:1}
+                params={id:this.dataObj.interviewId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                color:'#0fc37c',applyType:6,typeName:'interview',pageType:type,careOf:true,num:1}
 
               this.$router.push({path:url,query:params})
 
             },
             resubmit(){ //再次提交
-                this.$router.replace({path:'/reimburse',query:{reimburseId:this.dataObj.reimburseId,resubmit:1}})
+                this.$router.replace({path:'/recruitmentApproval',query:{interviewId:this.dataObj.interviewId,resubmit:10}})
             },
             urge(){ //催办
                 this.isBackout = false;
                 let that = this;
                 this.axios.post('/work/audit'+this.Service.queryString({
-                        applyId:this.dataObj.reimburseId,
+                        applyId:this.dataObj.interviewId,
                         type:6,
                         applyType:6,
                 })).then(function(res){
@@ -288,7 +288,7 @@
                 let that = this;
                 this.isDialog = false;
                 this.axios.post('/work/audit'+this.Service.queryString({
-                    applyId:this.dataObj.reimburseId,
+                    applyId:this.dataObj.interviewId,
                     type:1,
                     applyType:6,
                 })).then(function(res){
@@ -299,7 +299,7 @@
                             that.$toast('撤销成功！')
           
                             setTimeout(()=>{
-                                window.location.href = "epipe://?&mark=reimburseDetails&_id="+that.dataObj.reimburseId+'&data='+JSON.stringify({text:1});;
+                                window.location.href = "epipe://?&mark=recruitmentApprovalDetial&_id="+that.dataObj.interviewId+'&data='+JSON.stringify({text:1});;
                             },500)     
                         } 
                     })
@@ -356,13 +356,15 @@
         mounted:function(){
 
             let that = this;
-            this.reimburseId = this.$route.query.reimburseId;
+            this.interviewId = this.$route.query.interviewId;
             let pusthId = this.$route.query.pushId
-            this.axios.get('/work/reimburse/info?reimburseId='+this.reimburseId+'&pushId='+pusthId).then(function(res){
+            // this.axios.get('/work/reimburse/info?interviewId='+this.interviewId+'&pushId='+pusthId).then(function(res){
+            this.axios.get('/work/interview/info?interviewId=eba209c332bb11ea98024ccc6ac12eca'+'&pushId='+pusthId).then(function(res){
                 that.dataObj = res.data.b;
+                console.log('dataObj',that.dataObj)
                 let arr=[];
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
-                that.title = that.dataObj.username+'的报销申请'
+                that.title = that.dataObj.candidateName+'的招聘审批'
                 for(let i =0;i<that.dataObj.auditers.length;i++){   
 
                         if(that.dataObj.auditers[i].status=='2'){
