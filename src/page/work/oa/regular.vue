@@ -128,7 +128,8 @@
 
 
             <CopeMan 
-                :has_journal="!has_journal"
+            :has_journal="!showCopy"
+                :showAdd="showCopy"
                 color="#609df6"
                 :data_list=chosed_list
                 v-on:remove_item="remove_item"

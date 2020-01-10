@@ -75,7 +75,7 @@
             >
             </Accessory>
             
-            <ApproverMan 
+            <!-- <ApproverMan 
                 :has_journal="!has_journal"
                 color="#609df6"
                 :data_list=approver_list
@@ -83,10 +83,20 @@
                 :special_class='1'
                 :isGroup = true
                 type = 9
-            ></ApproverMan>
+            ></ApproverMan> -->
+
+
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=6
+              :isMore=true
+            ></ApproMan>
 
             <CopeMan 
-                :has_journal="!has_journal"
+                :has_journal="!showCopy"
+                :showAdd="showCopy"
                 color="#609df6"
                 :data_list=chosed_list
                 v-on:remove_item="remove_item"
@@ -159,7 +169,7 @@ let save_leave = (index,text,that) =>{
         that.$toast('专业要求内容不能超过30个字符')
     }else if(that.remark.length>1000||that.remark.length<6){
         that.$toast('申请理由不能少于6个或超过1000字符')
-    }else if(that.approver_list.length == 0){
+    }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
 
@@ -167,9 +177,9 @@ let save_leave = (index,text,that) =>{
         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
+        params = that.Util.approverFormat(that.allApprovers)
+
         fileObj = that.Util.fileFo(that.accessory)
 
         that.axios({
@@ -205,10 +215,12 @@ let save_leave = (index,text,that) =>{
                     urls : fileObj.urlStr, //附件
                     fileNames:fileObj.fileNameStr, 
                     fileSizes:fileObj.fileSizeStr,
-                    auditUserIds, //审批人
                     receiverIds, //抄送人
-                    auditCompanyIds,
                     receiverCompanyIds,
+                    auditUserIds:params.userIdsStr, //审批人
+                    auditCompanyIds:params.companyIdsStr,
+                    applyLinkIds:params.applyLinkIdsStr,
+                    linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -250,7 +262,9 @@ import {mapState, mapMutations} from 'vuex';
 import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
 import WorkButton  from '../../../components/worknews/work_button.vue'   //提交按钮
 import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
-import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+// import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+import ApproMan  from '../../../components/oa/approver_template.vue'    
+
 import TopHead  from '../../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
 
@@ -306,12 +320,15 @@ export default {
                 writings:'', //写作
                 priority:'', //优先录用
                 responsibility:'', //工作职责
+                addressListIndex:-1,
+                showCopy:0,
+                allApprovers:[],
             }
         },
         components: {
             WorkButton,
             CopeMan,
-            ApproverMan,
+            ApproMan,
             TopHead,
             Accessory,
             Dialog
@@ -330,6 +347,17 @@ export default {
             }else{
                 this.isShow = true;
             }
+        },
+        go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+             let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,amount:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
         },
         lf_click(){
             this.isShow=false;
@@ -454,7 +482,9 @@ export default {
             }
         },
         activated(){
-            this.approver_list = this.approver_man_state
+             if(this.addressListIndex>0){
+                this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }
             this.chosed_list = this.chosed_man_state
          },
          created() {
@@ -513,10 +543,15 @@ export default {
                     that.accessory.push(obj)
                 }
 
-            this.axios.post('/user/current/userinfo').then(function(res){
-                that.departmentName = res.data.b.officeName
-                that.userName = res.data.b.name
-                that.oldData = JSON.parse(JSON.stringify(that.$data))
+           this.axios.get('/process/apply/enter?req=22').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = data.links;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
             })
 
             if(this.$route.query.employeeId){
@@ -564,8 +599,7 @@ export default {
                         that.responsibilityNum = data.responsibility.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.approver_list = data.auditers;
-                        that.approver_man(that.approver_list);
+                        that.allApprovers = data.links;
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return
