@@ -162,7 +162,10 @@ let save_leave = (index,text,that) =>{
     // }else 
     if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
-    }else{
+    }else if(that.remark.length>1000||that.remark.length<6){
+        that.$toast('备注不能少于6个或超过1000字符')
+    }
+    else{
 
 
         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
@@ -183,8 +186,16 @@ let save_leave = (index,text,that) =>{
                     Id :that.id, // id
                     remark:that.remark.replace(/\n/g, '<br/>'), //申请理由
                     position:that.position, //招聘岗位
-                    num:that.num, //招聘人数
-                    arrivalDate:that.arrivalDate,//到岗时间
+                    department:that.departmentName,//所属部门
+                    candidateName:that.candidateName,//候选人名称
+                    workingLife:that.workYear,//工作年限
+                    education:that.educationFormal,//学历
+                    university:that.college,//毕业院校
+                    phone:that.telephone,//电话
+                    email:that.email,//邮箱
+                    interviewTime:that.interviewTime,
+                    // num:that.num, //招聘人数
+                    // arrivalDate:that.arrivalDate,//到岗时间
 
                     // sex:that.sex,//性别
                     // marriage:that.marriage,//婚姻
@@ -235,12 +246,13 @@ let save_leave = (index,text,that) =>{
                             }else{
                                 that.$toast('提交成功！')
                                 window.location.href = "epipe://?&mark=workUpdate";
+                                console.log('成功数据',res.data.b)
                                 setTimeout(()=>{
                                     window.location.href = "epipe://?&mark=submitEmployee&_id="+res.data.b.employeeApplyId;
                                     
                                 },500)
                             }
-                            localStorage.removeItem('employee')
+                            localStorage.removeItem('recruitmentApprova')
                         }
                  })
     }
@@ -525,13 +537,14 @@ export default {
                   this.axios.get('work/interview/info',{
                     params:{
                         type:that.$route.query.resubmit,
-                        interviewId:this.$route.query.recruitmentApprovaId  
-                        // interviewId:'eba209c332bb11ea98024ccc6ac12eca'
+                        // interviewId:this.$route.query.recruitmentApprovaId  
+                        interviewId:'eba209c332bb11ea98024ccc6ac12eca'
                     }
                 }).then(function(res){
                    let data = res.data.b;
+                //    console.log('data',data)
                        if(!that.$route.query.resubmit){
-                                that.id = data.employeeApplyId;
+                                that.id = data.interviewId;
                         }
                         that.isDraftFlag = 1;
                         that.accessoryFor(data)
