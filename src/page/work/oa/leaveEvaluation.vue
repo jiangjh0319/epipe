@@ -77,7 +77,7 @@
         data(){
             return{
                 mark :'marks',
-                title:'离职评价及办理',
+                title:'',
                 superleadName:'',//直属领导
                 monitorName:'',//监交人
                 hrName:'',//hr
@@ -104,7 +104,9 @@
             },
         },
         created() {
-            this.axios.post('/work/dismisstion/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
+            console.log(this.$route.query.dataList)
+            this.title = this.$route.query.dataList.username+'离职评价及办理';
+            this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
                 if(res.data.h.code==200){
                     console.log(res.data.b)
                     this.superleadName =res.data.b.superleadName;

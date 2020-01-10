@@ -386,6 +386,7 @@
               if(flag){
                   p.auditUserId = p.userId;
                   this.approver_array.push(p)
+                  
                   this.approver_man(this.approver_array)
                   window.history.back()
               }

@@ -217,9 +217,9 @@ let save_leave = (index,text,that) =>{
     }else if(that.employeeTitle.length>100 ||that.employeeTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
     }
-    // else if(that.arrivalDate == '请选择到岗日期'){
-    //     that.$toast('请选择到岗日期')
-    // }
+    else if(that.arrivalDate == '请选择到岗日期'){
+        that.$toast('请选择到岗日期')
+    }
     else if(that.num==''){
         that.$toast('需求人数不能为空')
     }else if(isNaN(that.num)){
@@ -250,9 +250,9 @@ let save_leave = (index,text,that) =>{
     }else if(that.employeeReason.length>1000||that.employeeReason.length<6){
         that.$toast('申请理由不能少于6个或超过1000字符')
     }
-    // else if(that.approver_list.length == 0){
-    //     that.$toast('请选择审批人')
-    // }
+    else if(that.approver_list.length == 0){
+        that.$toast('请选择审批人')
+    }
     else{
 
 
@@ -277,6 +277,8 @@ let save_leave = (index,text,that) =>{
                     position:that.position, //招聘岗位
                     num:that.num, //招聘人数
                     arrivalDate:that.arrivalDate,//到岗时间
+                    // arrivalDate:'2020-11-10 10:20:33',//到岗时间
+                    authorized:that.isComplie,//编制
 
                     sex:that.sex,//性别
                     marriage:that.marriage,//婚姻
@@ -355,6 +357,7 @@ export default {
                 position : '请选择', //招聘岗位
                 num:'',//招聘人数
                 arrivalDate:'请选择到岗日期', //到岗日期
+                // arrivalDate:'2020-11-10 10:20:33', //到岗日期
                 returnDate:'请选择预计归还日期', //
                 userName : '',//用印承办人
                 employeeReason : '',//申请理由
@@ -504,6 +507,7 @@ export default {
                         date = new Date(str)
                     }
                     that.arrivalDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str; 
+
                 }
             },
              tiemF(timeStr){ //传入原生的时间格式化

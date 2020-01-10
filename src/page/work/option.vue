@@ -196,7 +196,7 @@ export default {
                 })
          }else if(this.type=='isComplie'){
              this.title = '编制';
-             that.data = [{key:'编制内',value:1},{key:'编制外',value:2}]
+             that.data = [{key:'编制内',value:1},{key:'编制外',value:0}]
          }else if(this.type=='isPosition'){
              this.title = '岗位招聘';
              that.data = [{key:'技术部',value:1},{key:'运营部',value:2}]
