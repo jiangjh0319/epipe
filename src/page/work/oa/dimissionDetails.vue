@@ -27,10 +27,14 @@
                     <span>标&emsp;&emsp;题</span>
                     <p>{{dataObj.dimissionTitle}}</p>
                 </div>
+                <div class="infor-box">
+                    <span style="letter-spacing:0.05rem">申请人 </span>
+                    <p>{{dataObj.username}}</p>
+                </div>
             </div>
             <div class="styles infor">
                 <div class="infor-box">
-                    <span style="letter-spacing:0.05rem">申请人 </span>
+                    <span style="letter-spacing:0.05rem">离职员工姓名 </span>
                     <p>{{dataObj.username}}</p>
                 </div>
                 <div class="infor-box">
@@ -343,7 +347,7 @@
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
             hanlderToleaveEvaluation(){
-                this.$router.push({path:'/leaveEvaluation',query:{dimissionApplyId:'83e1704131e311ea98024ccc6ac12eca'}})
+                this.$router.push({path:'/leaveEvaluation',query:{dimissionApplyId:'83e1704131e311ea98024ccc6ac12eca',dataList:this.dataObj}})
             }
         },
         created() {

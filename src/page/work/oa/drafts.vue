@@ -954,6 +954,39 @@
                         查看详情
                 </div>
             </div>
+               <div v-else-if="item.typecode == 24" @click="go_Apply(item,'recruitmentApproval')"   class="affairs_item" >
+                <div class="item_infor">
+                    <div class="select" v-if="redactState">
+                             <svg v-if="item.isDel" class="icon" style="font-size:0.16rem;color:#f80" aria-hidden="false">
+                                <use xlink:href="#icon-xuanzhong2"></use>
+                            </svg>
+                            <svg v-else  class="icon" style="font-size:0.16rem;" aria-hidden="false">
+                                <use xlink:href="#icon-meiyouxuanzhong"></use>
+                            </svg>
+                    </div>
+                    <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>{{item.title}}招聘审批</h2>
+                                <time >{{item.applyTime | timeFormat}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>招聘职位 :</span><p class="line1">{{item.position}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>候选人姓名 :</span>
+                                    <p class="line1">{{item.candidateName}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div  class="skip" tag="div">
+                        查看详情
+                </div>
+            </div>
   
          </div>   
         </div>

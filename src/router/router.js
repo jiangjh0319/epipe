@@ -900,6 +900,7 @@ export default new Router({
     {
       path:'/recruitmentApproval',//招聘审批
       component:RecruitmentApproval,
+      meta: {keepAlive: true}
     },
     {
       path:'/recruitmentApprovalDetial',//招聘审批详情
