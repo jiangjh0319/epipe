@@ -533,7 +533,7 @@ export default {
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
 
-            // if(this.$route.query.recruitmentApprovaId){
+            if(this.$route.query.recruitmentApprovaId){
                   this.axios.get('work/interview/info',{
                     params:{
                         type:that.$route.query.resubmit,
@@ -595,7 +595,7 @@ export default {
                         that.remark = data.remarks.replace(/<br\/>/g,'\n')//备注
                     })
                     return
-            // }
+            }
         },
         beforeDestroy() {
             eventBus.$off('leaveType');
