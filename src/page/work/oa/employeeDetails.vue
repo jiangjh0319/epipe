@@ -366,9 +366,9 @@
         mounted:function(){
             let that = this;
             this.employeeId = this.$route.query.employeeId;
-            console.log(this.employeeId)
+            // console.log(this.employeeId)
             let pushId = this.$route.query.pushId
-            // this.axios.get('/work/employee/info?employeeApplyId=57609d0332b911ea98024ccc6ac12eca'+'&pushId='+pushId).then(function(res){
+            // this.axios.get('/work/employee/info?employeeApplyId=f2eb734b345111ea98024ccc6ac12eca'+'&pushId='+pushId).then(function(res){
             this.axios.get('/work/employee/info?employeeApplyId='+this.employeeId+'&pushId='+pushId).then(function(res){
                 that.dataObj = res.data.b;
                 let arr=[];

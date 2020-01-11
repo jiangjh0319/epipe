@@ -347,7 +347,7 @@
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
             hanlderToleaveEvaluation(){
-                this.$router.push({path:'/leaveEvaluation',query:{dimissionApplyId:'83e1704131e311ea98024ccc6ac12eca',dataList:this.dataObj}})
+                this.$router.push({path:'/leaveEvaluation',query:{dimissionApplyId:'',dataList:this.dataObj}})
             }
         },
         created() {

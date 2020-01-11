@@ -122,10 +122,15 @@ let reg = /^[\u4e00-\u9fa5]+$/;
 var regs =/^[1-9]+\d*$/;
 let rule = /^[A-Za-z0-9]+$/;
 let save_leave = (index,text,that) =>{
-    // if(that.position== ''){
-    //     that.$toast('招聘岗位不能为空')
+    // if(that.approvalPosition== ''){
+    //     that.$toast('文件标题不能为空')
     // }
-    // else if(that.candidateName==''){
+    // else if(that.approvalPosition.length>100 ||that.approvalPosition.length<2){
+    //     that.$toast('文件标题不能低于2个或超过100个字符')
+    // }
+    // else if(that.arrivalDate == '请选择到岗日期'){
+    //     that.$toast('请选择到岗日期')
+    // }else if(that.num==''){
     //     that.$toast('需求人数不能为空')
     // }else if(isNaN(that.num)){
     //     that.$toast('需求人数为数字')
@@ -150,11 +155,15 @@ let save_leave = (index,text,that) =>{
     //     that.$toast('工作职责不能超过1000字')
     // }else if(that.remark == ''){
     //     that.$toast('申请理由不能为空')
-    // }else
-     if(that.remark.length>1000||that.remark.length<6){
-        that.$toast('申请理由不能少于6个或超过1000字符')
-    }else if(that.approver_list.length == 0){
+    // }else if(that.major.length>30){
+    //     that.$toast('专业要求内容不能超过30个字符')
+    // }else if(that.remark.length>1000||that.remark.length<6){
+    //     that.$toast('申请理由不能少于6个或超过1000字符')
+    // }else 
+    if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
+    }else if(that.remark.length>1000||that.remark.length<6){
+        that.$toast('备注不能少于6个或超过1000字符')
     }
     else{
 
@@ -175,7 +184,7 @@ let save_leave = (index,text,that) =>{
                 },
                 data:{
                     Id :that.id, // id
-                    remark:that.remark.replace(/\n/g, '<br/>'), //申请理由
+                    remarks:that.remark.replace(/\n/g, '<br/>'), //申请理由
                     position:that.position, //招聘岗位
                     department:that.departmentName,//所属部门
                     candidateName:that.candidateName,//候选人名称
@@ -228,7 +237,7 @@ let save_leave = (index,text,that) =>{
 
                                 that.$toast('已保存至草稿箱!')
                                 setTimeout(()=>{
-                                    if(that.$route.query.recruitmentApprovaId){
+                                    if(that.$route.query.employeeId){
                                         window.location.href = "epipe://?&mark=goWork"
                                     }else{
                                         window.location.href = "epipe://?&mark=history_back" 
@@ -239,7 +248,7 @@ let save_leave = (index,text,that) =>{
                                 window.location.href = "epipe://?&mark=workUpdate";
                                 console.log('成功数据',res.data.b)
                                 setTimeout(()=>{
-                                    window.location.href = "epipe://?&mark=submitInterview&_id="+res.data.b.interviewId;
+                                    window.location.href = "epipe://?&mark=recruitmentApprovalDetial&_id="+res.data.b.interviewApplyId;
                                     
                                 },500)
                             }
@@ -261,6 +270,7 @@ export default {
         data(){
             return{
                 id:'',
+                approvalPosition : '', // 招聘职位
                 departmentName : '',//所属部门
                 candidateName: '',  //候选人名称
                 workYear:'',//工作年限
@@ -270,10 +280,8 @@ export default {
                 email:'',//邮箱
                 interviewTime:'',//面试时间
                 remark:'',//备注
+
                 position : '', //招聘岗位
-
-
-
                 num:'',//招聘人数
                 arrivalDate:'请选择到岗日期', //到岗日期
                 returnDate:'请选择预计归还日期', //
@@ -300,6 +308,7 @@ export default {
                 highestEducationName:'请选择',
                 jobExperience:'',
                 jobExperienceName:'请选择',
+                education:'', //学历
                 educationName:'请选择',
                 major:'',//专业
                 qualifications:'',//证书
@@ -518,24 +527,24 @@ export default {
                     that.accessory.push(obj)
                 }
 
-            // this.axios.post('/user/current/userinfo').then(function(res){
-            //     that.departmentName = res.data.b.officeName
-            //     that.userName = res.data.b.name
-            //     that.oldData = JSON.parse(JSON.stringify(that.$data))
-            // })
+            this.axios.post('/user/current/userinfo').then(function(res){
+                that.departmentName = res.data.b.officeName
+                that.userName = res.data.b.name
+                that.oldData = JSON.parse(JSON.stringify(that.$data))
+            })
 
             // if(this.$route.query.recruitmentApprovaId){
                   this.axios.get('work/interview/info',{
                     params:{
                         type:that.$route.query.resubmit,
-                        interviewId:this.$route.query.recruitmentApprovaId  
-                        // interviewId:'eba209c332bb11ea98024ccc6ac12eca'
+                        interviewApplyId:this.$route.query.recruitmentApprovaId  
+                        // interviewApplyId:'eba209c332bb11ea98024ccc6ac12eca'
                     }
                 }).then(function(res){
                    let data = res.data.b;
                 //    console.log('data',data)
                        if(!that.$route.query.resubmit){
-                                that.id = data.interviewId;
+                                that.id = data.interviewApplyId;
                         }
                         that.isDraftFlag = 1;
                         that.accessoryFor(data)
@@ -548,7 +557,7 @@ export default {
                         that.telephone = data.phone;//电话
                         that.email = data.email;//邮箱
                         that.interviewTime = data.interviewTime;//面试时间
-                        // that.remark = data.remark.replace(/<br\/>/g,'\n')//备注
+                        
 
 
 
@@ -583,6 +592,7 @@ export default {
                         that.approver_list = data.auditers;
                         that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
+                        that.remark = data.remarks.replace(/<br\/>/g,'\n')//备注
                     })
                     return
             // }

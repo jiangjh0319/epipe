@@ -199,7 +199,10 @@ export default {
              that.data = [{key:'编制内',value:1},{key:'编制外',value:0}]
          }else if(this.type=='isPosition'){
              this.title = '岗位招聘';
-             that.data = [{key:'技术部',value:1},{key:'运营部',value:2}]
+             this.axios.get('/work/hrposition/type').then(function(res){
+                //  console.log(res.data.b)
+                    if(res.data.h.code =200 ) that.data = res.data.b;
+                })
          }else if(this.type=='moveReason'){
                 this.title = '异动原因';
                 this.axios.get('/move/erpprimove/reason').then(function(res){
