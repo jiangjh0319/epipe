@@ -95,18 +95,20 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
         history_back_click:function(){
-                    // if(location.href.indexOf('goWork=0')>0){
-                    //     window.location.href = "epipe://?&mark=history_back"
-                    //     return
-                    // }
-                    // window.location.href = "epipe://?&mark=goWork"
-                    history.back();
+                    if(location.href.indexOf('goWork=0')>0){
+                        window.location.href = "epipe://?&mark=history_back"
+                        return
+                    }
+                    window.location.href = "epipe://?&mark=goWork"
+                    // history.back();
             },
         },
         created() {
             console.log(this.$route.query.dataList)
+            let dimissionApplyId = this.$route.query.dataList.dimissionApplyId;
             this.title = this.$route.query.dataList.username+'离职评价及办理';
-            this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
+            this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId='+ dimissionApplyId + '&type=1').then(res=>{
+                // this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
                 if(res.data.h.code==200){
                     console.log(res.data.b)
                     this.superleadName =res.data.b.superleadName;

@@ -12,7 +12,7 @@
                 <div class="content_head">
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
-                        <p class="nameTl">{{dataObj.username}}</p>
+                        <p class="nameTl">{{dataObj.employeeName}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
@@ -29,13 +29,13 @@
                 </div>
                 <div class="infor-box">
                     <span style="letter-spacing:0.05rem">申请人 </span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{dataObj.employeeName}}</p>
                 </div>
             </div>
             <div class="styles infor">
                 <div class="infor-box">
                     <span style="letter-spacing:0.05rem">离职员工姓名 </span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{dataObj.employeeName}}</p>
                 </div>
                 <div class="infor-box">
                     <span>所属部门 </span>
@@ -358,11 +358,12 @@
             this.dimissionApplyId = this.$route.query.dimissionId;
             let pusthId = this.$route.query.pushId
 
-            this.axios.get('/work/dimission/info?dimissionApplyId='+this.dimissionApplyId+'&pushId='+pusthId).then(function(res){
+            // this.axios.get('/work/dimission/info?dimissionApplyId=4022dd6935ce11ea98024ccc6ac12eca'+'&pushId='+pusthId).then(function(res){
+                this.axios.get('/work/dimission/info?dimissionApplyId='+this.dimissionApplyId+'&pushId='+pusthId).then(function(res){
                 that.dataObj = res.data.b;
                 let arr = [],newArr=[];
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
-                that.title = that.dataObj.username+'的离职申请'
+                that.title = that.dataObj.employeeName+'的离职申请'
                 arr = res.data.b.links;
                 
                  arr.forEach(item=>{

@@ -67,6 +67,7 @@ export default {
             type:'outsign',
             title:'请假类型',
             color:'#fd545c',
+            isComplie:'',
             is_relative_approva:{
                 isShow:false,
                 title:'确认'
@@ -114,6 +115,7 @@ export default {
           this.color = this.$route.query.color
           let that = this;
           this.type = this.$route.query.type;
+          this.isComplie  = this.$route.query.isComplie;
 
           if(this.$route.query.getType==1){
                 this.title = this.$route.query.title;
@@ -199,10 +201,18 @@ export default {
              that.data = [{key:'编制内',value:1},{key:'编制外',value:0}]
          }else if(this.type=='isPosition'){
              this.title = '岗位招聘';
-             this.axios.get('/work/hrposition/type').then(function(res){
-                //  console.log(res.data.b)
-                    if(res.data.h.code =200 ) that.data = res.data.b;
-                })
+             console.log('isComplie',this.isComplie)
+             if(this.isComplie==1){//编制内
+                    this.axios.get('/work/hrPositionInside/type').then(function(res){
+                    //  console.log(res.data.b)
+                        if(res.data.h.code =200 ) that.data = res.data.b;
+                    })
+             }else{//编制外
+                 this.axios.get('/work/hrPosition/type').then(function(res){
+                    //  console.log(res.data.b)
+                        if(res.data.h.code =200 ) that.data = res.data.b;
+                    })
+             }
          }else if(this.type=='moveReason'){
                 this.title = '异动原因';
                 this.axios.get('/move/erpprimove/reason').then(function(res){
