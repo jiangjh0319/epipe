@@ -191,8 +191,7 @@ let save_leave = (index,text,that) =>{
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
-        params = that.Util.approverFormat(that.allApprovers)
-
+        params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
         
          that.axios({
                 method:"post",
@@ -219,7 +218,7 @@ let save_leave = (index,text,that) =>{
                     fileSizes: fileObj.fileSizeStr,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
-                    applyLinkIds:params.applyLinkIdsStr,
+                    applyLinkIds:that.applyLinkIds,
                     linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                     },
@@ -307,6 +306,8 @@ export default {
                 showCopy:0,
                 allApprovers:[],
                 userInfo:{},
+                applyLinkIds:'',
+                linkAuditNum:'',
             }
         },
         components: {
@@ -526,6 +527,8 @@ export default {
                 let data = res.data.b;
 
                 this.allApprovers = data.links;
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
                 if(data.receivers.length>0){
                         this.chosed_list = data.receivers

@@ -19,8 +19,10 @@
                                 <svg  class="icon" aria-hidden="false" v-if="item.approvalUserType==3" @click="del(index,num)">
                                     <use xlink:href="#icon-shanchu"></use>
                                 </svg>
-                                <img :src="child.profileImg"/>
-                                <span class="omit">{{child.name}}</span>
+                                <img v-if="child.profileImg" :src="child.profileImg"/>
+                                <img v-else src="../../assets/head.png"/>
+                                <span class="omit" v-if="child.name">{{child.name}}</span>
+                                <span class="omit" v-else>主管为空</span>
                             </div>
                             <img src="../../assets/left.png"/>
 
@@ -251,7 +253,7 @@
             position relative
             font-size 0.12rem;
             color:#666;
-            width 0.45rem;
+            width 0.46rem;
             text-align center;
 
             img{
@@ -402,7 +404,7 @@
 
     .omit{
         display block;
-        width 0.46rem;
+        width 0.48rem;
         overflow: hidden;
         text-overflow:ellipsis;
         white-space: nowrap;
