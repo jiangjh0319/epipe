@@ -220,7 +220,7 @@ let save_leave = (index,text,that) =>{
         that.$toast('文件标题不能为空')
     }else if(that.employeeTitle.length>100 ||that.employeeTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
-    }else if(that.isComplieName=='请选择6'){
+    }else if(that.isComplieName=='请选择'){
         that.$toast('编制不能为空')
     }
     else if(that.arrivalDate == '请选择到岗日期'){
@@ -649,7 +649,8 @@ export default {
                     this.$toast(res.data.h.msg)
                 }
             })
-            if(this.$route.query.employeeId){
+            if(this.$route.query.employeeId){ 
+                console.log(this.$route.query.employeeId)
                   this.axios.get('/work/employee/info',{
                     params:{
                         type:that.$route.query.resubmit,
@@ -657,7 +658,7 @@ export default {
                     }
                 }).then(function(res){
                    let data = res.data.b;
-                //    console.log(data,'data')
+                   console.log(data,'data')
                        if(!that.$route.query.resubmit){
                                 that.id = data.employeeApplyId;
                         }
@@ -665,6 +666,8 @@ export default {
                         that.accessoryFor(data)
                         that.employeeTitle = data.employeeTitle;
                         that.position = data.position;
+                        that.isComplieName = data.authorizedName;
+                        that.isComplie =  data.authorized;
                         that.num = data.num;
                         that.employeeReason = data.employeeReason.replace(/<br\/>/g,'\n');
                         that.arrivalDate = data.arrivalDate.slice(0,-8);

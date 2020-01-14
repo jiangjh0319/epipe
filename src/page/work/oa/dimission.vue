@@ -28,7 +28,7 @@
                 </div>
                 <div class="bor_bottom">
                     <span class="title">岗位</span>
-                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="请输入岗位名称" disabled/>
+                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="岗位名称" disabled/>
                 </div>
                 <router-link :to="{ path:'/option', query: {indexs:positionCode,type:'position',color:'#609df6'}}"  class="bor_bottom choose" tag="div">
                     <span class="title">岗位类别</span>
@@ -163,7 +163,7 @@ let save_leave = (index,text,that) =>{
         that.$toast('员工编号不能低于2个或超过30个字符')
     }else if(isNaN(that.employeeNo)){
         that.$toast('员工编号为数字')
-    }else if(that.position.length<2||that.position.length>30){
+    }else if(that.userInfo.userPosition.length<2||that.userInfo.userPosition.length>30){
         that.$toast('岗位不能低于2个或超过30个字符')
     }else if(that.hireDate=='请选择入职日期'){
         that.$toast('请选择入职日期')
