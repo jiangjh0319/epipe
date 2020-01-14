@@ -639,7 +639,7 @@ export default {
             this.axios.get('/work/company/hrflag').then(function(res){
                 // console.log(res.data)
                 if(res.data.h.code==200){
-                        // console.log(res.data.b.isHrCompany)
+                        console.log(res.data.b.isHrCompany)
                         if(res.data.b.isHrCompany=='N'){// 'N'表示app内部的，'Y':表示是HR系统
                             that.isShowPositon = true;
                         }else{
