@@ -89,7 +89,7 @@
                     <p>{{dataObj.endTime.slice(0,-8)}} </p>
                 </div>
             </div>
-            <div class="styles infor" @click="hanlderToPositive">
+            <div class="styles infor" v-if="dataObj.isHrSys" @click="hanlderToPositive">
                 <div class="infor-box">
                     <span style="color:#609EF7">查看转正明细及意见 &emsp;&emsp;</span>
                 </div>

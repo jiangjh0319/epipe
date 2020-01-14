@@ -82,7 +82,7 @@
                 </div>
             </div>
             
-            <div class="styles infor">
+            <div class="styles infor" v-if="dataObj.isHrSys">
                 <div class="infor-box">
                     <span style="color:#609EF7" @click="hanlderToleaveEvaluation">查看离职评价及办理意见</span>
                 </div>
@@ -358,7 +358,6 @@
             this.dimissionApplyId = this.$route.query.dimissionId;
             let pusthId = this.$route.query.pushId
 
-            // this.axios.get('/work/dimission/info?dimissionApplyId=4022dd6935ce11ea98024ccc6ac12eca'+'&pushId='+pusthId).then(function(res){
                 this.axios.get('/work/dimission/info?dimissionApplyId='+this.dimissionApplyId+'&pushId='+pusthId).then(function(res){
                 that.dataObj = res.data.b;
                 let arr = [],newArr=[];

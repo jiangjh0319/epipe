@@ -143,7 +143,7 @@ let save_leave = (index,text,that) =>{
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
-        params = that.Util.approverFormat(that.allApprovers)
+        params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
 
 
         fileObj = that.Util.fileFo(that.accessory)
@@ -171,7 +171,7 @@ let save_leave = (index,text,that) =>{
                     receiverCompanyIds,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
-                    applyLinkIds:params.applyLinkIdsStr,
+                    applyLinkIds:that.applyLinkIds,
                     linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                 },
@@ -385,6 +385,8 @@ export default {
                 let data = res.data.b;
 
                 this.allApprovers = data.links;
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
                 if(data.receivers.length>0){
                         this.chosed_list = data.receivers
@@ -425,8 +427,6 @@ export default {
                         that.change_man(that.chosed_list);
                         that.allApprovers = data.links;
 
-                        // that.approver_list = data.auditers;
-                        // that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

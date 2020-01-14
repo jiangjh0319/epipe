@@ -8,7 +8,7 @@ axios.defaults.timeout = 5000;
 
 
 const dev = 'http://192.168.3.166:8280/member/v1'; //测试
-// const dev = 'http://192.168.3.224:8079/member/v2'; // 习节祥
+// const dev = 'http://192.168.3.186:8079/member/v2'; // 习节祥
 // const dev = 'http://192.168.3.40:8080/member/v4'; //
 // const dev = 'http://192.168.3.40:8081/member/v1'; //自动化测试
 // const dev = 'http://192.168.3.241:8882/member/v1'; //自动化测试 
@@ -30,6 +30,7 @@ function getCookie(name) {
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;'
 console.log(getCookie("auth_token"))
 
+                      
 if (getCookie("auth_token")) {
   window.localStorage.setItem("auth_token",getCookie("auth_token"));
 }

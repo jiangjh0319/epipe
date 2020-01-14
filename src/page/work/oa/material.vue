@@ -134,7 +134,8 @@ let save_leave = (index,text,that) =>{
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
-        let appObj = that.Util.approverFormat(that.allApprovers)
+     let   appObj = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+
 
          params = {
             Id : that.id, // id
@@ -144,7 +145,7 @@ let save_leave = (index,text,that) =>{
             fileNames : fileObj.fileNameStr, //文件名称s
             fileSizes : fileObj.fileSizeStr, //文件大小
             auditUserIds:appObj.userIdsStr, //审批人
-            applyLinkIds:appObj.applyLinkIdsStr,
+            applyLinkIds:that.applyLinkIds,
 
             receiverIds, //抄送人
             auditCompanyIds:appObj.companyIdsStr,
@@ -230,6 +231,8 @@ export default {
                 allApprovers:[],
                 addressListIndex:-1,
                 showCopy:0,
+                applyLinkIds:'',
+                linkAuditNum:'',
 
             }
         },
@@ -395,6 +398,8 @@ export default {
                     let data = res.data.b;
 
                     this.allApprovers = data.links;
+                    this.linkAuditNum = data.linkAuditNum;
+                    this.applyLinkIds = data.applyLinkIds;
                     this.showCopy = data.approvalReceiverFlag=='1'?false:true;
 
                     if(data.receivers.length>0){

@@ -148,21 +148,34 @@ const Util = {
       return idStr.slice(0,-1)
 
   },
-  approverFormat(arr){//审批人数据格式化
-    let data = {numStr:'',userIdsStr:'',companyIdsStr:'',applyLinkIdsStr:''} 
+  approverFormat(arr,numStr){//审批人数据格式化
+    let data = {userIdsStr:'',companyIdsStr:''};
+    let arrs = numStr.split('|')
+
     arr.forEach(item => {
-        data.numStr+=item.auditers.length+'|'
-        data.applyLinkIdsStr+=item.id+'|'
+      if(item.approvalUserType==3){
+        arrs = this.nullVal(arrs,item.auditers.length)
+      }
         item.auditers.forEach(el=>{
             data.userIdsStr += el.userId+'|'
             data.companyIdsStr += el.companyId+'|'
         })
     });
-    data.numStr = data.numStr.slice(0,-1)
-    data.userIdsStr = data.userIdsStr.slice(0,-1)
-    data.companyIdsStr = data.companyIdsStr.slice(0,-1)
-    data.applyLinkIdsStr = data.applyLinkIdsStr.slice(0,-1)
+    data.numStr = arrs.join('|')
+    data.userIdsStr = data.userIdsStr.slice(0,-1).replace(/null/g,'').replace(/\|\|/g,'|')
+    data.companyIdsStr = data.companyIdsStr.slice(0,-1).replace(/null/g,'').replace(/\|\|/g,'|')
     return data;
+  },
+  nullVal(arr,val){
+    console.log(arr,val)
+    for(let i=0;i<arr.length;i++){
+      if(arr[i]=='null'){
+        arr[i]=val
+        return arr
+      }
+    }
+  
+    return arr;
   },
   checkApprovers(arr){
     for (let index = 0; index < arr.length; index++) {

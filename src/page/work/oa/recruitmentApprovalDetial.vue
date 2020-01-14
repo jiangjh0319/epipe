@@ -214,8 +214,6 @@
                 title:'',
                 isBackout:false,
                 amount:0,
-                approverData:[],
-                endIndex:999,
             }
         },
         
@@ -254,14 +252,10 @@
             consent:function(type){
                  let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
                 
-                 if(type==2){
-                     auditerIds = this.Util.deliverIds(this.dataObj.links,'userId')
-                     auditCompanyId = this.Util.deliverIds(this.dataObj.links,'companyId')
-                }
-
-
                 receiverIds = this.Util.getIds(this.newCopy,'userId')
+                auditerIds = this.Util.getIds(this.newAppr,'userId')
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
+                auditCompanyId = this.Util.getIds(this.newAppr,'companyId')
                 url = type!=2?'/opinion':'/imchoices';
 
                 params={id:this.dataObj.interviewApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
@@ -387,79 +381,25 @@
                 that.title = that.dataObj.username+'的招聘审批'
                 for(let i =0;i<that.dataObj.auditers.length;i++){   
 
-
-                     arr = res.data.b.links;
-                
-                 arr.forEach(item=>{
-                     for(let i =0;i<item.auditers.length;i++){
-                          if(item.auditers[i].accessory!=null){
-                                item.auditers[i].accessory = that.accessoryFors(item.auditers[i].accessory)
+                        if(that.dataObj.auditers[i].status=='2'){
+                            that.leaveType = '0';  //已经拒绝
                         }
-                     }
-                })
 
-                for(let i=0;i<arr.length;i++){
-                    let ar = JSON.parse(JSON.stringify(arr[i]))
-                    ar.auditers = [];
-                    let data = arr[i].auditers;
-
-                    if(arr[i].admins.length){
-                        let flow = arr[i]
-                        flow.auditers = arr[i].admins
-                        flow.admins = [];
-                        flow.linkType = 4;
-                        arr.splice(i,0,flow)
-                        console.log(1)
-                    }
-
-
-                    data.forEach(item=>{
-                        if(item.status!=='00'&&item.status!='0'){
-                            item.flow = true;
-                        console.log(2)
-
-                            newArr.push(item)
+                        if(that.dataObj.auditers[i].status=='00'){
+                            arr.push(that.dataObj.auditers[i])
                         }else{
-                        console.log(3)
-
-                            item.hide = true;
-                            ar.auditers.push(item)
+                            that.amount++;
                         }
 
-                        if(item.status=='0'){
-                            ar.status = '0'
-                        console.log(4)
-
+                        if(that.dataObj.auditers[i].accessory!=null){
+                            that.dataObj.auditers[i].accessory = that.accessoryFors(that.dataObj.auditers[i].accessory)
                         }
-                    })
-                    if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
-                        ar.auditers[0].flow = true
-                        newArr.push(ar.auditers[0])
-                        console.log(5)
-
-                    }else if(ar.auditers.length>0){
-                        console.log(6)
-                        newArr.push(ar)
                     }
 
-                    if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
-                        console.log(7)
+                    that.newAppr = arr
+                    that.approver_man(arr)
 
-                        newArr.push(ar)
-                    }
-                }
-
-                for (let i = 0; i < newArr.length; i++) {
-
-                    if(newArr[i].status&&newArr[i].status=='2'){
-                        this.endIndex = i;
-                        this.leaveType = '0';  //已经拒绝
-                        
-                    }
-                }
-                this.dataObj.links = newArr;
-
-                if(that.dataObj.userId==that.dataObj.auditUserId){
+                    if(that.dataObj.userId==that.dataObj.auditUserId){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"
@@ -471,13 +411,12 @@
                         return;
                     }
 
-                    console.log(that.dataObj)
-
-                    if(that.dataObj.links[that.dataObj.links.length-1].status == 1){ // 已同意
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 1){ // 已同意
                         that.leaveType = '1';
                         return;
                     }
-                    if(that.dataObj.links[that.dataObj.links.length-1].status == 5){ // 已评论
+
+                    if(that.dataObj.auditers[that.dataObj.auditers.length-1].status == 5){ // 已评论
                         that.leaveType = '6';
                         return;
                     }
@@ -486,7 +425,8 @@
                         that.leaveType = '2'
                         return;
                     }
-            }})
+            
+            })
 
         },
         activated(){

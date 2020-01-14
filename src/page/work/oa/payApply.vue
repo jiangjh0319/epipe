@@ -161,12 +161,9 @@ let save_leave = (index,text,that) =>{
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
-        params = that.Util.approverFormat(that.allApprovers)
-        // auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        // auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
 
         fileObj = that.Util.fileFo(that.accessory)
-        // let contDesc = that.payReason.replace(/\n|\r\n/g,"<br>")
         // https://blog.csdn.net/xiaobao5214/article/details/68923023/
         that.axios({
                 method:"post",
@@ -191,7 +188,7 @@ let save_leave = (index,text,that) =>{
                     receiverCompanyIds,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
-                    applyLinkIds:params.applyLinkIdsStr,
+                    applyLinkIds:that.applyLinkIds,
                     linkAuditNum:params.numStr,
                     receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
@@ -245,16 +242,16 @@ export default {
         data(){
             return{
                 id:'',
-                payTitle : '', // 标题
-                departmentName : '',//用印部门
-                payAmount : '', //付款金额
-                payDate:'请选择付款日期', //付款日期
-                // payDate:'2019-12-03', //付款日期
-                userName : '',//用印承办人
-                receiverName:'',//收款人
-                bankAcount:'', //银行账户
-                bankName:'',//开户行
-                payReason : '',//用印说明
+                payTitle : 'fffff', // 标题
+                departmentName : 'fffff',//用印部门
+                payAmount : '100', //付款金额
+                // payDate:'请选择付款日期', //付款日期
+                payDate:'2019-12-03', //付款日期
+                userName : 'fsdf',//用印承办人
+                receiverName:'发的发顺丰',//收款人
+                bankAcount:'sfdsfd', //银行账户
+                bankName:'发的所发生的飞飞',//开户行
+                payReason : 'fafdf',//
                 chosed_list : [], //抄送人
                 approver_list : [], //审批人
                 allApprovers:[],
@@ -267,6 +264,8 @@ export default {
                 addressListIndex:-1,
                 showCopy:0,
                 showGroup:false,
+                applyLinkIds:'',
+                linkAuditNum:'',
                 
             }
         },
@@ -448,6 +447,8 @@ export default {
                 let data = res.data.b;
 
                 this.allApprovers = data.links;
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
                 if(data.receivers.length>0){
                         this.chosed_list = data.receivers

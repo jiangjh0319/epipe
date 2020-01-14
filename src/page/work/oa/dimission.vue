@@ -193,8 +193,7 @@ let save_leave = (index,text,that) =>{
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
-        params = that.Util.approverFormat(that.allApprovers)
-
+        params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
         
          that.axios({
                 method:"post",
@@ -226,7 +225,7 @@ let save_leave = (index,text,that) =>{
                     fileSizes: fileObj.fileSizeStr,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
-                    applyLinkIds:params.applyLinkIdsStr,
+                    applyLinkIds:that.applyLinkIds,
                     linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                     },
@@ -310,6 +309,8 @@ export default {
                 showCopy:0,
                 allApprovers:[],
                 userInfo:{},
+                applyLinkIds:'',
+                linkAuditNum:'',
             }
         },
         components: {
@@ -526,16 +527,25 @@ export default {
         mounted(){
             let that = this;
 
-            this.axios.get('/process/apply/enter?req=22').then((res)=>{
+            this.axios.get('/process/apply/enter?req=8').then((res)=>{
                 let data = res.data.b;
 
                 this.allApprovers = data.links;
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
                 if(data.receivers.length>0){
                         this.chosed_list = data.receivers
                         this.change_man(this.chosed_list);
                 }
             })
+
+            this.axios.post('/user/current/userinfo').then(function(res){
+                that.userInfo.name = res.data.b.name
+                that.userInfo.officeName = res.data.b.officeName
+                that.oldData = JSON.parse(JSON.stringify(that.$data))
+            })
+
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                 var obj = {
                         url,
@@ -545,7 +555,6 @@ export default {
                 that.Util.isImg(url)?obj.isImg=true:obj.isImg=false;
                 that.accessory.push(obj)
             }
-                that.oldData = JSON.parse(JSON.stringify(that.$data))
 
             if(this.$route.query.dimissionId){
                      this.axios.get('/work/dimission/info',{
@@ -556,7 +565,6 @@ export default {
                         }
                     }).then(function(res){
                      let data = res.data.b;
-                     console.log('data',data)
                         that.id = data.dimissionApplyId;
                         that.isDraftFlag = 1;
                         that.native = 'mark';
