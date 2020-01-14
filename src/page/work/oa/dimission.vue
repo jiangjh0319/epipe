@@ -163,8 +163,6 @@ let save_leave = (index,text,that) =>{
         that.$toast('员工编号不能低于2个或超过30个字符')
     }else if(isNaN(that.employeeNo)){
         that.$toast('员工编号为数字')
-    }else if(that.position.length<2||that.position.length>30){
-        that.$toast('岗位不能低于2个或超过30个字符')
     }else if(that.hireDate=='请选择入职日期'){
         that.$toast('请选择入职日期')
     }else if(that.dimissionDate=='请选择离职日期'){
@@ -543,6 +541,7 @@ export default {
             this.axios.post('/user/current/userinfo').then(function(res){
                 that.userInfo.name = res.data.b.name
                 that.userInfo.officeName = res.data.b.officeName
+                that.userInfo.userId = res.data.b.id
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
 

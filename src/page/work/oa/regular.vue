@@ -552,8 +552,8 @@ export default {
             this.axios.post('/user/current/userinfo').then(function(res){
                 that.userInfo.name = res.data.b.name
                 that.userInfo.officeName = res.data.b.officeName
+                that.userInfo.userId = res.data.b.id
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
-
             })
             
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
