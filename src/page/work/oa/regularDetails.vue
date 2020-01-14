@@ -12,7 +12,7 @@
                 <div class="content_head">
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
-                        <p class="nameTl">{{dataObj.username}}</p>
+                        <p class="nameTl">{{dataObj.employeeName}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
@@ -31,7 +31,7 @@
             <div class="styles infor">
                 <div class="infor-box">
                     <span >转正员工姓名</span>
-                    <p>{{dataObj.username}}</p>
+                    <p>{{dataObj.employeeName}}</p>
                 </div>
                 <!-- <div class="infor-box">
                     <span >申请人 &emsp;&emsp;&emsp;</span>
@@ -89,7 +89,11 @@
                     <p>{{dataObj.endTime.slice(0,-8)}} </p>
                 </div>
             </div>
-
+            <div class="styles infor" v-if="dataObj.isHrSys" @click="hanlderToPositive">
+                <div class="infor-box">
+                    <span style="color:#609EF7">查看转正明细及意见 &emsp;&emsp;</span>
+                </div>
+            </div>
             <AccessoryList :accessory='accessory'>
             </AccessoryList>
 
@@ -354,6 +358,9 @@
              go_user(id){
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
+            hanlderToPositive(){
+                this.$router.push({path:'/positiveComments',query:{dataObj:this.dataObj}})
+            }
         },
         created() {
         },
@@ -362,11 +369,12 @@
             let that = this;
             this.regularId = this.$route.query.regularId;
             let pusthId = this.$route.query.pushId
+            // this.axios.get('/work/regular/info?regularApplyId=589d55a335e911ea98024ccc6ac12eca'+'&pushId='+pusthId).then((res)=>{
             this.axios.get('/work/regular/info?regularApplyId='+this.regularId+'&pushId='+pusthId).then((res)=>{
                 that.dataObj = res.data.b;
                 let arr=[],newArr=[];
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
-                that.title = that.dataObj.username+'的转正申请'
+                that.title = that.dataObj.employeeName+'的转正申请'
 
                 arr = res.data.b.links;
                 

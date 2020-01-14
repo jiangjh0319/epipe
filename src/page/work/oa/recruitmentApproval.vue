@@ -180,8 +180,7 @@ let save_leave = (index,text,that) =>{
                 },
                 data:{
                     Id :that.id, // id
-                    approvalPosition:that.approvalPosition,//标题
-                    remark:that.remark.replace(/\n/g, '<br/>'), //申请理由
+                    remarks:that.remark.replace(/\n/g, '<br/>'), //申请理由
                     position:that.position, //招聘岗位
                     num:that.num, //招聘人数
                     arrivalDate:that.arrivalDate,//到岗时间
@@ -236,7 +235,7 @@ let save_leave = (index,text,that) =>{
                                 that.$toast('提交成功！')
                                 window.location.href = "epipe://?&mark=workUpdate";
                                 setTimeout(()=>{
-                                    window.location.href = "epipe://?&mark=submitEmployee&_id="+res.data.b.employeeApplyId;
+                                    window.location.href = "epipe://?&mark=recruitmentApprovalDetial&_id="+res.data.b.interviewApplyId;
                                     
                                 },500)
                             }
@@ -455,6 +454,7 @@ export default {
         },
         activated(){
             this.approver_list = this.approver_man_state
+            // console.log('approver_list',this.approver_list)
             this.chosed_list = this.chosed_man_state
          },
          created() {
@@ -519,54 +519,65 @@ export default {
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
 
-            if(this.$route.query.employeeId){
-                  this.axios.get('/work/employee/info',{
+            if(this.$route.query.recruitmentApprovaId){
+                  this.axios.get('work/interview/info',{
                     params:{
                         type:that.$route.query.resubmit,
-                        employeeApplyId:this.$route.query.employeeId
+                        interviewApplyId:this.$route.query.recruitmentApprovaId  
+                        // interviewApplyId:'eba209c332bb11ea98024ccc6ac12eca'
                     }
                 }).then(function(res){
                    let data = res.data.b;
                        if(!that.$route.query.resubmit){
-                                that.id = data.employeeApplyId;
+                                that.id = data.interviewApplyId;
                         }
                         that.isDraftFlag = 1;
                         that.accessoryFor(data)
-                        that.approvalPosition = data.approvalPosition;
-                        that.position = data.position;
-                        that.num = data.num;
-                        that.remark = data.remark.replace(/<br\/>/g,'\n');
-                        that.arrivalDate = data.arrivalDate.slice(0,-8);
-                        that.sex = data.sexCode//性别
-                        that.sexType = data.sex//性别
-                        that.marriage= data.marriageCode//婚姻
-                        that.marriageType= data.marriage//婚姻
-                        that.age= data.ageCode//年龄
-                        that.ageName = data.age
-                        that.highestEducation = data.highestEducationCode
-                        that.highestEducationName = data.highestEducation
-                        that.jobExperience = data.jobExperienceCode
-                        that.jobExperienceName = data.jobExperience
-                        that.education= data.educationCode //学历
-                        that.educationName= data.education //学历
-                        that.isNew = data.isNewCode
-                        that.isNewName = data.isNew
-                        that.major= data.major//专业
-                        that.qualifications= data.qualifications//证书
-                        that.computerLevel= data.computerLevel//计算机水平
-                        that.foreignLevel= data.foreignLevel //外语水平
-                        that.skill= data.skill//特殊技能
-                        that.writings= data.writings //写作
-                        that.priority= data.priority //优先录用
-                        that.responsibility= data.responsibility.replace(/<br\/>/g,'\n') //工作职责
+                        that.position = data.position;//招聘职位
+                        that.departmentName = data.department;//所属部门
+                        that.candidateName = data.candidateName;//候选人名称
+                        that.workYear = data.workingLife;//工作年限
+                        that.educationFormal = data.education;//学历
+                        that.college = data.university;//毕业院校
+                        that.telephone = data.phone;//电话
+                        that.email = data.email;//邮箱
+                        that.interviewTime = data.interviewTime;//面试时间
+                        
 
-                        that.textNum = data.remark.length
-                        that.responsibilityNum = data.responsibility.length
+
+
+                        // that.arrivalDate = data.arrivalDate.slice(0,-8);
+                        // that.sex = data.sexCode//性别
+                        // that.sexType = data.sex//性别
+                        // that.marriage= data.marriageCode//婚姻
+                        // that.marriageType= data.marriage//婚姻
+                        // that.age= data.ageCode//年龄
+                        // that.ageName = data.age
+                        // that.highestEducation = data.highestEducationCode
+                        // that.highestEducationName = data.highestEducation
+                        // that.jobExperience = data.jobExperienceCode
+                        // that.jobExperienceName = data.jobExperience
+                        // that.education= data.educationCode //学历
+                        // that.educationName= data.education //学历
+                        // that.isNew = data.isNewCode
+                        // that.isNewName = data.isNew
+                        // that.major= data.major//专业
+                        // that.qualifications= data.qualifications//证书
+                        // that.computerLevel= data.computerLevel//计算机水平
+                        // that.foreignLevel= data.foreignLevel //外语水平
+                        // that.skill= data.skill//特殊技能
+                        // that.writings= data.writings //写作
+                        // that.priority= data.priority //优先录用
+                        // that.responsibility= data.responsibility.replace(/<br\/>/g,'\n') //工作职责
+
+                        // that.textNum = data.remark.length
+                        // that.responsibilityNum = data.responsibility.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
                         that.approver_list = data.auditers;
                         that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
+                        that.remark = data.remarks.replace(/<br\/>/g,'\n')//备注
                     })
                     return
             }

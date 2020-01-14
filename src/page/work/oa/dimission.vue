@@ -28,7 +28,7 @@
                 </div>
                 <div class="bor_bottom">
                     <span class="title">岗位</span>
-                    <input style="color:#666" v-model="position" placeholder="请输入岗位名称"/>
+                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="请输入岗位名称" disabled/>
                 </div>
                 <router-link :to="{ path:'/option', query: {indexs:positionCode,type:'position',color:'#609df6'}}"  class="bor_bottom choose" tag="div">
                     <span class="title">岗位类别</span>
@@ -154,7 +154,8 @@ var regs =/^[1-9]+\d*$/;
 let save_leave = (index,text,that) =>{
     if(that.dimissionTitle== ''){
         that.$toast('文件标题不能为空')
-    }else if(that.dimissionTitle.length>100 ||that.dimissionTitle.length<2){
+    }
+    else if(that.dimissionTitle.length>100 ||that.dimissionTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
     }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
@@ -180,7 +181,8 @@ let save_leave = (index,text,that) =>{
         that.$toast('请选择岗位类型')
     }else if(that.dimissionCode<0){
         that.$toast('请选择离职类型')
-    }else if(that.dimissionDesc.length<6){
+    }
+    else if(that.dimissionDesc.length<6){
         that.$toast('离职原因不能少于6个字符')
     }
     else{
@@ -205,12 +207,16 @@ let save_leave = (index,text,that) =>{
                     dimissionDesc:that.dimissionDesc.replace(/\n/g, '<br/>'), //离职原因
                     employeeNo:that.employeeNo, //员工编号
                     education:that.education, //学历
-                    position:that.position,// 岗位
+                    position:that.userInfo.userPosition,// 岗位
+                    positionType:that.positionCode,
+                    employeeName:that.userInfo.name,
+                    dimissionType:that.dimissionCode,
                     hireDate:that.hireDate,//入职时间
                     dimissionDate:that.dimissionDate,//离职日期
-                    positionType:that.positionCode,
-                    dimissionType:that.dimissionCode,
                     contractEndDate:that.contractEndDate,//合同终止日期
+                    // hireDate:'2020-1-13',//入职时间
+                    // dimissionDate:'2020-2-22',//离职日期
+                    // contractEndDate:'2020-8-9',//合同终止日期
                     receiverIds, //抄送人
                     receiverCompanyIds,
                     urls : fileObj.urlStr, //附件
@@ -285,10 +291,6 @@ export default {
                 hireDate:'请选择入职日期',//入职日期
                 dimissionDate:'请选择离职日期',//离职日期
                 contractEndDate:'请选择合同终止日期',//合同终止日期
-                // hireDate:'2019-1-12',//入职日期
-                // dimissionDate:'2020-1-12',//离职日期
-                // contractEndDate:'2020-1-12',//合同终止日期
-
                 userName : '',//用印承办人
                 positionType:'请选择岗位类型',
                 positionCode:-1,
@@ -495,6 +497,7 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
+                console.log('userInfo',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -523,7 +526,7 @@ export default {
         mounted(){
             let that = this;
 
-            this.axios.get('/process/apply/enter?req=22').then((res)=>{
+            this.axios.get('/process/apply/enter?req=8').then((res)=>{
                 let data = res.data.b;
 
                 this.allApprovers = data.links;
@@ -536,6 +539,11 @@ export default {
                 }
             })
 
+            this.axios.post('/user/current/userinfo').then(function(res){
+                that.userInfo.name = res.data.b.name
+                that.userInfo.officeName = res.data.b.officeName
+                that.oldData = JSON.parse(JSON.stringify(that.$data))
+            })
 
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                 var obj = {
@@ -546,12 +554,12 @@ export default {
                 that.Util.isImg(url)?obj.isImg=true:obj.isImg=false;
                 that.accessory.push(obj)
             }
-                that.oldData = JSON.parse(JSON.stringify(that.$data))
 
             if(this.$route.query.dimissionId){
                      this.axios.get('/work/dimission/info',{
                         params:{
                             type:that.$route.query.resubmit,
+                            // dimissionApplyId:'1132febf35de11ea98024ccc6ac12eca',  
                             dimissionApplyId:this.$route.query.dimissionId
                         }
                     }).then(function(res){
@@ -560,9 +568,11 @@ export default {
                         that.isDraftFlag = 1;
                         that.native = 'mark';
                         that.accessoryFor(data)
+                        that.userInfo.officeName = data.officeName;
+                        that.userInfo.name = data.username;
                         that.dimissionTitle = data.dimissionTitle;
                         that.employeeNo = data.employeeNo;
-                        that.position = data.position;
+                        that.userInfo.userPosition = data.position;
                         that.education= data.education;
                         that.hireDate = data.hireDate;
                         that.dimissionDate=data.dimissionDate;

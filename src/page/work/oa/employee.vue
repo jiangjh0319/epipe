@@ -42,12 +42,16 @@
                     </p>
                 </div>
 
-                <div class="bor_bottom" @click="go_push(isPosition,'isPosition','招聘岗位')">
+                <div class="bor_bottom" @click="go_push(isPosition,'isPosition','招聘岗位',isComplie)" v-if="!isShowPositon" >
                     <span class="title"><span class="required">*</span>招聘岗位</span>
                     <input style="color:#666" v-model="position" placeholder="请选择招聘岗位名称" disabled/>
                         <svg class="icon icon-back" aria-hidden="false" style="position:absolute;right:0.15rem;top:0.17rem;">
                             <use xlink:href="#icon-right"></use>
                         </svg>
+                </div>
+                 <div class="bor_bottom" v-if="isShowPositon">
+                    <span class="title"><span class="required">*</span>招聘岗位</span>
+                    <input style="color:#666" v-model="position" placeholder="请输入招聘岗位名称" />
                 </div>
                 <div class="bor_bottom">
                     <span class="title"><span class="required">*</span>需求人数</span>
@@ -216,6 +220,8 @@ let save_leave = (index,text,that) =>{
         that.$toast('文件标题不能为空')
     }else if(that.employeeTitle.length>100 ||that.employeeTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
+    }else if(that.isComplieName=='请选择6'){
+        that.$toast('编制不能为空')
     }
     else if(that.arrivalDate == '请选择到岗日期'){
         that.$toast('请选择到岗日期')
@@ -231,8 +237,8 @@ let save_leave = (index,text,that) =>{
     }else if(that.highestEducation==''){
         that.$toast('请选择最高学历毕业学校')
     }
-    else if(that.num>10){
-        that.$toast('需求人数不能超过10个')
+    else if(that.num>this.isPosition){
+        that.$toast('您输入的需求人数超过了招聘岗位的人数')
     }else if(that.position == ''){
         that.$toast('请输入岗位名称')
     }else if(that.position.length<2||that.position>30){
@@ -354,7 +360,7 @@ export default {
                 id:'',
                 employeeTitle : '', // 标题
                 departmentName : '',//用印部门
-                position : '请选择', //招聘岗位
+                position : '', //招聘岗位
                 num:'',//招聘人数
                 arrivalDate:'请选择到岗日期', //到岗日期
                 // arrivalDate:'2020-11-10 10:20:33', //到岗日期
@@ -393,6 +399,7 @@ export default {
                 writings:'', //写作
                 priority:'', //优先录用
                 responsibility:'', //工作职责
+                isShowPositon:true,
             }
         },
         components: {
@@ -439,10 +446,10 @@ export default {
             console.log(indexs,type,title,isComplie)
             if(type=='isComplie'){
                 this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title}})
-            }else if(type=='isNew'&isComplie==2){
+            }else if(type=='isNew'&isComplie==0){
 
             }else if(type=='isPosition'){
-                this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title}})
+                this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title,isComplie}})
             }
             else{
                 this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title,getType:1}})
@@ -592,6 +599,7 @@ export default {
                 }else if(res.type=='isPosition'){
                         this.position = res.name
                         this.isPosition = res.index
+                        console.log('isPosition',this.isPosition)
                 }
                 else if(res.type=='jobExperience'){
                     this.jobExperience = res.index
@@ -628,7 +636,19 @@ export default {
                 that.userName = res.data.b.name
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
-
+            this.axios.get('/work/company/hrflag').then(function(res){
+                // console.log(res.data)
+                if(res.data.h.code==200){
+                        // console.log(res.data.b.isHrCompany)
+                        if(res.data.b.isHrCompany=='N'){// 'N'表示app内部的，'Y':表示是HR系统
+                            that.isShowPositon = true;
+                        }else{
+                            that.isShowPositon = false;
+                        }
+                }else{
+                    this.$toast(res.data.h.msg)
+                }
+            })
             if(this.$route.query.employeeId){
                   this.axios.get('/work/employee/info',{
                     params:{
@@ -637,6 +657,7 @@ export default {
                     }
                 }).then(function(res){
                    let data = res.data.b;
+                //    console.log(data,'data')
                        if(!that.$route.query.resubmit){
                                 that.id = data.employeeApplyId;
                         }

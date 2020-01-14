@@ -24,7 +24,7 @@
             <div class="styles input_group">
                 <div class="bor_bottom">
                     <span class="title">岗位</span>
-                    <input style="color:#666" v-model="position" placeholder="请输入岗位"/>
+                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="请输入岗位" disabled/>
                 </div>
                 <div class="bor_bottom">
                     <span class="title">年龄</span>
@@ -167,7 +167,8 @@ let rule = /^[A-Za-z0-9]+$/;
 let save_leave = (index,text,that) =>{
     if(that.regularTitle== ''){
         that.$toast('文件标题不能为空')
-    }else if(that.regularTitle.length>100 ||that.regularTitle.length<2){
+    }
+    else if(that.regularTitle.length>100 ||that.regularTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
     }else if(that.position == ''){
 	    that.$toast('岗位不能为空')
@@ -203,7 +204,8 @@ let save_leave = (index,text,that) =>{
         that.$toast('年龄必须为数字')
     }else if((that.age+'').length>2){
         that.$toast('年龄不能超过2位数')
-    }else if(that.Util.checkApprovers(that.allApprovers)){
+    }
+    else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
        
@@ -223,19 +225,30 @@ let save_leave = (index,text,that) =>{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
                 data:{
+
+                    // beginTime: '2020-1-13',  
+                    // endTime: '2020-1-22',  
+                    // birthday:'1998-10-8',
+                    // graduationDate:'2005-10-8',
+                    // hireDate:'2001-12-2',
+
+
                     Id :that.id, // id
                     regularTitle:that.regularTitle,//申请主题
-	                beginTime: that.beginTime,  //
-                    endTime: that.endTime,  //
-                    education:that.education,
+
+	                beginTime: that.beginTime,  
+                    endTime: that.endTime,  
                     birthday:that.birthday,
                     hireDate:that.hireDate,
                     graduationDate:that.graduationDate,
+
+                    education:that.education,
+                    employeeName:that.userInfo.name,
                     birthPlace:that.birthPlace,
                     age:that.age,
                     sex:that.sex,
                     major:that.major,
-                    position:that.position,
+                    position:that.userInfo.userPosition,
                     urls : fileObj.urlStr, //附件
                     fileNames: fileObj.fileNameStr, 
                     fileSizes: fileObj.fileSizeStr,
@@ -498,6 +511,7 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
+                console.log('员工',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -511,7 +525,6 @@ export default {
                 this.change_man(this.$data.chosed_list)
             }
             this.oldData = JSON.parse(JSON.stringify(this.$data))
-
             eventBus.$on('leaveType', res =>{
             if(res.name=='') return;
             this.sex = res.index;
@@ -522,9 +535,9 @@ export default {
         mounted(){
             let that = this;
 
-            this.axios.get('/process/apply/enter?req=22').then((res)=>{
+            this.axios.get('/process/apply/enter?req=15').then((res)=>{
                 let data = res.data.b;
-
+     
                 this.allApprovers = data.links;
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
@@ -535,6 +548,13 @@ export default {
                 }
             })
 
+            this.axios.post('/user/current/userinfo').then(function(res){
+                that.userInfo.name = res.data.b.name
+                that.userInfo.officeName = res.data.b.officeName
+                that.oldData = JSON.parse(JSON.stringify(that.$data))
+
+            })
+            
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                 var obj = {
                         url,
@@ -545,23 +565,26 @@ export default {
                 that.accessory.push(obj)
             }
 
-            that.oldData = JSON.parse(JSON.stringify(that.$data))
 
             if(this.$route.query.regularId){
                   this.axios.get('/work/regular/info',{
                     params:{
                         type:that.$route.query.resubmit,
-	                    regularApplyId:this.$route.query.regularId
+                        regularApplyId:this.$route.query.regularId,   
+                        // regularApplyId:'589d55a335e911ea98024ccc6ac12eca',
                     }
                 }).then(function(res){
                    let data = res.data.b;
+                        console.log('data',data)
                        if(!that.$route.query.resubmit){
                                 that.id = data.regularApplyId;
                        }
                       that.isDraftFlag = 1;
 
-                      that.position = data.position;
+                      that.userInfo.userPosition = data.position;
                       that.accessoryFor(data)
+                      that.userInfo.officeName = data.officeName;
+                      that.userInfo.name = data.username;
                       that.birthPlace = data.birthPlace;
                       that.birthday = data.birthday;
                       that.major = data.major;

@@ -9,30 +9,30 @@
         <div class="base-content">
             <div class="content">
                 <div class="first_one">
-                    <div class="one_s"><span>申请转正类型</span><span style="margin-left:1.7rem">提前转正</span></div>
+                    <div class="one_s"><span>申请转正类型</span><span style="margin-left:1.7rem">{{processType}}</span></div>
                     <div class="line_s"></div>
-                    <div class="two_s"><span>申请转正日期</span><span style="margin-left:1.6rem">2020-1-16</span></div>
+                    <div class="two_s"><span>申请转正日期</span><span style="margin-left:1.4rem">{{applyTime}}</span></div>
                 </div>
                 <div class="two_style">
                     <div class="dao_s">
                         <div class="sex_s">导师姓名</div>
-                        <div class="name_s">黄陂</div>
+                        <div class="name_s">{{superleadname}}</div>
                     </div>
                     <div class="line_s"></div>
                     <div class="opinion">
                         <div class="sex_s_a">导师意见</div>
-                        <div class="name_s_a">此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验能够支撑整个项目的进展工作反馈度比较高能够支撑整个项目的进展工作反馈度比较高。做过比较多的项目，能够支撑整个项目的进展工作反馈度比较高。</div>
+                        <div class="name_s_a">{{superleadcomment}}</div>
                     </div>
                 </div>
                 <div class="two_style">
                     <div class="dao_s">
                         <div class="sex_s">HR姓名</div>
-                        <div class="name_s">黄陂</div>
+                        <div class="name_s">{{hrname}}</div>
                     </div>
                     <div class="line_s"></div>
                     <div class="opinion">
                         <div class="sex_s_a">HR意见</div>
-                        <div class="name_s_a">此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验能够支撑整个项目的进展工作反馈度比较高能够支撑整个项目的进展工作反馈度比较高。做过比较多的项目，能够支撑整个项目的进展工作反馈度比较高。</div>
+                        <div class="name_s_a">{{hrcomment}}</div>
                     </div>
                 </div>
             </div>
@@ -49,12 +49,12 @@
             return{
                 mark :'marks',
                 title:'转正明细及意见',
-                listData:[
-                    {name:'波尔本',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {name:'王宝山',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {name:'黄波',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {name:'谢丽',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'}
-                ]
+                hrname:'',
+                hrcomment:'',
+                superleadname:'',
+                superleadcomment:'',
+                processType:'',
+                applyTime:''
             }
         },
         
@@ -72,7 +72,21 @@
             },
         },
         created() {
-
+            let regularApplyId =this.$route.query.dataObj.regularApplyId;
+           this.axios.post('/work/regular/hrsys/comment?regularApplyId='+regularApplyId).then(res=>{
+            //    this.axios.post('/work/regular/hrsys/comment?regularApplyId=069e74e0345211ea98024ccc6ac12eca').then(res=>{
+               if(res.data.h.code==200){
+                 console.log(res.data.b)
+                this.hrname = res.data.b.hrname;
+                this.hrcomment = res.data.b.hrcomment;
+                this.superleadname = res.data.b.superleadname;
+                this.superleadcomment = res.data.b.superleadcomment;
+                this.processType = res.data.b.processType;
+                this.applyTime = res.data.b.applyTime.slice(0,10);
+               }else{
+                   this.$toast(res.data.h.msg)
+               }
+           })
         }
  
     }
@@ -115,6 +129,7 @@
                    .sex_s{
                        padding-left 0.15rem;
                        padding-top 0.1rem;
+                       padding-bottom: 0.1rem;
                        font-size 0.16rem;
                        color:#333;
                    }
@@ -131,6 +146,7 @@
                      .sex_s_a{
                      padding-left 0.15rem;
                      padding-top 0.1rem;
+                     padding-bottom 0.1rem;
                      font-size 0.16rem;
                      color:#333;
                    }
