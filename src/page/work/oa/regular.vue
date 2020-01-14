@@ -246,6 +246,7 @@ let save_leave = (index,text,that) =>{
 
                     education:that.education,
                     employeeName:that.userInfo.name,
+                    employeeNameId:that.userInfo.userId,
                     birthPlace:that.birthPlace,
                     age:that.age,
                     sex:that.sex,

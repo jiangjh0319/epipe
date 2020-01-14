@@ -211,6 +211,7 @@ let save_leave = (index,text,that) =>{
                     position:that.userInfo.userPosition,// 岗位
                     positionType:that.positionCode,
                     employeeName:that.userInfo.name,
+                    employeeNameId:that.userInfo.userId,
                     dimissionType:that.dimissionCode,
                     hireDate:that.hireDate,//入职时间
                     dimissionDate:that.dimissionDate,//离职日期
