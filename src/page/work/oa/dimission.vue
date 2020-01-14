@@ -204,7 +204,7 @@ let save_leave = (index,text,that) =>{
                     dimissionTitle:that.dimissionTitle,//标题
                     dimissionDesc:that.dimissionDesc.replace(/\n/g, '<br/>'), //离职原因
                     employeeNo:that.employeeNo, //员工编号
-                    education:that.education, //学历
+                    education:that.education, //学。历
                     position:that.userInfo.userPosition,// 岗位
                     positionType:that.positionCode,
                     employeeName:that.userInfo.name,
