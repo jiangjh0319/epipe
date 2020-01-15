@@ -49,7 +49,7 @@
                     <p>{{dataObj.employeeNo}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>职&emsp;&emsp;务 </span>
+                    <span>岗&emsp;&emsp;位 </span>
                     <p>{{dataObj.position}} </p>
                 </div>
                  <div class="infor-box">
@@ -82,9 +82,9 @@
                 </div>
             </div>
             
-            <div class="styles infor" v-if="dataObj.isHrSys">
+            <div class="styles infor" v-if="dataObj.isHrSys=='Y'" @click="hanlderToleaveEvaluation">
                 <div class="infor-box">
-                    <span style="color:#609EF7" @click="hanlderToleaveEvaluation">查看离职评价及办理意见</span>
+                    <span style="color:#609EF7">查看离职评价及办理意见</span>
                 </div>
             </div>
 
@@ -347,7 +347,7 @@
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
             hanlderToleaveEvaluation(){
-                this.$router.push({path:'/leaveEvaluation',query:{dimissionApplyId:'',dataList:this.dataObj}})
+                this.$router.push({path:'/leaveEvaluation',query:{dimissionApplyId:this.dimissionApplyId,dataList:this.dataObj}})
             }
         },
         created() {
@@ -357,7 +357,7 @@
             let that = this;
             this.dimissionApplyId = this.$route.query.dimissionId;
             let pusthId = this.$route.query.pushId
-
+                // this.axios.get('/work/dimission/info?dimissionApplyId=3eeda394375b11ea835a4ccc6ac12eca'+'&pushId='+pusthId).then(function(res){
                 this.axios.get('/work/dimission/info?dimissionApplyId='+this.dimissionApplyId+'&pushId='+pusthId).then(function(res){
                 that.dataObj = res.data.b;
                 let arr = [],newArr=[];

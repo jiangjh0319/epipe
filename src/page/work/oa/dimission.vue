@@ -543,6 +543,7 @@ export default {
             this.axios.post('/user/current/userinfo').then(function(res){
                 that.userInfo.name = res.data.b.name
                 that.userInfo.officeName = res.data.b.officeName
+                that.userInfo.userPosition = res.data.b.userPosition
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
 
