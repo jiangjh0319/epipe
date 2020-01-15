@@ -340,7 +340,7 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
              let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,amount:1,showGroup,}})
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -522,9 +522,6 @@ export default {
                     this.positionType = res.name;
                 }
             })
-         },
-        mounted(){
-            let that = this;
 
             this.axios.get('/process/apply/enter?req=8').then((res)=>{
                 let data = res.data.b;
@@ -539,12 +536,18 @@ export default {
                 }
             })
 
-            this.axios.post('/user/current/userinfo').then(function(res){
-                that.userInfo.name = res.data.b.name
-                that.userInfo.officeName = res.data.b.officeName
-                that.userInfo.userId = res.data.b.id
-                that.oldData = JSON.parse(JSON.stringify(that.$data))
+            this.axios.post('/user/current/userinfo').then((res)=>{
+                this.userInfo.name = res.data.b.name
+                this.userInfo.officeName = res.data.b.officeName
+                this.userInfo.userId = res.data.b.id
+                this.oldData = JSON.parse(JSON.stringify(this.$data))
             })
+
+
+         },
+        mounted(){
+            let that = this;
+
 
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                 var obj = {

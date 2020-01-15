@@ -278,7 +278,7 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
             let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:1,amount:1,showGroup,}})
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:1,showGroup,}})
 
         },
         del_poeple(index,num){

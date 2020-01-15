@@ -151,7 +151,7 @@ const Util = {
   approverFormat(arr,numStr){//审批人数据格式化
     let data = {userIdsStr:'',companyIdsStr:''};
     let arrs = numStr.split('|')
-
+    console.log(arrs)
     arr.forEach(item => {
       if(item.approvalUserType==3){
         arrs = this.nullVal(arrs,item.auditers.length)
