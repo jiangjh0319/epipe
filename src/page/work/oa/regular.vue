@@ -511,7 +511,7 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
-                console.log('员工userInfo',this.userInfo)
+                // console.log('员工userInfo',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -584,8 +584,10 @@ export default {
                       that.userInfo.userPosition = data.position;
                       that.accessoryFor(data)
                       that.userInfo.officeName = data.officeName;
-                      that.userInfo.name = data.username;
-                      that.userInfo.userId = data.userId;
+                    //   that.userInfo.name = data.username;
+                    //   that.userInfo.userId = data.userId;
+                      that.userInfo.name = data.employeeName;
+                      that.userInfo.userId = data.employeeNameId;
                       that.birthPlace = data.birthPlace;
                       that.birthday = data.birthday;
                       that.major = data.major;
