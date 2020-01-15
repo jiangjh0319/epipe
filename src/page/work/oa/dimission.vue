@@ -560,18 +560,21 @@ export default {
                      this.axios.get('/work/dimission/info',{
                         params:{
                             type:that.$route.query.resubmit,
-                            // dimissionApplyId:'1132febf35de11ea98024ccc6ac12eca',  
+                            // dimissionApplyId:'b9aea96836b511ea98024ccc6ac12eca',  
                             dimissionApplyId:this.$route.query.dimissionId
                         }
                     }).then(function(res){
                      let data = res.data.b;
+                     console.log(data)
                         that.id = data.dimissionApplyId;
                         that.isDraftFlag = 1;
                         that.native = 'mark';
                         that.accessoryFor(data)
                         that.userInfo.officeName = data.officeName;
-                        that.userInfo.name = data.username;
-                        that.userInfo.userId = data.userId;
+                        // that.userInfo.name = data.username;
+                        // that.userInfo.userId = data.userId;
+                        that.userInfo.name = data.employeeName;
+                        that.userInfo.userId = data.employeeNameId;
                         that.dimissionTitle = data.dimissionTitle;
                         that.employeeNo = data.employeeNo;
                         that.userInfo.userPosition = data.position;

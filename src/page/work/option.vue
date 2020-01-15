@@ -201,13 +201,13 @@ export default {
              that.data = [{key:'编制内',value:1},{key:'编制外',value:0}]
          }else if(this.type=='isPosition'){
              this.title = '岗位招聘';
-             console.log('isComplie',this.isComplie)
-             if(this.isComplie==1){//编制内
+            //  console.log('isComplie',this.isComplie)
+             if(this.isComplie==1){//编制内的岗位
                     this.axios.get('/work/hrPositionInside/type').then(function(res){
                     //  console.log(res.data.b)
                         if(res.data.h.code =200 ) that.data = res.data.b;
                     })
-             }else{//编制外
+             }else{//编制外的岗位
                  this.axios.get('/work/hrPosition/type').then(function(res){
                     //  console.log(res.data.b)
                         if(res.data.h.code =200 ) that.data = res.data.b;

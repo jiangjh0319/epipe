@@ -443,11 +443,11 @@ export default {
             window.location.href = "epipe://?&mark=addAccessory"
         },
         go_push(indexs,type,title,isComplie){
-            console.log(indexs,type,title,isComplie)
+            // console.log(indexs,type,title,isComplie)
             if(type=='isComplie'){
                 this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title}})
             }else if(type=='isNew'&isComplie==0){
-
+                return false;
             }else if(type=='isPosition'){
                 this.$router.push({path:'/option', query: {indexs,type,color:'#609df6',title,isComplie}})
             }
