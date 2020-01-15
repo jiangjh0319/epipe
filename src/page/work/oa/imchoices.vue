@@ -435,14 +435,13 @@
              return false;
          } 
 
-        if(this.$route.query.amount){
+        // if(this.$route.query.amount){
 
-            this.approver_array.push(el)
-            this.approver_man(this.approver_array)
-            window.history.back()
-            
-            return false;
-        }
+        //     this.approver_array.push(el)
+        //     this.approver_man(this.approver_array)
+        //     window.history.back()
+        //     return false;
+        // }
 
         let array = []
         if(c!='department'){
@@ -597,13 +596,13 @@
              return false;
          } 
         
-        if(this.$route.query.amount){
+        // if(this.$route.query.amount){
 
-            this.approver_array.push(item)
-            this.approver_man(this.approver_array)
-            window.history.back()
-            return false;
-        }
+        //     this.approver_array.push(item)
+        //     this.approver_man(this.approver_array)
+        //     window.history.back()
+        //     return false;
+        // }
 
         let that = this;
         if (!item.mark_chose) {

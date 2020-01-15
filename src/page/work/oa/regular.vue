@@ -553,8 +553,8 @@ export default {
                 that.userInfo.name = res.data.b.name
                 that.userInfo.officeName = res.data.b.officeName
                 that.userInfo.userPosition = res.data.b.userPosition
+                that.userInfo.userId = res.data.b.id
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
-
             })
             
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
