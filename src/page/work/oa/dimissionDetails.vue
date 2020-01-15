@@ -82,7 +82,7 @@
                 </div>
             </div>
             
-            <div class="styles infor" v-if="dataObj.isHrSys">
+            <div class="styles infor" v-if="dataObj.isHrSys=='Y'">
                 <div class="infor-box">
                     <span style="color:#609EF7" @click="hanlderToleaveEvaluation">查看离职评价及办理意见</span>
                 </div>

@@ -14,17 +14,17 @@
                 </div>
                   <div @click="choose_user">
                     <span class="title" >转正员工姓名</span>
-                    <input placeholder="请输入转正员工姓名"  v-model="userInfo.name" disabled/>
+                    <input placeholder="请选择转正员工姓名"  v-model="userInfo.name" disabled/>
                 </div>
                 <div class="bor_bottom">
                     <span class="title">所属部门</span>
-                    <input placeholder="请输入所属部门"  v-model="userInfo.officeName" disabled/>
+                    <input placeholder="所属部门"  v-model="userInfo.officeName" disabled/>
                 </div>
             </div>
             <div class="styles input_group">
                 <div class="bor_bottom">
                     <span class="title">岗位</span>
-                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="请输入岗位" disabled/>
+                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="岗位" disabled/>
                 </div>
                 <div class="bor_bottom">
                     <span class="title">年龄</span>
@@ -170,7 +170,8 @@ let save_leave = (index,text,that) =>{
     }
     else if(that.regularTitle.length>100 ||that.regularTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
-    }else if(that.birthPlace == ''){
+    }
+    else if(that.birthPlace == ''){
 	    that.$toast('籍贯不能为空')
     }else if(that.birthPlace.length>10){
 	    that.$toast('籍贯不能超过10个字符')
@@ -184,7 +185,8 @@ let save_leave = (index,text,that) =>{
 	    that.$toast('学历不能为空')
     }else if(that.education.length>10){
 	    that.$toast('学历不能超过10个字符')
-    }else if(that.beginTime == '请选择试用开始时间'){
+    }
+    else if(that.beginTime == '请选择试用开始时间'){
         that.$toast('请选择试用开始时间')
     }else if(that.endTime == '请选择试用结束时间'){
         that.$toast('请选择试用结束时间')
@@ -194,7 +196,8 @@ let save_leave = (index,text,that) =>{
         that.$toast('请选择入司时间')
     }else if(that.birthday=='请选择出生时间'){
         that.$toast('请选择出生时间')
-    }else if(that.age==''){
+    }
+    else if(that.age==''){
         that.$toast('年龄不能为空')
     }else if(isNaN(that.age)){
         that.$toast('年龄必须为数字')
@@ -508,7 +511,7 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
-                console.log('员工',this.userInfo)
+                console.log('员工userInfo',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -582,6 +585,7 @@ export default {
                       that.accessoryFor(data)
                       that.userInfo.officeName = data.officeName;
                       that.userInfo.name = data.username;
+                      that.userInfo.userId = data.userId;
                       that.birthPlace = data.birthPlace;
                       that.birthday = data.birthday;
                       that.major = data.major;

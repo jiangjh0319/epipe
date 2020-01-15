@@ -14,11 +14,11 @@
                 </div>
                   <div @click="choose_user">
                     <span class="title" >离职员工姓名</span>
-                    <input placeholder="请输入离职员工姓名"  v-model="userInfo.name" disabled/>
+                    <input placeholder="请选择离职员工姓名"  v-model="userInfo.name" disabled/>
                 </div>
                 <div class="bor_bottom">
                     <span class="title">所属部门</span>
-                    <input placeholder="请输入所属部门"  v-model="userInfo.officeName" disabled/>
+                    <input placeholder="所属部门"  v-model="userInfo.officeName" disabled/>
                 </div>
             </div>
             <div class="styles input_group">
@@ -28,7 +28,7 @@
                 </div>
                 <div class="bor_bottom">
                     <span class="title">岗位</span>
-                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="请输入岗位名称" disabled/>
+                    <input style="color:#666" v-model="userInfo.userPosition" placeholder="岗位名称" disabled/>
                 </div>
                 <router-link :to="{ path:'/option', query: {indexs:positionCode,type:'position',color:'#609df6'}}"  class="bor_bottom choose" tag="div">
                     <span class="title">岗位类别</span>
@@ -169,7 +169,8 @@ let save_leave = (index,text,that) =>{
         that.$toast('请选择离职日期')
     }else if(that.contractEndDate=='请选择合同终止日期'){
         that.$toast('请选择合同终止日期')
-    }else if(that.dimissionDesc==''){
+    }
+    else if(that.dimissionDesc==''){
         that.$toast('请输入离职原因')
     }else if(that.education.length<2||that.education.length>30){
         that.$toast('学历不能低于2个或超过30个字符')
@@ -570,6 +571,7 @@ export default {
                         that.accessoryFor(data)
                         that.userInfo.officeName = data.officeName;
                         that.userInfo.name = data.username;
+                        that.userInfo.userId = data.userId;
                         that.dimissionTitle = data.dimissionTitle;
                         that.employeeNo = data.employeeNo;
                         that.userInfo.userPosition = data.position;

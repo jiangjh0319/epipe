@@ -39,7 +39,7 @@
                             <span v-if="item.approvalUserScope==2">未找到审批人将自动通过</span>
                             <span v-else>未找到审批人将转交管理员</span>
                         </div>
-                        <div v-if="item.approvalUserType==3&&(item.auditers.length<1||isMore)" @click="add_people(index)">
+                        <div v-if="item.approvalUserType==3&&(item.auditers.length<10||isMore)" @click="add_people(index)">
                             <div class="approver_info_people_item">
                                 <img src="../../assets/add_people.png"/>
                             </div>
