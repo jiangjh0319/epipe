@@ -267,7 +267,7 @@
                             </div>
                             <div class="affairs_infor">
                                 <div class="request_infor lineHeight">
-                                    <span >职&emsp;&emsp;务 : </span>
+                                    <span >岗&emsp;&emsp;位 : </span>
                                     <p class="line1">{{item.position}} </p>
                                 </div>
                                 <div class="request_infor lineHeight">
@@ -491,7 +491,7 @@
                             </div>
                             <div class="affairs_infor">
                                 <div class="request_infor lineHeight">
-                                    <span>职&emsp;&emsp;务 :</span><p class="line1">{{item.position}} </p>
+                                    <span>岗&emsp;&emsp;位 :</span><p class="line1">{{item.position}} </p>
                                 </div>
                                 <div class="request_infor lineHeight">
                                     <span>入司时间 :</span>

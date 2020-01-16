@@ -45,7 +45,7 @@
 
             <div class="styles infor">
                 <div class="infor-box">
-                    <span>职&emsp; &emsp;务 &emsp;&emsp; </span>
+                    <span>岗&emsp; &emsp;位 &emsp;&emsp; </span>
                     <p>{{dataObj.position}} </p>
                 </div>
                  <div class="infor-box">
@@ -369,7 +369,7 @@
             let that = this;
             this.regularId = this.$route.query.regularId;
             let pusthId = this.$route.query.pushId
-            // this.axios.get('/work/regular/info?regularApplyId=589d55a335e911ea98024ccc6ac12eca'+'&pushId='+pusthId).then((res)=>{
+            // this.axios.get('/work/regular/info?regularApplyId=70a04f8b375c11ea835a4ccc6ac12eca'+'&pushId='+pusthId).then((res)=>{
             this.axios.get('/work/regular/info?regularApplyId='+this.regularId+'&pushId='+pusthId).then((res)=>{
                 that.dataObj = res.data.b;
                 let arr=[],newArr=[];

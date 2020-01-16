@@ -392,7 +392,6 @@ export default {
             this.oldData = JSON.parse(JSON.stringify(this.$data))
             let that = this;
 
-            if(that.$route.query.resubmit!='1'){
 
                 this.axios.get('/process/apply/enter?req=21').then((res)=>{
                     let data = res.data.b;
@@ -401,13 +400,11 @@ export default {
                     this.linkAuditNum = data.linkAuditNum;
                     this.applyLinkIds = data.applyLinkIds;
                     this.showCopy = data.approvalReceiverFlag=='1'?false:true;
-
                     if(data.receivers.length>0){
                             this.chosed_list = data.receivers
                             this.change_man(this.chosed_list);
                     }
                 })
-            }
             
         },
         activated(){
@@ -427,6 +424,8 @@ export default {
                     that.isImg(url)?obj.isImg=true:obj.isImg=false;
                     that.accessory.push(obj)
                 }
+
+            console.log(12)
 
             let that = this;
             if(this.$route.query.materialId){
@@ -449,9 +448,7 @@ export default {
                         that.change_man(that.chosed_list)
                         that.material = data.list
                         that.allApprovers = data.links;
-
                         that.textNum = data.materialReceiveRemarks.length;
-
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
             }

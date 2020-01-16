@@ -216,6 +216,7 @@ let save_leave = (index,text,that) =>{
         fileObj = that.Util.fileFo(that.accessory)
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+        
 
         that.axios({
                 method:"post",
@@ -547,6 +548,7 @@ export default {
             this.axios.post('/user/current/userinfo').then((res)=>{
                 this.userInfo.name = res.data.b.name
                 this.userInfo.officeName = res.data.b.officeName
+                this.userInfo.userPosition = res.data.b.userPosition
                 this.userInfo.userId = res.data.b.id
                 this.oldData = JSON.parse(JSON.stringify(this.$data))
             })
@@ -573,7 +575,7 @@ export default {
                     params:{
                         type:that.$route.query.resubmit,
                         regularApplyId:this.$route.query.regularId,   
-                        // regularApplyId:'589d55a335e911ea98024ccc6ac12eca',
+                        // regularApplyId:'afec7611374611ea835a4ccc6ac12eca',
                     }
                 }).then(function(res){
                    let data = res.data.b;
@@ -586,8 +588,6 @@ export default {
                       that.userInfo.userPosition = data.position;
                       that.accessoryFor(data)
                       that.userInfo.officeName = data.officeName;
-                    //   that.userInfo.name = data.username;
-                    //   that.userInfo.userId = data.userId;
                       that.userInfo.name = data.employeeName;
                       that.userInfo.userId = data.employeeNameId;
                       that.birthPlace = data.birthPlace;
