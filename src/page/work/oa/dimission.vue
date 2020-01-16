@@ -163,7 +163,8 @@ let save_leave = (index,text,that) =>{
         that.$toast('员工编号不能低于2个或超过30个字符')
     }else if(isNaN(that.employeeNo)){
         that.$toast('员工编号为数字')
-    }else if(that.hireDate=='请选择入职日期'){
+    }
+    else if(that.hireDate=='请选择入职日期'){
         that.$toast('请选择入职日期')
     }else if(that.dimissionDate=='请选择离职日期'){
         that.$toast('请选择离职日期')
@@ -564,13 +565,13 @@ export default {
                      this.axios.get('/work/dimission/info',{
                         params:{
                             type:that.$route.query.resubmit,
-                            // dimissionApplyId:'b9aea96836b511ea98024ccc6ac12eca',  
                             dimissionApplyId:this.$route.query.dimissionId
                         }
                     }).then(function(res){
                      let data = res.data.b;
-                     console.log(data)
-                        that.id = data.dimissionApplyId;
+                        if(!that.$route.query.resubmit){
+                            that.id = data.dimissionApplyId;
+                        }
                         that.isDraftFlag = 1;
                         that.native = 'mark';
                         that.accessoryFor(data)
