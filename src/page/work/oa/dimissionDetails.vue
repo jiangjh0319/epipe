@@ -357,7 +357,7 @@
             let that = this;
             this.dimissionApplyId = this.$route.query.dimissionId;
             let pusthId = this.$route.query.pushId
-                // this.axios.get('/work/dimission/info?dimissionApplyId=3eeda394375b11ea835a4ccc6ac12eca'+'&pushId='+pusthId).then(function(res){
+                // this.axios.get('/work/dimission/info?dimissionApplyId=8c33e705381311ea835a4ccc6ac12eca'+'&pushId='+pusthId).then(function(res){
                 this.axios.get('/work/dimission/info?dimissionApplyId='+this.dimissionApplyId+'&pushId='+pusthId).then(function(res){
                 that.dataObj = res.data.b;
                 let arr = [],newArr=[];
