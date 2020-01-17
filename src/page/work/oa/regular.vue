@@ -220,7 +220,7 @@ let save_leave = (index,text,that) =>{
 
         that.axios({
                 method:"post",
-                url:"/work/regular/save",
+                url:"https://apps.epipe.cn/member/v2/work/regular/save",
                 headers:{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },

@@ -370,7 +370,7 @@
             this.regularId = this.$route.query.regularId;
             let pusthId = this.$route.query.pushId
             // this.axios.get('/work/regular/info?regularApplyId=6f57bdfb382511ea835a4ccc6ac12eca'+'&pushId='+pusthId).then((res)=>{
-            this.axios.get('/work/regular/info?regularApplyId='+this.regularId+'&pushId='+pusthId).then((res)=>{
+            this.axios.get('https://apps.epipe.cn/member/v2/work/regular/info?regularApplyId='+this.regularId+'&pushId='+pusthId).then((res)=>{
                 that.dataObj = res.data.b;
                 let arr=[],newArr=[];
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
