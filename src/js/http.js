@@ -7,10 +7,10 @@ axios.defaults.withCredentials = true;
 axios.defaults.timeout = 5000;
 
 
-const dev = 'http://192.168.3.166:8280/member/v1'; //测试
+// const dev = 'http://192.168.3.166:8280/member/v1'; //测试
 // const dev = 'http://192.168.3.186:8079/member/v2'; // 习节祥
-// const dev = 'http://192.168.3.40:8080/member/v4'; //
-// const dev = 'http://192.168.3.40:8081/member/v1'; //本地测试
+// const dev = 'http://192.168.3.40:8081/member/v1'; //
+const dev = 'http://192.168.3.40:8081/member/v1'; //本地测试
 // const dev = 'http://192.168.3.241:8882/member/v1'; //自动化测试 
 const product = 'https://apps.epipe.cn/member/v1';//正式环境
 // const product = "http://21874u8g05.iask.in:19054/member/v1"; //正式
@@ -44,8 +44,8 @@ axios.interceptors.request.use(
       window.localStorage.setItem("auth_token",getCookie("auth_token"));
     }else{
       if(!config.headers.auth_token){
-          config.headers.auth_token = window.localStorage.auth_token;
-          // config.headers.auth_token = "a8c702f4-97b9-43cf-94b2-8925fbd3eaf9"
+          // config.headers.auth_token = window.localStorage.auth_token;
+          config.headers.auth_token = "dafd761f-e802-4e10-9242-ac1ebc23afe3"
       }
     }
     return config;

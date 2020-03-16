@@ -186,17 +186,17 @@ let save_leave = (index,text,that) =>{
     }else if(that.education.length>10){
 	    that.$toast('学历不能超过10个字符')
     }
-    else if(that.beginTime == '请选择试用开始时间'){
-        that.$toast('请选择试用开始时间')
-    }else if(that.endTime == '请选择试用结束时间'){
-        that.$toast('请选择试用结束时间')
-    }else if(that.graduationDate == '请选择毕业时间'){
-        that.$toast('请选择毕业时间')
-    }else if(that.hireDate == '请选择入司时间'){
-        that.$toast('请选择入司时间')
-    }else if(that.birthday=='请选择出生时间'){
-        that.$toast('请选择出生时间')
-    }
+    // else if(that.beginTime == '请选择试用开始时间'){
+    //     that.$toast('请选择试用开始时间')
+    // }else if(that.endTime == '请选择试用结束时间'){
+    //     that.$toast('请选择试用结束时间')
+    // }else if(that.graduationDate == '请选择毕业时间'){
+    //     that.$toast('请选择毕业时间')
+    // }else if(that.hireDate == '请选择入司时间'){
+    //     that.$toast('请选择入司时间')
+    // }else if(that.birthday=='请选择出生时间'){
+    //     that.$toast('请选择出生时间')
+    // }
     else if(that.age==''){
         that.$toast('年龄不能为空')
     }else if(isNaN(that.age)){
@@ -226,21 +226,21 @@ let save_leave = (index,text,that) =>{
                 },
                 data:{
 
-                    // beginTime: '2020-1-13',  
-                    // endTime: '2020-1-22',  
-                    // birthday:'1998-10-8',
-                    // graduationDate:'2005-10-8',
-                    // hireDate:'2001-12-2',
+                    beginTime: '2020-1-13',  
+                    endTime: '2020-1-22',  
+                    birthday:'1998-10-8',
+                    graduationDate:'2005-10-8',
+                    hireDate:'2020-3-16',
 
 
                     Id :that.id, // id
                     regularTitle:that.regularTitle,//申请主题
 
-	                beginTime: that.beginTime,  
-                    endTime: that.endTime,  
-                    birthday:that.birthday,
-                    hireDate:that.hireDate,
-                    graduationDate:that.graduationDate,
+	                // beginTime: that.beginTime,  
+                    // endTime: that.endTime,  
+                    // birthday:that.birthday,
+                    // hireDate:that.hireDate,
+                    // graduationDate:that.graduationDate,
 
                     education:that.education,
                     employeeName:that.userInfo.name,
@@ -572,8 +572,8 @@ export default {
                   this.axios.get('/work/regular/info',{
                     params:{
                         type:that.$route.query.resubmit,
-                        regularApplyId:this.$route.query.regularId,   
-                        // regularApplyId:'afec7611374611ea835a4ccc6ac12eca',
+                        // regularApplyId:this.$route.query.regularId,   
+                        regularApplyId:'72f85b6b644111ea835a4ccc6ac12eca',
                     }
                 }).then(function(res){
                    let data = res.data.b;
