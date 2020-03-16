@@ -225,7 +225,6 @@ let save_leave = (index,text,that) =>{
                     fileSizes: fileObj.fileSizeStr,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
-                    applyLinkIds:that.applyLinkIds,
                     linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                     },
@@ -599,7 +598,6 @@ export default {
                         that.textNum=that.dimissionDesc.length;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.allApprovers = data.links;
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

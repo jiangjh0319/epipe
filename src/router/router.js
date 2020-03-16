@@ -903,7 +903,7 @@ export default new Router({
       meta: {keepAlive: true}
     },
     {
-      path:'/recruitmentApprovalDetial',//招聘审批详情
+      path:'/recruitmentApprovalDetails',//招聘审批详情
       component:RecruitmentApprovalDetial,
       meta: {keepAlive: true}
     },

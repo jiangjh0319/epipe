@@ -717,7 +717,7 @@
                         <div>
                             <div class="affairs_title">
                                 <img :src="item.profileImg"/>
-                                <h2>{{item.title}}的物品领用</h2>
+                                <h2>{{item.title}}的权限异动</h2>
                                 <time >{{item.applyTime | timeSlice}}</time>
                             </div>
                             <div class="affairs_infor">
@@ -735,6 +735,30 @@
                                 <div class="request_infor lineHeight" >
                                     <span>异动类型 :</span>
                                     <p class="line1">{{item.moveType }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                    <i v-if="item.readFlag=='0'&&isCopy"></i>
+                </div>
+            </div>
+            <div v-else-if="item.typecode == 24" @click="goDetails(item,'recruitmentApproval')"   class="affairs_content" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>{{item.title}}的招聘审批</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>招聘职位 :</span><p class="line1">{{item.position}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>候选人姓名 :</span>
+                                    <p class="line1">{{item.candidateName}}</p>
                                 </div>
                             </div>
                         </div>

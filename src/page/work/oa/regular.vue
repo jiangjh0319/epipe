@@ -220,7 +220,7 @@ let save_leave = (index,text,that) =>{
 
         that.axios({
                 method:"post",
-                url:"https://apps.epipe.cn/member/v2/work/regular/save",
+                url:"/work/regular/save",
                 headers:{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
@@ -604,7 +604,6 @@ export default {
                       that.endTime = data.endTime;
                       that.chosed_list = data.receivers;
                       that.change_man(that.chosed_list);
-                      that.allApprovers = data.links;
                       that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

@@ -8,7 +8,7 @@
          ></TopHead>
         <div class="content">
         <div class="styles input_group">
-                 <router-link tag="div" :to="{path:'/addressList',query:{bgcolor:'#f80',peArrIndex:0,back:true,showGroup:false}}" class="bor_bottom choose">
+                 <router-link tag="div" :to="{path:'/addressList',query:{bgcolor:'#f80',peArrIndex:0,back:true,showGroup:true}}" class="bor_bottom choose">
                     <span class="title" >姓&emsp;&emsp;名</span>
                     <p >
                         <span class="nullValue">{{applicant.name}}</span>

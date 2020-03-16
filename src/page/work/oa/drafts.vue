@@ -954,7 +954,8 @@
                         查看详情
                 </div>
             </div>
-               <div v-else-if="item.typecode == 24" @click="go_Apply(item,'recruitmentApproval')"   class="affairs_item" >
+
+            <div v-else-if="item.typecode == 24" @click="go_Apply(item,'recruitmentApproval')"   class="affairs_item" >
                 <div class="item_infor">
                     <div class="select" v-if="redactState">
                              <svg v-if="item.isDel" class="icon" style="font-size:0.16rem;color:#f80" aria-hidden="false">

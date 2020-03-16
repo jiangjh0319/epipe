@@ -139,5 +139,10 @@ export default {
            background-color #f5f5f5;
        }
     }
+
+    .no-more,.no-results{
+        display block;
+        padding-top 30px;
+    }
     
 </style>
