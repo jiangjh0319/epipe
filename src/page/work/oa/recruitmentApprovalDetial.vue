@@ -229,7 +229,7 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
-                 this.$router.push({path:'/opinion',query:{id:this.dataObj.interviewApplyId,typeName:'interview',applyType:6,color:'#0fc37c'}})
+                 this.$router.push({path:'/opinion',query:{id:this.dataObj.interviewApplyId,typeName:'interview',applyType:23,color:'#0fc37c'}})
             },
             history_back_click:function(){
                     if(location.href.indexOf('goWork=0')>0){
@@ -244,10 +244,10 @@
             deliverTo(){ //转交
                 let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
                 let newCopy = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.interviewApplyId,receiverIds:newCopy,careOf:true,typeName:'interview',applyType:6,bgcolor:'#0fc37c',auditerIds:newApprStr,num:1}})
+                this.$router.push({path:'/imchoices',query:{id:this.dataObj.interviewApplyId,receiverIds:newCopy,careOf:true,typeName:'interview',applyType:23,bgcolor:'#0fc37c',auditerIds:newApprStr,num:1}})
             },
             approveBack(){ //退回
-                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.interviewApplyId,typeName:'interview',applyType:6,color:'#0fc37c'}})
+                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.interviewApplyId,typeName:'interview',applyType:23,color:'#0fc37c'}})
             },
             consent:function(type){
                  let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
@@ -259,7 +259,7 @@
                 url = type!=2?'/opinion':'/imchoices';
 
                 params={id:this.dataObj.interviewApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
-                color:'#0fc37c',applyType:6,typeName:'interview',pageType:type,careOf:true,num:1}
+                color:'#0fc37c',applyType:23,typeName:'interview',pageType:type,careOf:true,num:1}
 
               this.$router.push({path:url,query:params})
 
@@ -273,7 +273,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                         applyId:this.dataObj.interviewApplyId,
                         type:6,
-                        applyType:6,
+                        applyType:23,
                 })).then(function(res){
                     if(res.data.h.code==200){
                         that.$toast('催办成功!')
@@ -301,7 +301,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                     applyId:this.dataObj.interviewApplyId,
                     type:1,
-                    applyType:6,
+                    applyType:23,
                 })).then(function(res){
                         if(res.data.h.code!=200){
                             that.$toast(res.data.h.msg)
@@ -310,7 +310,7 @@
                             that.$toast('撤销成功！')
           
                             setTimeout(()=>{
-                                window.location.href = "epipe://?&mark=recruitmentApprovalDetial&_id="+that.dataObj.interviewApplyId+'&data='+JSON.stringify({text:1});;
+                                window.location.href = "epipe://?&mark=recruitmentApprovalDetails&_id="+that.dataObj.interviewApplyId+'&data='+JSON.stringify({text:1});;
                             },500)     
                         } 
                     })
@@ -361,7 +361,9 @@
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
             hanlderInterviewDetail(){
-                this.$router.push({path:'/interviewDetail'})
+
+                console.log(this.interviewApplyId)
+                this.$router.push({path:'/interviewDetail',query:{id:this.interviewApplyId}})
             }
             // computed: mapState(["chosed_man_state","approver_man_state"])
         },
@@ -372,7 +374,7 @@
             let that = this;
             this.interviewApplyId = this.$route.query.interviewApplyId;
             let pusthId = this.$route.query.pushId;
-            this.axios.get('/work/reimburse/info?interviewApplyId='+this.interviewApplyId+'&pushId='+pusthId).then(function(res){
+            this.axios.get('/work/interview/info?interviewApplyId='+this.interviewApplyId+'&pushId='+pusthId).then(function(res){
             // this.axios.get('/work/interview/info?interviewApplyId=eba209c332bb11ea98024ccc6ac12eca'+'&pushId='+pusthId).then(function(res){
                 that.dataObj = res.data.b;
                 // console.log('dataObj',that.dataObj)

@@ -10,7 +10,7 @@
             <div class="styles input_group">
                 <div class="bor_bottom">
                     <span class="title"><span class="required">*</span>招聘职位</span>
-                    <input placeholder="请输入招聘职位"  v-model="approvalPosition" disabled />
+                    <input placeholder="请输入招聘职位"  v-model="position" disabled />
                 </div>
                 <div class="bor_bottom">
                     <span class="title">所属部门</span>
@@ -32,7 +32,7 @@
                     <input placeholder="请输入学历"  v-model="educationFormal" disabled />
                 </div>
                 <div class="bor_bottom">
-                    <span class="title"><span class="required">*</span>毕业院校</span>
+                    <span class="title">毕业院校</span>
                     <input placeholder="请输入毕业院校"  v-model="college" disabled />
                 </div>
             </div>
@@ -122,43 +122,29 @@ let reg = /^[\u4e00-\u9fa5]+$/;
 var regs =/^[1-9]+\d*$/;
 let rule = /^[A-Za-z0-9]+$/;
 let save_leave = (index,text,that) =>{
-    if(that.approvalPosition== ''){
-        that.$toast('文件标题不能为空')
+    if(that.position== ''){
+        that.$toast('招聘职位不能为空')
     }
-    // else if(that.approvalPosition.length>100 ||that.approvalPosition.length<2){
+    // else if(that.position.length>100 ||that.position.length<2){
     //     that.$toast('文件标题不能低于2个或超过100个字符')
     // }
-    else if(that.arrivalDate == '请选择到岗日期'){
-        that.$toast('请选择到岗日期')
-    }else if(that.num==''){
-        that.$toast('需求人数不能为空')
-    }else if(isNaN(that.num)){
-        that.$toast('需求人数为数字')
-    }else if(that.education==''){
+  else if(that.educationFormal==''){
         that.$toast('请选择学历')
-    }else if(that.jobExperience==''){
-        that.$toast('请选择工作经验')
-    }else if(that.highestEducation==''){
-        that.$toast('请选择最高学历毕业学校')
+    }else if(that.candidateName==''){
+        that.$toast('候选人姓名不能为空')
+    }else if(that.workYear==''){
+        that.$toast('工作年限不能为空')
+    }else if(that.interviewTime=''){
+        that.$toast('面试时间不能为空')
+    }else if(that.college=''){
+        that.$toast('请输入毕业院校')
     }
-    else if(that.num>10){
-        that.$toast('需求人数不能超过10个')
-    }else if(that.position == ''){
-        that.$toast('请输入岗位名称')
-    }else if(that.position.length<2||that.position>30){
-        that.$toast('岗位名称不能低于2个或超过30个字符')
-    }else if(that.isNew==-1){
-        that.$toast('请选择是否新增')
-    }else if(that.responsibility==''){
-        that.$toast('工作职责不能为空')
-    }else if(that.responsibility.length>1000){
-        that.$toast('工作职责不能超过1000字')
+    else if(that.position.length<2||that.position>30){
+        that.$toast('职位名称不能低于2个或超过30个字符')
     }else if(that.remark == ''){
-        that.$toast('申请理由不能为空')
-    }else if(that.major.length>30){
-        that.$toast('专业要求内容不能超过30个字符')
+        that.$toast('备注不能为空')
     }else if(that.remark.length>1000||that.remark.length<6){
-        that.$toast('申请理由不能少于6个或超过1000字符')
+        that.$toast('备注不能少于6个或超过1000字符')
     }else if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
     }else{
@@ -174,33 +160,13 @@ let save_leave = (index,text,that) =>{
 
         that.axios({
                 method:"post",
-                url:"/work/employee/save",
+                url:"/work/interview/save",
                 headers:{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
                 data:{
                     Id :that.id, // id
                     remarks:that.remark.replace(/\n/g, '<br/>'), //申请理由
-                    position:that.position, //招聘岗位
-                    num:that.num, //招聘人数
-                    arrivalDate:that.arrivalDate,//到岗时间
-
-                    sex:that.sex,//性别
-                    marriage:that.marriage,//婚姻
-                    age:that.age,//年龄
-                    jobExperience:that.jobExperience,
-                    isNew:that.isNew,
-                    highestEducation:that.highestEducation,
-                    education:that.education, //学历
-                    major:that.major,//专业
-                    qualifications:that.qualifications,//证书
-                    computerLevel:that.computerLevel,//计算机水平
-                    foreignLevel:that.foreignLevel, //外语水平
-                    skill:that.skill,//特殊技能
-                    writings:that.writings, //写作
-                    priority:that.priority, //优先录用
-                    responsibility:that.responsibility.replace(/\n/g, '<br/>'), //工作职责
-
                     urls : fileObj.urlStr, //附件
                     fileNames:fileObj.fileNameStr, 
                     fileSizes:fileObj.fileSizeStr,
@@ -235,7 +201,7 @@ let save_leave = (index,text,that) =>{
                                 that.$toast('提交成功！')
                                 window.location.href = "epipe://?&mark=workUpdate";
                                 setTimeout(()=>{
-                                    window.location.href = "epipe://?&mark=recruitmentApprovalDetial&_id="+res.data.b.interviewApplyId;
+                                    window.location.href = "epipe://?&mark=submitRecruitmentApproval&_id="+res.data.b.interviewApplyId;
                                     
                                 },500)
                             }
@@ -257,11 +223,10 @@ export default {
         data(){
             return{
                 id:'',
-                approvalPosition : '', // 招聘职位
+                position : '', // 招聘职位
                 departmentName : '',//所属部门
                 candidateName: '',  //候选人名称
                 workYear:'',//工作年限
-                educationFormal:'',//学历
                 college:'',//毕业学院
                 telephone:'',//电话
                 email:'',//邮箱
@@ -270,7 +235,6 @@ export default {
 
                 position : '', //招聘岗位
                 num:'',//招聘人数
-                arrivalDate:'请选择到岗日期', //到岗日期
                 returnDate:'请选择预计归还日期', //
                 userName : '',//用印承办人
                 employeeReason : '',//申请理由
@@ -291,11 +255,9 @@ export default {
                 isComplie:-1,//编制序号
                 isComplieName:'请选择',
                 isNewName:'请选择',
-                highestEducation:'',
-                highestEducationName:'请选择',
                 jobExperience:'',
                 jobExperienceName:'请选择',
-                education:'', //学历
+                educationFormal:'', //学历
                 educationName:'请选择',
                 major:'',//专业
                 qualifications:'',//证书
@@ -396,22 +358,6 @@ export default {
                 }
 
             },
-        getTime(){ //获取原生时间
-                let that = this;
-                window.location.href = "epipe://?&mark=getLeaveTime";
-                window["epipe_leavetime_callback"] = str => {
-                        let flag = false; 
-                        let date = null;
-                    if(str.indexOf('/')>0){
-                        flag = true;
-                        date = that.tiemF(str)
-                        str = str.split(/[- : \/]/);
-                    }else{
-                        date = new Date(str)
-                    }
-                    that.arrivalDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str; 
-                }
-            },
              tiemF(timeStr){ //传入原生的时间格式化
                 timeStr+=':00';
                 timeStr = timeStr.split(/[- : \/]/);
@@ -431,7 +377,7 @@ export default {
                 this.$router.push({path:'/more_employee',query:params})
             },
             handlerTointerviewDetail(){
-                this.$router.push({path:'/interviewDetail'})
+                this.$router.push({path:'/interviewDetail',query:{id:this.id}})
             }
         },
          watch:{
@@ -474,9 +420,6 @@ export default {
                 if(res.type=='sex'){
                     this.sex = res.index
                     this.sexType = res.name
-                }else if(res.type=='education'){
-                    this.education = res.index
-                    this.educationName = res.name 
                 }else if(res.type=='age'){
                     this.age = res.index
                     this.ageName = res.name
@@ -486,9 +429,6 @@ export default {
                 }else if(res.type=='jobExperience'){
                     this.jobExperience = res.index
                     this.jobExperienceName = res.name
-                }else if(res.type=='highestEducation'){
-                    this.highestEducation = res.index
-                    this.highestEducationName = res.name
                 }else if(res.type=='marriage'){
                     this.marriage = res.index
                     this.marriageType = res.name
@@ -519,11 +459,11 @@ export default {
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
 
-            if(this.$route.query.recruitmentApprovaId){
+            if(this.$route.query.interviewApplyId){
                   this.axios.get('work/interview/info',{
                     params:{
                         type:that.$route.query.resubmit,
-                        interviewApplyId:this.$route.query.recruitmentApprovaId  
+                        interviewApplyId:this.$route.query.interviewApplyId  
                         // interviewApplyId:'eba209c332bb11ea98024ccc6ac12eca'
                     }
                 }).then(function(res){
@@ -542,36 +482,7 @@ export default {
                         that.telephone = data.phone;//电话
                         that.email = data.email;//邮箱
                         that.interviewTime = data.interviewTime;//面试时间
-                        
 
-
-
-                        // that.arrivalDate = data.arrivalDate.slice(0,-8);
-                        // that.sex = data.sexCode//性别
-                        // that.sexType = data.sex//性别
-                        // that.marriage= data.marriageCode//婚姻
-                        // that.marriageType= data.marriage//婚姻
-                        // that.age= data.ageCode//年龄
-                        // that.ageName = data.age
-                        // that.highestEducation = data.highestEducationCode
-                        // that.highestEducationName = data.highestEducation
-                        // that.jobExperience = data.jobExperienceCode
-                        // that.jobExperienceName = data.jobExperience
-                        // that.education= data.educationCode //学历
-                        // that.educationName= data.education //学历
-                        // that.isNew = data.isNewCode
-                        // that.isNewName = data.isNew
-                        // that.major= data.major//专业
-                        // that.qualifications= data.qualifications//证书
-                        // that.computerLevel= data.computerLevel//计算机水平
-                        // that.foreignLevel= data.foreignLevel //外语水平
-                        // that.skill= data.skill//特殊技能
-                        // that.writings= data.writings //写作
-                        // that.priority= data.priority //优先录用
-                        // that.responsibility= data.responsibility.replace(/<br\/>/g,'\n') //工作职责
-
-                        // that.textNum = data.remark.length
-                        // that.responsibilityNum = data.responsibility.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
                         that.approver_list = data.auditers;

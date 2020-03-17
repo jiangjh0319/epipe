@@ -725,6 +725,29 @@
                         </div>
                 </div>
             </div>
+            <div v-else-if="item.typecode == 24" @click="goDetails(item.applyId,item.fianlStatus,'recruitmentApproval')"   class="affairs_item" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的权限招聘</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>招聘职位 :</span><p class="line1">{{item.position}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>候选人姓名 :</span>
+                                    <p class="line1">{{item.candidateName}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                </div>
+            </div>
 
             </div>
 

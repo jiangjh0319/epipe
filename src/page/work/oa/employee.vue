@@ -220,17 +220,23 @@ let save_leave = (index,text,that) =>{
         that.$toast('文件标题不能为空')
     }else if(that.employeeTitle.length>100 ||that.employeeTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
-    }else if(that.isComplieName=='请选择'){
+    }else if(that.isComplie==1&&!that.isShowPositon&&parseInt(that.num)>parseInt(that.isPosition)){
+            that.$toast('申请数量不能大于编制人数')
+    }
+    else if(that.isComplieName=='请选择'){
         that.$toast('编制不能为空')
-    }
-    else if(that.arrivalDate == '请选择到岗日期'){
-        that.$toast('请选择到岗日期')
-    }
+    }  
     else if(that.num==''){
         that.$toast('需求人数不能为空')
     }else if(isNaN(that.num)){
         that.$toast('需求人数为数字')
-    }else if(that.education==''){
+    }else if(that.num==0){
+        that.$toast('需求人数不能为0')
+    }
+    else if(that.arrivalDate == '请选择到岗日期'){
+        that.$toast('请选择到岗日期')
+    }
+    else if(that.education==''){
         that.$toast('请选择学历')
     }else if(that.jobExperience==''){
         that.$toast('请选择工作经验')
@@ -260,7 +266,6 @@ let save_leave = (index,text,that) =>{
         that.$toast('请选择审批人')
     }
     else{
-
 
         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 

@@ -186,17 +186,17 @@ let save_leave = (index,text,that) =>{
     }else if(that.education.length>10){
 	    that.$toast('学历不能超过10个字符')
     }
-    // else if(that.beginTime == '请选择试用开始时间'){
-    //     that.$toast('请选择试用开始时间')
-    // }else if(that.endTime == '请选择试用结束时间'){
-    //     that.$toast('请选择试用结束时间')
-    // }else if(that.graduationDate == '请选择毕业时间'){
-    //     that.$toast('请选择毕业时间')
-    // }else if(that.hireDate == '请选择入司时间'){
-    //     that.$toast('请选择入司时间')
-    // }else if(that.birthday=='请选择出生时间'){
-    //     that.$toast('请选择出生时间')
-    // }
+    else if(that.beginTime == '请选择试用开始时间'){
+        that.$toast('请选择试用开始时间')
+    }else if(that.endTime == '请选择试用结束时间'){
+        that.$toast('请选择试用结束时间')
+    }else if(that.graduationDate == '请选择毕业时间'){
+        that.$toast('请选择毕业时间')
+    }else if(that.hireDate == '请选择入司时间'){
+        that.$toast('请选择入司时间')
+    }else if(that.birthday=='请选择出生时间'){
+        that.$toast('请选择出生时间')
+    }
     else if(that.age==''){
         that.$toast('年龄不能为空')
     }else if(isNaN(that.age)){
@@ -226,21 +226,21 @@ let save_leave = (index,text,that) =>{
                 },
                 data:{
 
-                    beginTime: '2020-1-13',  
-                    endTime: '2020-1-22',  
-                    birthday:'1998-10-8',
-                    graduationDate:'2005-10-8',
-                    hireDate:'2020-3-16',
+                    // beginTime: '2020-1-13',  
+                    // endTime: '2020-1-22',  
+                    // birthday:'1998-10-8',
+                    // graduationDate:'2005-10-8',
+                    // hireDate:'2020-3-16',
 
 
                     Id :that.id, // id
                     regularTitle:that.regularTitle,//申请主题
 
-	                // beginTime: that.beginTime,  
-                    // endTime: that.endTime,  
-                    // birthday:that.birthday,
-                    // hireDate:that.hireDate,
-                    // graduationDate:that.graduationDate,
+	                beginTime: that.beginTime,  
+                    endTime: that.endTime,  
+                    birthday:that.birthday,
+                    hireDate:that.hireDate,
+                    graduationDate:that.graduationDate,
 
                     education:that.education,
                     employeeName:that.userInfo.name,
@@ -368,7 +368,7 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
              let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,amount:1,showGroup,}})
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -528,15 +528,11 @@ export default {
             this.oldData = JSON.parse(JSON.stringify(this.$data))
             eventBus.$on('leaveType', res =>{
             if(res.name=='') return;
-            this.sex = res.index;
-            this.sexName = res.name;
-        })
+                this.sex = res.index;
+                this.sexName = res.name;
+             })
 
-         },
-        mounted(){
-            let that = this;
-
-            this.axios.get('/process/apply/enter?req=15').then((res)=>{
+             this.axios.get('/process/apply/enter?req=15').then((res)=>{
                 let data = res.data.b;
      
                 this.allApprovers = data.links;
@@ -549,13 +545,19 @@ export default {
                 }
             })
 
-            this.axios.post('/user/current/userinfo').then(function(res){
-                that.userInfo.name = res.data.b.name
-                that.userInfo.officeName = res.data.b.officeName
-                that.userInfo.userPosition = res.data.b.userPosition
-                that.userInfo.userId = res.data.b.id
-                that.oldData = JSON.parse(JSON.stringify(that.$data))
+            this.axios.post('/user/current/userinfo').then((res)=>{
+                this.userInfo.name = res.data.b.name
+                this.userInfo.officeName = res.data.b.officeName
+                this.userInfo.userPosition = res.data.b.userPosition
+                this.userInfo.userId = res.data.b.id
+                this.oldData = JSON.parse(JSON.stringify(this.$data))
             })
+
+         },
+        mounted(){
+            let that = this;
+
+            
             
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                 var obj = {
@@ -572,8 +574,8 @@ export default {
                   this.axios.get('/work/regular/info',{
                     params:{
                         type:that.$route.query.resubmit,
-                        // regularApplyId:this.$route.query.regularId,   
-                        regularApplyId:'72f85b6b644111ea835a4ccc6ac12eca',
+                        regularApplyId:this.$route.query.regularId,   
+                        // regularApplyId:'332f0c63652211ea835a4ccc6ac12eca',
                     }
                 }).then(function(res){
                    let data = res.data.b;
@@ -602,7 +604,6 @@ export default {
                       that.endTime = data.endTime;
                       that.chosed_list = data.receivers;
                       that.change_man(that.chosed_list);
-                      that.allApprovers = data.links;
                       that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

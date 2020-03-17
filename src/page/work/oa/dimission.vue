@@ -225,7 +225,6 @@ let save_leave = (index,text,that) =>{
                     fileSizes: fileObj.fileSizeStr,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
-                    applyLinkIds:that.applyLinkIds,
                     linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                     },
@@ -341,7 +340,7 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
              let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,amount:1,showGroup,}})
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -523,9 +522,6 @@ export default {
                     this.positionType = res.name;
                 }
             })
-         },
-        mounted(){
-            let that = this;
 
             this.axios.get('/process/apply/enter?req=8').then((res)=>{
                 let data = res.data.b;
@@ -540,13 +536,19 @@ export default {
                 }
             })
 
-            this.axios.post('/user/current/userinfo').then(function(res){
-                that.userInfo.name = res.data.b.name
-                that.userInfo.officeName = res.data.b.officeName
-                that.userInfo.userPosition = res.data.b.userPosition
-                that.userInfo.userId = res.data.b.id
-                that.oldData = JSON.parse(JSON.stringify(that.$data))
+            this.axios.post('/user/current/userinfo').then((res)=>{
+                this.userInfo.name = res.data.b.name
+                this.userInfo.officeName = res.data.b.officeName
+                this.userInfo.userPosition = res.data.b.userPosition
+                this.userInfo.userId = res.data.b.id
+                this.oldData = JSON.parse(JSON.stringify(this.$data))
             })
+
+
+         },
+        mounted(){
+            let that = this;
+
 
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                 var obj = {
@@ -562,13 +564,12 @@ export default {
                      this.axios.get('/work/dimission/info',{
                         params:{
                             type:that.$route.query.resubmit,
-                            // dimissionApplyId:'b9aea96836b511ea98024ccc6ac12eca',  
                             dimissionApplyId:this.$route.query.dimissionId
                         }
                     }).then(function(res){
                      let data = res.data.b;
                         if(!that.$route.query.resubmit){
-                                  that.id = data.dimissionApplyId;
+                            that.id = data.dimissionApplyId;
                         }
                         that.isDraftFlag = 1;
                         that.native = 'mark';
@@ -597,7 +598,6 @@ export default {
                         that.textNum=that.dimissionDesc.length;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.allApprovers = data.links;
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

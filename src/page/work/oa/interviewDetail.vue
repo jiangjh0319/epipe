@@ -6,20 +6,21 @@
         :title='title'
         v-on:history_back="history_back_click"
          ></TopHead>
+         <div style="height:0.59rem"></div>
         <div class="base-content">
             <div class="content">
               <div class="modle_styl" v-for="(item,index) in listData" :key="index">
                   <div class="row_styl">
-                        <img :src="item.headerImg" class="header_img">
                         <p>{{item.name}}</p>
+                        <div class="datetime">{{item.submit_time}}</div>
+
                   </div>
                   <div class="interview">
-                      <span class="pin">评价：</span><p class="jia">{{item.pingjia}}</p>
+                      <span class="pin">评价：</span><p class="jia">{{item.notes}}</p>
                   </div>
                   <div class="conclusion">
-                      <span class="pin">结论：</span><span class="jia">{{item.jielun}}</span>
+                      <span class="pin">结论：</span><span class="jia">{{item.conclusion}}</span>
                   </div>
-                  <div class="datetime">{{item.time}}</div>
               </div>
             </div>
         </div>
@@ -34,12 +35,9 @@
         data(){
             return{
                 mark :'marks',
-                title:'',
+                title:'面试评价',
                 listData:[
-                    {headerImg:'http://b-ssl.duitang.com/uploads/item/201410/09/20141009224754_AswrQ.jpeg',name:'波尔本',time:'2019-12-23  11:25:33',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {headerImg:'http://b-ssl.duitang.com/uploads/item/201410/09/20141009224754_AswrQ.jpeg',name:'王宝山',time:'2019-12-23  11:25:33',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {headerImg:'http://b-ssl.duitang.com/uploads/item/201410/09/20141009224754_AswrQ.jpeg',name:'黄波',time:'2019-12-23  11:25:33',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'},
-                    {headerImg:'http://b-ssl.duitang.com/uploads/item/201410/09/20141009224754_AswrQ.jpeg',name:'谢丽',time:'2019-12-23  11:25:33',pingjia:'此候选人综合能力强，尤其在智慧城市方面有多年理论和实战经验。做过比较多的项目，能够支撑整个项目的进展，工作反馈度比较高。',jielun:'建议复试'}
+                    
                 ]
             }
         },
@@ -59,7 +57,10 @@
             },
         },
         created() {
-
+            this.axios.get('work/interview/evaluation?interviewApplyId='+this.$route.query.id).then((res)=>{
+                console.log(res)
+                this.listData = res.data.b.data;
+            })
         }
  
     }
@@ -162,7 +163,6 @@
         }
 
         .content{
-            margin-top 0.59rem;
             padding 0 0.15rem;
             .modle_styl{
                 background-color #fff;
@@ -170,6 +170,10 @@
                 position relative;
                 .row_styl{
                     display flex;
+                    flex-direction column;
+                    padding-left:0.15rem;
+                    padding-top:0.1rem;
+
                     .header_img{
                         width 0.4rem;
                         height 0.4rem;
@@ -181,21 +185,22 @@
                         font-size 0.16rem;
                         font-weight 800;
                         color #333;
-                        margin-left 0.15rem;
-                        margin-top 0.1rem;
+                        margin-bottom 0.1rem;
+                        
                     }
                 }
                 .interview{
-                    margin-left 0.25rem;
+                    margin-left 0.15rem;
                     margin-top 0.1rem;
                     display flex;
                     .pin{
                         color #609EF7;
                         font-size 0.15rem;
-                        width: 50%;
                         font-weight 900;
+                        width 0.45rem;
                     }
                     .jia{
+                        flex 1;
                         padding-left: 0.16rem;
                         padding-right: 0.16rem;
                         font-size 0.14rem;
@@ -204,7 +209,7 @@
                     }
                 }
                 .conclusion{
-                    margin-left 0.25rem;
+                    margin-left 0.15rem;
                     margin-top 0.1rem;
                     padding-bottom 0.1rem;
                     .pin{
@@ -219,15 +224,10 @@
                     }
                 }
                 .datetime{
-                    position absolute;
-                    top:0.35rem;
-                    right 1.5rem;
                     font-size 0.12rem;
                     color #999999;
-                    // width 25%;
                 }
             }
-            
         }
 
         .content_head{
