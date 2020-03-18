@@ -565,7 +565,7 @@ export default {
                         params:{
                             type:that.$route.query.resubmit,
                             dimissionApplyId:this.$route.query.dimissionId
-                            // dimissionApplyId:'bba9b878637611ea835a4ccc6ac12eca'
+                            // dimissionApplyId:'191dc3af637011ea835a4ccc6ac12eca'
                         }
                     }).then(function(res){
                      let data = res.data.b;

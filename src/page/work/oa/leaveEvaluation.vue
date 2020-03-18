@@ -104,24 +104,25 @@
             },
         },
         created() {
-            console.log(this.$route.query.dataList)
+            let that = this;
+            console.log('99999',this.$route.query.dataList)
             let dimissionApplyId = this.$route.query.dataList.dimissionApplyId;
             this.title = this.$route.query.dataList.username+'离职评价及办理';
             this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId='+ dimissionApplyId + '&type=1').then(res=>{
                 // this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
                 if(res.data.h.code==200){
-                    console.log(res.data.b)
-                    this.superleadName =res.data.b.superleadName;
-                     this.monitorName =res.data.b.monitorName;
-                      this.hrName =res.data.b.hrName;
-                       this.superleadComment =res.data.b.superleadComment;
-                        this.monitorComment =res.data.b.monitorComment;
-                         this.hrComment =res.data.b.hrComment;
-                          this.hrSuggestDismTime =res.data.b.hrSuggestDismTime;
-                          this.listDatas = res.data.b.handOverList;
+                    // console.log('8888',res.data.b)
+                    that.superleadName =res.data.b.superleadname;
+                    that.superleadComment =res.data.b.superleadcomment;
+                     that.monitorName =res.data.b.monitorname;
+                      that.monitorComment =res.data.b.monitorcomment;
+                      that.hrName =res.data.b.hrname;
+                         that.hrComment =res.data.b.hrcomment;
+                          that.hrSuggestDismTime =res.data.b.hrsuggestdismtime;
+                          that.listDatas = res.data.b.handovers;
 
                 }else{
-                    this.$toast(res.data.h.msg)
+                    that.$toast(res.data.h.msg)
                 }
             })
         }
