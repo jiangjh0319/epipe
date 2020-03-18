@@ -227,6 +227,7 @@ let save_leave = (index,text,that) =>{
                     auditCompanyIds:params.companyIdsStr,
                     linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
+                    applyLinkIds:that.applyLinkIds
                     },
                     transformRequest: [function (data) {
                         let ret = ''
@@ -525,7 +526,6 @@ export default {
 
             this.axios.get('/process/apply/enter?req=8').then((res)=>{
                 let data = res.data.b;
-
                 this.allApprovers = data.links;
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
@@ -565,6 +565,7 @@ export default {
                         params:{
                             type:that.$route.query.resubmit,
                             dimissionApplyId:this.$route.query.dimissionId
+                            // dimissionApplyId:'bba9b878637611ea835a4ccc6ac12eca'
                         }
                     }).then(function(res){
                      let data = res.data.b;
