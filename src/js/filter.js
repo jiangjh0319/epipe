@@ -53,3 +53,13 @@ Vue.filter("timeSlice", function (value) {  //时间截取后三位 （秒）
 Vue.filter("timeSlice9", function (value) {  //时间截取后9位 （秒）
   return value.slice(0,-9)
 });
+
+Vue.filter("awaits", function (value) {  //时间截取后9位 （秒）
+  let str = '';
+  if(value.linkType==3){
+      str='或签'
+  }else if(value.linkType==4){
+      str='会签'
+  }
+  return  str+'审批'
+});

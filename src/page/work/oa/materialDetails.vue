@@ -14,7 +14,8 @@
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |oa_details_status}}</p>
-                        <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
+                        <p class="res" v-if="leaveType==3||leaveType==4">等待{{dataObj.auditUserName}}的{{dataObj | awaits}}</p>
+
                     </div>
                 </div>
             </div>
@@ -222,8 +223,6 @@
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
                  url = type!=2?'/opinion':'/imchoices';
 
-
-
                 params={id:this.dataObj.materialReceiveId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
                 color:'#f80',applyType:21,typeName:'material',pageType:type,careOf:true,num:1}
 
@@ -350,7 +349,7 @@
                     ar.auditers = [];
                     let data = arr[i].auditers;
 
-                    if(arr[i].admins.length){
+                    if(arr[i].admins&&arr[i].admins.length){
                         let flow = arr[i]
                         flow.auditers = arr[i].admins
                         flow.admins = [];
@@ -406,9 +405,9 @@
                         
                     }
                 }
-                this.dataObj.links = newArr;
+                that.dataObj.links = newArr;
 
-                if(that.dataObj.userId==that.dataObj.auditUserId){
+                if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"
@@ -459,7 +458,7 @@
                 //     that.newAppr = arr
                 //     that.approver_man(arr)
 
-                //     if(that.dataObj.userId==that.dataObj.auditUserId){
+                //     if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
                 //         that.myself=true;
                 //         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                 //             that.dataObj.myselfApply="0"

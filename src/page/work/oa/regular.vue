@@ -105,12 +105,18 @@
             >
             </Accessory>
 
-            <ApproMan 
+            <!-- <ApproMan 
               :approver_list="allApprovers"
               v-on:address="go_address"
               v-on:del_poeple="del_poeple"
               hintType=9
               :isMore=true
+            ></ApproMan> -->
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=9
             ></ApproMan>
             
             <!-- <ApproverMan 
@@ -129,15 +135,16 @@
 
             <CopeMan 
             :has_journal="!showCopy"
-                :showAdd="showCopy"
                 color="#609df6"
                 :data_list=chosed_list
                 v-on:remove_item="remove_item"
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
             ></CopeMan>
         </div>
+
         <WorkButton
             v-if="!has_journal"
             v-on:left_click="save_btn"
@@ -209,13 +216,13 @@ let save_leave = (index,text,that) =>{
     }else{
        
 
-        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
+        let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
-        fileObj = that.Util.fileFo(that.accessory)
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+        fileObj = that.Util.fileFo(that.accessory)
         
 
         that.axios({
@@ -225,13 +232,6 @@ let save_leave = (index,text,that) =>{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
                 data:{
-
-                    // beginTime: '2020-1-13',  
-                    // endTime: '2020-1-22',  
-                    // birthday:'1998-10-8',
-                    // graduationDate:'2005-10-8',
-                    // hireDate:'2020-3-16',
-
 
                     Id :that.id, // id
                     regularTitle:that.regularTitle,//申请主题
@@ -331,13 +331,13 @@ export default {
                 isDraftFlag : 0, //判断是不是草稿
                 isShow:false,
                 textNum: 0,
-                addressListIndex:1,
                 addressListIndex:-1,
                 showCopy:0,
                 userInfo:{},
                 allApprovers:[],
                 applyLinkIds:'',
                 linkAuditNum:'',
+                
             }
         },
         components: {
@@ -512,7 +512,6 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
-                // console.log('员工userInfo',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -525,7 +524,22 @@ export default {
                 this.approver_man(this.$data.approver_list)
                 this.change_man(this.$data.chosed_list)
             }
+
+             this.axios.get('/process/apply/enter?req=7').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
+            })
+
             this.oldData = JSON.parse(JSON.stringify(this.$data))
+            
             eventBus.$on('leaveType', res =>{
             if(res.name=='') return;
                 this.sex = res.index;
@@ -579,7 +593,6 @@ export default {
                     }
                 }).then(function(res){
                    let data = res.data.b;
-                        console.log('data',data)
                        if(!that.$route.query.resubmit){
                                 that.id = data.regularApplyId;
                        }

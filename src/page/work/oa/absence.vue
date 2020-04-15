@@ -44,7 +44,7 @@
             >
             </Accessory>
             
-            <ApproverMan 
+            <!-- <ApproverMan 
                 :has_journal="!has_journal"
                 color="#f80"
                 :data_list=approver_list
@@ -52,7 +52,14 @@
                 :special_class='1'
                 :isGroup = true
                 type= 8
-            ></ApproverMan>
+            ></ApproverMan> -->
+
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=8
+            ></ApproMan>
 
             <CopeMan 
                 :has_journal="!has_journal"
@@ -62,6 +69,7 @@
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
             ></CopeMan>
         </div>
             <WorkButton
@@ -106,7 +114,7 @@ let save_leave = (index,text,that) =>{
     else if(that.absenceTitle.length<2||that.absenceTitle.length>100){
         that.$toast('文件标题不能低于2个或超过100个字符')
     }
-    else if(that.approver_list.length == 0){
+    else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
 
@@ -124,27 +132,28 @@ let save_leave = (index,text,that) =>{
             }
         }
 
-        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds=""
+
+        let receiverIds = '', receiverCompanyIds = "", fileObj = {}, params = {}, approObj = {};
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
-        let fileObj = {}
+        approObj = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+
         fileObj = that.Util.fileFo(that.accessory)
 
-
-        let params = {
+         params = {
             Id : that.id, // id
             urls : fileObj.urlStr, //附件
             absenceTitle:that.absenceTitle, //标题
             fileNames : fileObj.fileNameStr, //文件名称s
             fileSizes : fileObj.fileSizeStr, //文件大小
-            auditUserIds, //审批人
             receiverIds, //抄送人
-            auditCompanyIds,
             receiverCompanyIds,
+            auditUserIds:approObj.userIdsStr, //审批人
+            auditCompanyIds:approObj.companyIdsStr,
+            applyLinkIds:that.applyLinkIds,
+            linkAuditNum:approObj.numStr,
             draftFlag : index, //草稿还是发送
         }
 
@@ -201,7 +210,9 @@ import WorkButton  from '../../../components/worknews/work_button.vue'   //提�
 import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
 import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
 import RepairTemplate  from '../../../components/oa/repairTemplate.vue'    //报销组件
-import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+// import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+import ApproMan  from '../../../components/oa/approver_template.vue'    
+
 import TopHead  from '../../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
 
@@ -222,7 +233,12 @@ export default {
                 absenceAmount:3,
                 isShow:false,
                 modalShow:false,
-
+                addressListIndex:-1,
+                showCopy:0,
+                showGroup:false,
+                applyLinkIds:'',
+                allApprovers:[],
+                linkAuditNum:'',
                 datas:[{
                     absenceDate : '请选择日期',  //
                     absenceReason : '',//
@@ -233,7 +249,7 @@ export default {
         components: {
             WorkButton,
             CopeMan,
-            ApproverMan,
+            ApproMan,
             TopHead,
             Accessory,
             RepairTemplate,
@@ -411,6 +427,19 @@ export default {
                 this.change_man(this.$data.chosed_list)
             }
 
+             this.axios.get('/process/apply/enter?req=11').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
+            })
+
             this.oldData = JSON.parse(JSON.stringify(this.$data))
 
             let that = this;
@@ -421,7 +450,9 @@ export default {
             })
         },
         activated(){
-            this.approver_list = this.approver_man_state
+            if(this.addressListIndex>0){
+                this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }
             this.chosed_list = this.chosed_man_state
 		    this.$forceUpdate();
          },
@@ -453,8 +484,6 @@ export default {
                         that.absenceTitle = data.absenceTitle;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.approver_list = data.auditers;
-                        that.approver_man(that.approver_list);
                         let arr = [];
                         data.absenceList.forEach((item,i) =>{
                              arr.push({

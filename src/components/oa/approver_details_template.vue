@@ -146,6 +146,8 @@
                     return item.auditers.length+'人依次审批'
                 }else if(item.linkType==4){
                     return item.auditers.length+'人或签'
+                }else if(item.linkType==3){
+                    return item.auditers.length+'人会签'
                 }
             },
              statusClass:function(value){

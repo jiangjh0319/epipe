@@ -149,10 +149,14 @@ const Util = {
 
   },
   approverFormat(arr,numStr){//审批人数据格式化
+    
     let data = {userIdsStr:'',companyIdsStr:''};
     let arrs = numStr.split('|')
-    console.log(arrs)
-    arr.forEach(item => {
+    arr.forEach((item,index) => {
+      if(item.index>-1){
+        arrs[index]=item.auditers.length;
+        console.log(item,arrs)
+      }
       if(item.approvalUserType==3){
         arrs = this.nullVal(arrs,item.auditers.length)
       }
@@ -166,8 +170,20 @@ const Util = {
     data.companyIdsStr = data.companyIdsStr.slice(0,-1).replace(/null/g,'').replace(/\|\|/g,'|')
     return data;
   },
+  approverDataInit(arr){
+    let data = arr;
+
+    data.forEach(item=>{
+        if(item.approvalUserType==1&&item.auditers.length>1&&item.remarks==2){
+          item.isSelect=true;
+          item.approvealList = item.auditers;
+          item.auditers= [];
+          item.index=-1;
+        }
+    })
+    return data
+  },
   nullVal(arr,val){
-    console.log(arr,val)
     for(let i=0;i<arr.length;i++){
       if(arr[i]=='null'){
         arr[i]=val
@@ -178,11 +194,90 @@ const Util = {
     return arr;
   },
   checkApprovers(arr){
-    for (let index = 0; index < arr.length; index++) {
-        if(arr[index].auditers.length<1&&arr[index].approvalUserType==3) return true
-    }
+    // for (let index = 0; index < arr.length; index++) {
+    //     if(arr[index].auditers.length<1&&(arr[index].approvalUserType==3||arr[index].approvalUserType==1)){
+    //       return true
+    //     } 
+    // }
 
     return false
+  },
+  accessoryFors:function(datas){
+    if(!datas||datas.url==null) return false
+   let urlArr = datas.url.split('|')
+   let fileSizeArr = datas.fileSize.split('|')
+   let fileNameArr = datas.fileName.split('|')
+   let arrs = [];
+    for(let i=0;i<urlArr.length;i++){
+        let bool = this.Util.isImg(urlArr[i])
+        arrs.push({
+            url:urlArr[i],
+            fileSize:fileSizeArr[i],
+            fileName:fileNameArr[i],
+            isImg: bool,
+        })
+    }
+    return arrs
+},
+  detailsFormat(arr){
+    console.log(arr)
+            let newArr = [];
+            
+              arr.forEach(item=>{
+                    for(let i =0;i<item.auditers.length;i++){
+                        if(item.auditers[i].accessory!=null){
+                              item.auditers[i].accessory = this.accessoryFors(item.auditers[i].accessory)
+                      }
+                    }
+              })
+
+            let arr_other = arr.concat([])
+            console.log(arr_other,arr)
+            for(let i=0;i<arr.length;i++){
+                let ar = arr_other[i];
+                ar.auditers = [];
+                let data = arr[i].auditers;
+
+                if(arr[i].admins&&arr[i].admins.length){
+                    let flow = arr[i]
+                    flow.auditers = arr[i].admins;
+                    flow.admins = [];
+                    flow.linkType = 4;
+                    arr.splice(i,0,flow)
+                }
+
+
+                data.forEach(item=>{
+                    if(item.status!=='00'&&item.status!='0'){
+                        item.flow = true;
+                        newArr.push(item)
+                    }else{
+                        item.hide = true;
+                        ar.auditers.push(item)
+                    }
+
+                    if(item.status=='0'){
+
+                        ar.status = '0'
+                    }
+                })
+
+                if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
+                    ar.auditers[0].flow = true
+                    newArr.push(ar.auditers[0])
+                }else if(ar.auditers.length>0){
+                    newArr.push(ar)
+                }
+
+
+                if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                    newArr.push(ar)
+                }
+                
+            }
+            console.log('===============')
+            console.log(newArr)
+      return newArr
   },
   fileFo:function(accessory){
     let obj = {urlStr:"",fileSizeStr:"",fileNameStr:""}

@@ -215,9 +215,6 @@ let save_leave = (index,text,that) =>{
                     hireDate:that.hireDate,//入职时间
                     dimissionDate:that.dimissionDate,//离职日期
                     contractEndDate:that.contractEndDate,//合同终止日期
-                    // hireDate:'2020-1-13',//入职时间
-                    // dimissionDate:'2020-2-22',//离职日期
-                    // contractEndDate:'2020-8-9',//合同终止日期
                     receiverIds, //抄送人
                     receiverCompanyIds,
                     urls : fileObj.urlStr, //附件
@@ -311,6 +308,8 @@ export default {
                 userInfo:{},
                 applyLinkIds:'',
                 linkAuditNum:'',
+                allApprovers:[],
+
             }
         },
         components: {
@@ -498,7 +497,6 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
-                console.log('userInfo',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },

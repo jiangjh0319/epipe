@@ -64,14 +64,12 @@
             >
             </Accessory>
 
-            <ApproverMan 
-                :has_journal="!has_journal"
-                color="#fd545c"
-                :data_list=approver_list
-                v-on:remove_item="remove_item"
-                :special_class='1'
-                type = 0
-            ></ApproverMan>
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=0
+            ></ApproMan>
 
             <CopeMan 
                 :has_journal = "!has_journal"
@@ -80,6 +78,9 @@
                 v-on:remove_item="remove_item"
                 :special_class='1'
                 :types = '2'
+                :isGroup = true
+                :showAdd="showCopy"
+
             ></CopeMan>
         </div>
         <WorkButton
@@ -116,39 +117,40 @@ let save_leave = (index,text,that) =>{
         that.$toast('请选择结束时间')
     }else if(that.textNum == 0){
         that.$toast("请输入请假事由")
-    }else if(that.approver_list.length == 0){
-        that.$toast('请选择审批人')
     }else if(that.leaveDay=='0'){
         that.$toast('请假天数不能为0')
     }else if(that.leaveDay==''||that.leaveDay*10%5!=0){
         that.$toast('请输入正确的请假天数')
+    }else if(that.Util.checkApprovers(that.allApprovers)){
+        that.$toast('请选择审批人')
     }else{
 
-        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds=""
+        let receiverIds = '', receiverCompanyIds = "", fileObj = {}, params={}
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
-        let fileObj = {},params={}
+        params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+
         fileObj = that.Util.fileFo(that.accessory)
 
         that.axios.post(that.Service.saveLeave + that.Service.queryString({
-          Id :that.leaveId, // id
-          leaveType: that.leaveIndex, //请假类型
-          beginTime: that.beginTime, //开始时间
-          endTime : that.endTime, //结束时间
-          leaveDuration : that.leaveDay, //请假天数
-          auditUserIds, //审批人
-          receiverIds, //抄送人
-          auditCompanyIds,
-          receiverCompanyIds,
-          reason : encodeURI(that.reasonText.replace(/\n/g, '<br/>')), //请假事由
-          url : fileObj.urlStr, //附件
-          fileName :fileObj.fileNameStr, //文件名称 
-          fileSize :fileObj.fileSizeStr, //文件大小
-          draftFlag : index, //草稿还是发送
+            Id :that.leaveId, // id
+            leaveType: that.leaveIndex, //请假类型
+            beginTime: that.beginTime, //开始时间
+            endTime : that.endTime, //结束时间
+            leaveDuration : that.leaveDay, //请假天数
+            receiverIds, //抄送人
+            receiverCompanyIds,
+            auditUserIds:params.userIdsStr, //审批人
+            auditCompanyIds:params.companyIdsStr,
+            applyLinkIds:that.applyLinkIds,
+            linkAuditNum:params.numStr,
+            reason : encodeURI(that.reasonText.replace(/\n/g, '<br/>')), //请假事由
+            url : fileObj.urlStr, //附件
+            fileName :fileObj.fileNameStr, //文件名称 
+            fileSize :fileObj.fileSizeStr, //文件大小
+            draftFlag : index, //草稿还是发送
         })).then(function (res){
             if(res.data.h.code!=200){
                 that.$toast(res.data.h.msg)
@@ -179,7 +181,8 @@ let save_leave = (index,text,that) =>{
   import TopHead  from '../../components/topheader.vue'  //header导航栏
   import WorkButton  from '../../components/worknews/work_button.vue'   //提交按钮
   import CopeMan  from '../../components/worknews/copy_man.vue'    //抄送人
-  import ApproverMan  from '../../components/worknews/approver_man.vue'    //审批人
+//   import ApproverMan  from '../../components/worknews/approver_man.vue'    //审批人
+  import ApproMan  from '../../components/oa/approver_template.vue'    
   import Dialog  from '../../components/oa/dialog.vue'    //弹窗
 
 export default {
@@ -200,13 +203,19 @@ export default {
             isDraft : 0, //0请假 1草稿
             workOnTime: '',//上班开始时间
             oldData:null,//老数据
+            addressListIndex:-1,
+            showCopy:0,
+            showGroup:false,
+            applyLinkIds:'',
+            allApprovers:[],
+            linkAuditNum:'',
         }
     },
     components: {
       WorkButton,
       CopeMan,
       TopHead,
-      ApproverMan,
+      ApproMan,
       Accessory,
       Dialog
     },
@@ -264,6 +273,18 @@ export default {
             this.isShow=false;
             localStorage.removeItem('leave')
             window.location.href = "epipe://?&mark=history_back"
+        },
+        go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+            let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
         },
         getLeaveDay(){
             let bTime = this.Util.timeFo(this.beginTime)
@@ -373,7 +394,6 @@ export default {
             }
         },
     created(){
-        console.log(this.$store.state)
         if(localStorage.getItem('leave')){
             let leavedata = JSON.parse(localStorage.getItem('leave'))
             for(let key in leavedata){
@@ -388,9 +408,25 @@ export default {
             this.leaveIndex = res.index;
             this.leaveName = res.name;
         })
+
+
+        this.axios.get('/process/apply/enter?req=0').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
+            })
     },
     activated(){
-        this.approver_list = this.approver_man_state
+        if(this.addressListIndex>0){
+            this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+        }
         this.chosed_list = this.chosed_man_state
     },
     mounted : function(){
@@ -431,8 +467,6 @@ export default {
                      that.chosed_list = datas.receivers;
                      that.textNum = that.reasonText.length;
                      that.change_man(that.chosed_list);
-                     that.approver_list = datas.auditers;
-                     that.approver_man(that.approver_list);
                      that.oldData = JSON.parse(JSON.stringify(that.$data))
                  }else{
                      this.$toast(res.data.h.msg)

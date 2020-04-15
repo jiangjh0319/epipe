@@ -10,12 +10,17 @@
                 <i></i>
                 <div class="approver_info">
                     <div class="approver_info_type">
-                        <p>审批人</p>
-                        <span>{{item.auditers.length}}人审批</span>
+                        <p>{{item.approvalUserType==1?item.quartersName:'审批人'}}</p>
+                        <span>{{item | info}}</span>
                     </div>
                     <div class="people_list">
-                        <div v-for="(child,num) in item.auditers" :key="child.id" class="people_list_item">
-                            <div class="people_list_user">
+                        <div class="people_list_item" v-if="item.isSelect" @click="go_select(item.approvealList,item.quartersName,index,item.index)">
+                            <div style="line-height:0.44rem;">
+                                选择人员 <img  src="../../assets/left.png"/>  
+                            </div>
+                        </div>
+                        <div v-else v-for="(child,num) in item.auditers" :key="child.id" @click="go_check(item,index)" class="people_list_item">
+                            <div  class="people_list_user">
                                 <svg  class="icon" aria-hidden="false" v-if="item.approvalUserType==3" @click="del(index,num)">
                                     <use xlink:href="#icon-shanchu"></use>
                                 </svg>
@@ -24,12 +29,12 @@
                                 <span class="omit" v-if="child.name">{{child.name}}</span>
                                 <span class="omit" v-else>主管为空</span>
                             </div>
-                            <img src="../../assets/left.png"/>
-
-                            <!-- <img v-if="1" src="../../assets/add.png"/>
-                            <img v-else-if="2" src="../../assets/xie.png"/> -->
+                            
+                            <img v-if="item.linkType==2" src="../../assets/left.png"/>
+                            <img v-else-if="item.linkType==3" src="../../assets/add.png"/>
+                            <img v-else-if="item.linkType==4" src="../../assets/xie.png"/>
                         </div>
-                        <div class="no_people" v-if="item.approvalUserType!=3&&!item.auditers.length">
+                        <div class="no_people" v-if="item.approvalUserType!=3&&!item.auditers.length&&!item.isSelect">
                             <p v-if="item.approvalUserType==1">
                                 {{item.quartersName}}
                             </p>
@@ -39,7 +44,7 @@
                             <span v-if="item.approvalUserScope==2">未找到审批人将自动通过</span>
                             <span v-else>未找到审批人将转交管理员</span>
                         </div>
-                        <div v-if="item.approvalUserType==3&&(item.auditers.length<10||isMore)" @click="add_people(index)">
+                        <div v-if="item.approvalUserType==3&&((item.auditers.length<9&&item.remarks==1)||(item.auditers.length<1&&item.remarks==0))" @click="add_people(index)">
                             <div class="approver_info_people_item">
                                 <img src="../../assets/add_people.png"/>
                             </div>
@@ -102,7 +107,14 @@
                     ]
             }
         },
-        props:['approver_list','hintType','isMore'],
+        props:['approver_list','hintType'],
+        created(){
+                 eventBus.$on('approver', res =>{
+                    this.approver_list[res.approverIndex].isSelect = false;
+                    this.approver_list[res.approverIndex].index = res.index;
+                    this.$set(this.approver_list[res.approverIndex].auditers,0,this.approver_list[res.approverIndex].approvealList[res.index])
+                })
+        },
         methods:{
             del(index,num){
                 this.$emit('del_poeple',index,num)
@@ -111,6 +123,41 @@
             add_people(index){
                 this.$emit('address',index)
                 // this.$router.push({path: 'imchoices', query: {bgcolor:this.color,num:1}})
+            },
+            go_select(data,title,approverIndex,index){
+                let arr = []
+
+                data.forEach((item,index)=>{
+                    arr.push({name:item.name,img:item.profileImg})
+                })
+                this.$router.push({path: 'select', query: {data:JSON.stringify(arr),title,index,approverIndex,}})
+                //  this.$emit('address',index)
+            },
+            go_check(item,index){
+                if(item.index!=-1&&item.isSelect==false){
+                    this.go_select(item.approvealList,item.quartersName,index,item.index)
+                }
+            },
+        },
+        beforeDestroy() {
+            eventBus.$off('approver');
+        },
+        filters:{
+            info:function(info){
+
+                let str = info.auditers.length+'人'
+                if(info.auditers.length<2){
+                    str+='审批'
+                }else{
+                    str+=info.linkType==2?'依次审批':info.linkType==3?'会签':'或签'
+                }
+                // if(info.approvalUserType==1){
+                //     str+='个'+info.quartersName
+                // }else{
+                //     str+='人'
+                // }
+
+                return str
             }
         }
     }

@@ -33,6 +33,7 @@ const Menu = r => require.ensure([], () => r(require('@/page/work/oa/menu.vue'))
 
 const ErpPermission = r => require.ensure([], () => r(require('@/page/work/oa/erpPermission.vue')), 'group-foo')
 const ErpPermissionDetails = r => require.ensure([], () => r(require('@/page/work/oa/erpPermissionDetails.vue')), 'group-foo')
+const Select = r => require.ensure([], () => r(require('@/page/work/select.vue')), 'group-foo')
 
 // const Position = r => require.ensure([], () => r(require('@/page/work/oa/position.vue')), 'group-foo')
 // const PositionDetails = r => require.ensure([], () => r(require('@/page/work/oa/positionDetails.vue')), 'group-foo')
@@ -155,5 +156,10 @@ export default [
     {
         path:'/menu', //菜单
         component:Menu,
+    },
+    {
+        path:'/select', //审批人选择
+        component:Select,
+		meta: {keepAlive: true}
     },
 ]

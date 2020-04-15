@@ -184,7 +184,7 @@
     import TopHead  from '../../../components/topheader.vue'  //header导航栏
     import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
     import AccessoryList  from '../../../components/oa/accessoryList.vue'  //附件
-    // import Approver  from '../../../components/oa/approverDetails.vue'  // 审批人
+    // import Approver  from '../../../components/oa/approver_details_template.vue'  // 审批人
     import Approver  from '../../../components/oa/approver_details_template.vue'  // 审批人
 
     import Copy  from '../../../components/oa/copyDetails.vue'  // 抄送人
@@ -391,7 +391,7 @@
                     ar.auditers = [];
                     let data = arr[i].auditers;
 
-                    if(arr[i].admins.length){
+                    if(arr[i].admins&&arr[i].admins.length){
                         let flow = arr[i]
                         flow.auditers = arr[i].admins;
                         flow.admins = [];
@@ -436,9 +436,9 @@
                         this.leaveType = '0';  //已经拒绝
                     }
                 }
-                    this.dataObj.links = newArr;
+                    that.dataObj.links = newArr;
 
-                    if(that.dataObj.userId==that.dataObj.auditUserId){
+                    if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"

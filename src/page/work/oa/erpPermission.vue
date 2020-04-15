@@ -135,12 +135,8 @@ let save_leave = (index,text,that) =>{
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
-        // auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        // auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
-
         fileObj = that.Util.fileFo(that.accessory)
-        // let contDesc = that.applyReason.replace(/\n|\r\n/g,"<br>")
-        // https://blog.csdn.net/xiaobao5214/article/details/68923023/
+
         that.axios({
                 method:"post",
                 url:"/move/erpprimove/save",
@@ -226,16 +222,15 @@ export default {
                 wantPriName:'请选择',
                 chosed_list : [], //抄送人
                 approver_list : [], //审批人
-                allApprovers:[],
                 accessory : [],
                 isDraftFlag : 0, //判断是不是草稿
                 textNum : 0,
                 isShow:false,
                 addressListIndex:-1,
+                linkAuditNum:'',
                 showCopy:0,
                 applyLinkIds:'',
-                linkAuditNum:'',
-                
+                allApprovers:[],
             }
         },
         components: {
@@ -453,7 +448,6 @@ export default {
                         that.textNum = data.applyRason.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.allApprovers = data.links;
                         // that.approver_list = data.auditers;
                         // that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))

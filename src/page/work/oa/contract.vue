@@ -144,8 +144,6 @@ let save_leave = (index,text,that) =>{
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
-
-
         fileObj = that.Util.fileFo(that.accessory)
 
         that.axios({
@@ -238,8 +236,12 @@ export default {
                 isShow:false,
                 textNum:0,
                 oldData:null,
+                addressListIndex:-1,
                 showCopy:0,
+                showGroup:false,
+                applyLinkIds:'',
                 allApprovers:[],
+                linkAuditNum:'',
             }
         },
         components: {

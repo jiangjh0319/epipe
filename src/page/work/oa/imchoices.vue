@@ -435,7 +435,7 @@
              return false;
          } 
 
-        if(this.$route.query.amount){
+        if(this.$route.query.amount=='1'){
 
             this.approver_array.push(el)
             this.approver_man(this.approver_array)
@@ -596,7 +596,7 @@
              return false;
          } 
         
-        if(this.$route.query.amount){
+        if(this.$route.query.amount=='1'){
 
             this.approver_array.push(item)
             this.approver_man(this.approver_array)

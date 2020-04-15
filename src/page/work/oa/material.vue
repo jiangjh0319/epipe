@@ -129,12 +129,10 @@ let save_leave = (index,text,that) =>{
          let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        // auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        // auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
-     let   appObj = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+        let  appObj = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
 
 
          params = {
@@ -146,7 +144,6 @@ let save_leave = (index,text,that) =>{
             fileSizes : fileObj.fileSizeStr, //文件大小
             auditUserIds:appObj.userIdsStr, //审批人
             applyLinkIds:that.applyLinkIds,
-
             receiverIds, //抄送人
             auditCompanyIds:appObj.companyIdsStr,
             linkAuditNum:appObj.numStr,
@@ -408,7 +405,6 @@ export default {
             
         },
         activated(){
-            // this.approver_list = this.approver_man_state
             if(this.addressListIndex>0){
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }
@@ -447,7 +443,6 @@ export default {
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list)
                         that.material = data.list
-                        that.allApprovers = data.links;
                         that.textNum = data.materialReceiveRemarks.length;
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
