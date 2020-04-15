@@ -164,13 +164,13 @@ let save_leave = (index,text,that) =>{
     }else if(isNaN(that.employeeNo)){
         that.$toast('员工编号为数字')
     }
-    else if(that.hireDate=='请选择入职日期'){
-        that.$toast('请选择入职日期')
-    }else if(that.dimissionDate=='请选择离职日期'){
-        that.$toast('请选择离职日期')
-    }else if(that.contractEndDate=='请选择合同终止日期'){
-        that.$toast('请选择合同终止日期')
-    }
+    // else if(that.hireDate=='请选择入职日期'){
+    //     that.$toast('请选择入职日期')
+    // }else if(that.dimissionDate=='请选择离职日期'){
+    //     that.$toast('请选择离职日期')
+    // }else if(that.contractEndDate=='请选择合同终止日期'){
+    //     that.$toast('请选择合同终止日期')
+    // }
     else if(that.dimissionDesc==''){
         that.$toast('请输入离职原因')
     }else if(that.education.length<2||that.education.length>30){
@@ -212,12 +212,12 @@ let save_leave = (index,text,that) =>{
                     employeeName:that.userInfo.name,
                     employeeNameId:that.userInfo.userId,
                     dimissionType:that.dimissionCode,
-                    hireDate:that.hireDate,//入职时间
-                    dimissionDate:that.dimissionDate,//离职日期
-                    contractEndDate:that.contractEndDate,//合同终止日期
-                    // hireDate:'2020-1-13',//入职时间
-                    // dimissionDate:'2020-2-22',//离职日期
-                    // contractEndDate:'2020-8-9',//合同终止日期
+                    // hireDate:that.hireDate,//入职时间
+                    // dimissionDate:that.dimissionDate,//离职日期
+                    // contractEndDate:that.contractEndDate,//合同终止日期
+                    hireDate:'2020-1-13',//入职时间
+                    dimissionDate:'2020-2-22',//离职日期
+                    contractEndDate:'2020-8-9',//合同终止日期
                     receiverIds, //抄送人
                     receiverCompanyIds,
                     urls : fileObj.urlStr, //附件

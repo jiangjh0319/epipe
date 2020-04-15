@@ -200,6 +200,7 @@ let save_leave = (index,text,that) =>{
                             }else{
                                 that.$toast('提交成功！')
                                 window.location.href = "epipe://?&mark=workUpdate";
+                                console.log(res.data.b.interviewApplyId,'appid')
                                 setTimeout(()=>{
                                     window.location.href = "epipe://?&mark=submitRecruitmentApproval&_id="+res.data.b.interviewApplyId;
                                     
@@ -459,7 +460,7 @@ export default {
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
 
-            if(this.$route.query.interviewApplyId){
+            if(this.$route.query.interviewApplyId){ 
                   this.axios.get('work/interview/info',{
                     params:{
                         type:that.$route.query.resubmit,
