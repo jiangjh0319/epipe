@@ -206,7 +206,9 @@
                  if(type==2){
                      auditerIds = this.Util.deliverIds(this.dataObj.links,'userId')
                      auditCompanyId = this.Util.deliverIds(this.dataObj.links,'companyId')
+                     
                 }
+                 
                  
                  receiverIds = this.Util.getIds(this.newCopy,'userId')
                  receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
@@ -252,6 +254,7 @@
 		        this.$forceUpdate();
             },
              appAndCopy:function(arr,type){
+                 console.log(arr)
                 if(!type) type='userId'
                 let str = '';
                 for(let i=0;i<arr.length;i++){
@@ -309,18 +312,10 @@
                         }
                     })
 
-                    for(let i=0;i<arr.length;i++){
+                    for(let i=0;i<arr.length;i++){//审批人数据进行循环
                         let ar = JSON.parse(JSON.stringify(arr[i]))
                         ar.auditers = [];
                         let data = arr[i].auditers;
-
-                        if(arr[i].admins&&arr[i].admins.length){
-                            let flow = arr[i]
-                            flow.auditers = arr[i].admins;
-                            flow.admins = [];
-                            flow.linkType = 4;
-                            arr.splice(i,0,flow)
-                        }
 
 
                         data.forEach(item=>{
@@ -333,7 +328,6 @@
                             }
 
                             if(item.status=='0'){
-
                                 ar.status = '0'
                             }
                         })
@@ -345,7 +339,7 @@
                             newArr.push(ar)
                         }
 
-                        if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                        if(!arr[i].auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
                             newArr.push(ar)
                         }
                         
@@ -361,7 +355,7 @@
                     }
                     that.dataObj.links = newArr;
 
-                    if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
+                    if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"

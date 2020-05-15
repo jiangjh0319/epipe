@@ -258,7 +258,7 @@
                         <div>
                             <div class="affairs_title">
                                 <img :src="item.profileImg"/>
-                                <h2>{{item.title}}的离职申请</h2>
+                                <h2>{{item.employeeName}}的离职申请</h2>
                                 <time >{{item.applyTime | timeSlice}}</time>
                             </div>
                             <div class="affairs_infor">
@@ -495,7 +495,7 @@
                         <div>
                             <div class="affairs_title">
                                 <img :src="item.profileImg"/>
-                                <h2>{{item.title}}的员工转正...</h2>
+                                <h2>{{item.employeeName?item.employeeName:item.title}}的员工转正...</h2>
                                 <time >{{item.applyTime | timeSlice}}</time>
                             </div>
                             <div class="affairs_infor">

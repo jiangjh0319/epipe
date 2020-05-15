@@ -376,9 +376,12 @@
             },
             go_jump(obj){ //应用跳转
                 if(obj.url.indexOf('openurl')>-1){
+                
                  let url = obj.url.slice(obj.url.indexOf('openurl')+8) 
+                //  console.log(url)
                         window.location.href ='epipe://?&mark=openurl&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name,url})
-                        return;
+                        // console.log('epipe://?&mark=openurl&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name,url}))
+                      return;
                 }
                 else if(obj.url.indexOf('token=')>-1){
                     let type = obj.url.indexOf('mark=mes_app')>-1?1:0;
@@ -451,6 +454,8 @@
             getUserInfor(){  //用户信息
                 this.axios.get('/user/info').then(res =>{
                     this.userData = res.data.b
+                    localStorage.setItem('userId',this.userData.userId)
+                    localStorage.setItem('companyId',this.userData.companyId)
                 });
             },
             today(){ //今日考勤

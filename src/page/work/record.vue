@@ -277,7 +277,7 @@
         }
       } else if (data.data.h.code == "10") {
         console.log('用户已过期，请重新登录')
-        window.location.href = "epipe://?&mark=login_out"
+        // window.location.href = "epipe://?&mark=login_out"
       }
     }).catch(function (error) {
     });

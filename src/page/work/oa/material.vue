@@ -128,7 +128,8 @@ let save_leave = (index,text,that) =>{
 
          let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
+        // receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
@@ -195,6 +196,8 @@ let save_leave = (index,text,that) =>{
                     },500)
                 }
             }
+            that.change_man([])
+            that.approver_man([])
             localStorage.removeItem('material')
       })
     }
@@ -270,7 +273,8 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
             let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:1,showGroup,}})
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -393,10 +397,11 @@ export default {
                 this.axios.get('/process/apply/enter?req=21').then((res)=>{
                     let data = res.data.b;
 
-                    this.allApprovers = data.links;
+                    this.allApprovers = this.Util.approverDataInit(data.links);
                     this.linkAuditNum = data.linkAuditNum;
                     this.applyLinkIds = data.applyLinkIds;
                     this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                    
                     if(data.receivers.length>0){
                             this.chosed_list = data.receivers
                             this.change_man(this.chosed_list);

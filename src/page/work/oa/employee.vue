@@ -277,7 +277,7 @@ let save_leave = (index,text,that) =>{
 
         let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
@@ -318,10 +318,12 @@ let save_leave = (index,text,that) =>{
                     urls : fileObj.urlStr, //附件
                     fileNames:fileObj.fileNameStr, 
                     fileSizes:fileObj.fileSizeStr,
-                    auditUserIds, //审批人
                     receiverIds, //抄送人
-                    auditCompanyIds,
                     receiverCompanyIds,
+                    auditUserIds:params.userIdsStr, //审批人
+                    auditCompanyIds:params.companyIdsStr,
+                    applyLinkIds:that.applyLinkIds,
+                    linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -353,6 +355,8 @@ let save_leave = (index,text,that) =>{
                                     
                                 },500)
                             }
+                            that.change_man([])
+            that.approver_man([])
                             localStorage.removeItem('employee')
                         }
                  })

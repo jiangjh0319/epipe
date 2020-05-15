@@ -185,7 +185,7 @@ let save_leave = (index,text,that) =>{
     }else{
         let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
@@ -249,6 +249,8 @@ let save_leave = (index,text,that) =>{
                                     
                                 },500)
                             }
+                            that.change_man([])
+                            that.approver_man([])
                             localStorage.removeItem('project')
                         }
                  })

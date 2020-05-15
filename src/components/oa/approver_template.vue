@@ -6,19 +6,20 @@
             <a @click="isShowGuide=true">添加指引</a>
         </div>
         <div class="app_list">
-            <div class="app_list_item" v-for="(item,index) in approver_list" :key="index">
+            <div class="app_list_item" v-for="(item,index) in approver_list" :key="index" v-if="!(item.approvalUserType==1&&item.auditers.length<1&&item.quartersName=='董事办')">
                 <i></i>
-                <div class="approver_info">
+                <div class="approver_info" >
                     <div class="approver_info_type">
                         <p>{{item.approvalUserType==1?item.quartersName:'审批人'}}</p>
                         <span>{{item | info}}</span>
                     </div>
-                    <div class="people_list">
+                    <div class="people_list" >
                         <div class="people_list_item" v-if="item.isSelect" @click="go_select(item.approvealList,item.quartersName,index,item.index)">
                             <div style="line-height:0.44rem;">
                                 选择人员 <img  src="../../assets/left.png"/>  
                             </div>
                         </div>
+
                         <div v-else v-for="(child,num) in item.auditers" :key="child.id" @click="go_check(item,index)" class="people_list_item">
                             <div  class="people_list_user">
                                 <svg  class="icon" aria-hidden="false" v-if="item.approvalUserType==3" @click="del(index,num)">
@@ -34,7 +35,8 @@
                             <img v-else-if="item.linkType==3" src="../../assets/add.png"/>
                             <img v-else-if="item.linkType==4" src="../../assets/xie.png"/>
                         </div>
-                        <div class="no_people" v-if="item.approvalUserType!=3&&!item.auditers.length&&!item.isSelect">
+                        
+                        <div class="no_people" v-if="item.approvalUserType!=3&&!item.auditers.length&&!item.isSelect" >
                             <p v-if="item.approvalUserType==1">
                                 {{item.quartersName}}
                             </p>

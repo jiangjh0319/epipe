@@ -330,16 +330,9 @@
                 that.dataObj = res.data.b;
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
                 that.title = that.dataObj.username+'的付款申请'
-                //  this.dataObj.links = this.Util.detailsFormat(that.dataObj.links)
 
-                    // if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
-                    //     that.myself=true;
-                    //     if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
-                    //         that.dataObj.myselfApply="0"
-                    //     }
-                    // }
+                   let arr=  that.dataObj.links, newArr = [];
 
-                    let arr=  that.dataObj.links, newArr = [];
 
                     arr.forEach(item=>{
                         for(let i =0;i<item.auditers.length;i++){
@@ -349,21 +342,14 @@
                         }
                     })
 
-                    for(let i=0;i<arr.length;i++){
+                    for(let i=0;i<arr.length;i++){//审批人数据进行循环
                         let ar = JSON.parse(JSON.stringify(arr[i]))
                         ar.auditers = [];
                         let data = arr[i].auditers;
-
-                        if(arr[i].admins&&arr[i].admins.length){
-                            let flow = arr[i]
-                            flow.auditers = arr[i].admins;
-                            flow.admins = [];
-                            flow.linkType = 4;
-                            arr.splice(i,0,flow)
-                        }
+                        console.log(arr[i],ar,data)
 
 
-                        data.forEach(item=>{
+                        data.forEach(item=>{// 如果每一个环节里的审批人 有人审批过来就将它放入 newArr
                             if(item.status!=='00'&&item.status!='0'){
                                 item.flow = true;
                                 newArr.push(item)
@@ -373,20 +359,26 @@
                             }
 
                             if(item.status=='0'){
-
                                 ar.status = '0'
                             }
                         })
+                        console.log('============')
+                        console.log(ar)
 
                         if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
                             ar.auditers[0].flow = true
                             newArr.push(ar.auditers[0])
+                        console.log(newArr,'3')
+
                         }else if(ar.auditers.length>0){
                             newArr.push(ar)
+                        console.log(newArr,'4')
+
                         }
 
-                        if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                        if(!arr[i].auditers.length&&(arr[i].approvalUserType==1||arr[i].approvalUserType==2)&&arr[i].approvalUserScope==2){
                             newArr.push(ar)
+
                         }
                         
                     }
@@ -399,21 +391,16 @@
                             
                         }
                     }
+
+                        console.log(newArr,'end')
+
                     that.dataObj.links = newArr;
 
-                    if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
+                    if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"
                         }
-                    }
-
-                     for (let i = 0; i <  this.dataObj.links.length; i++) {
-
-                        if( this.dataObj.links[i].status&& this.dataObj.links[i].status=='2'){
-                                this.endIndex = i;
-                                this.leaveType = '0';  //已经拒绝
-                            }
                     }
 
                     if(that.dataObj.auditStatus=='4'){

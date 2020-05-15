@@ -262,7 +262,7 @@
                         <div>
                             <div class="affairs_title">
                                 <img :src="item.profileImg"/>
-                                <h2>我的离职申请</h2>
+                                <h2>{{item.employeeName}}的离职申请</h2>
                                 <time >{{item.applyTime | timeFormat}}</time>
                             </div>
                             <div class="affairs_infor">
@@ -486,7 +486,7 @@
                         <div>
                             <div class="affairs_title">
                                 <img :src="item.profileImg"/>
-                                <h2>我的员工转正...</h2>
+                                <h2>{{item.employeeName}}的员工转正...</h2>
                                 <time >{{item.applyTime | timeSlice}}</time>
                             </div>
                             <div class="affairs_infor">
@@ -805,7 +805,6 @@
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },  
             goDetails(id,type,typeName,details){
-             
                 typeName=details?details:typeName
                 window.location.href = "epipe://?&mark="+typeName+"Details&_id="+id+'&data='+JSON.stringify({text:0});
             },

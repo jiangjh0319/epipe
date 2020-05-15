@@ -110,7 +110,7 @@ let save_leave = (index,text,that) =>{
 
         let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
@@ -130,6 +130,7 @@ let save_leave = (index,text,that) =>{
                     fileName:fileObj.fileNameStr, 
                     fileSize:fileObj.fileSizeStr,
                     receiverIds, //抄送人
+                    receiverCompanyIds,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
                     applyLinkIds:that.applyLinkIds,
@@ -164,7 +165,8 @@ let save_leave = (index,text,that) =>{
                     setTimeout(()=>{
                         window.location.href = "epipe://?&mark=submitLetter&_id="+res.data.b;
                     },300)
-
+            that.change_man([])
+            that.approver_man([])
                     localStorage.removeItem('letter')
                 
                 }

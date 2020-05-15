@@ -12,7 +12,7 @@
                 <div class="content_head">
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
-                        <p class="nameTl">{{dataObj.employeeName}}</p>
+                        <p class="nameTl">{{dataObj.username}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
                     </div>
@@ -24,7 +24,7 @@
                     <p>{{dataObj.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>标&emsp; &emsp;题 &emsp;&emsp;</span>
+                    <span>标&emsp; &emsp;题 </span>
                     <p>{{dataObj.regularTitle}}</p>
                 </div>
             </div>
@@ -38,46 +38,46 @@
                     <p>{{dataObj.username}}</p>
                 </div> -->
                 <div class="infor-box">
-                    <span>所属部门 &emsp;&emsp;</span>
+                    <span>所属部门 </span>
                     <p>{{dataObj.officeName}}</p>
                 </div>
             </div>
 
             <div class="styles infor">
                 <div class="infor-box">
-                    <span>岗&emsp; &emsp;位 &emsp;&emsp; </span>
+                    <span>岗&emsp; &emsp;位 </span>
                     <p>{{dataObj.position}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>年&emsp; &emsp;龄 &emsp;&emsp; </span>
+                    <span>年&emsp; &emsp;龄</span>
                     <p>{{dataObj.age}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>性&emsp; &emsp;别 &emsp;&emsp; </span>
+                    <span>性&emsp; &emsp;别</span>
                     <p>{{dataObj.sex}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>籍&emsp; &emsp;贯 &emsp;&emsp; </span>
+                    <span>籍&emsp; &emsp;贯</span>
                     <p>{{dataObj.birthPlace}} </p>
                 </div>
                  <div class="infor-box">
-                    <span>出生日期 &emsp;&emsp; </span>
-                    <p>{{dataObj.birthday.slice(0,-8)}} </p>
+                    <span>出生日期</span>
+                    <p>{{dataObj.birthday.slice(0,-8)}}</p>
                 </div>
                  <div class="infor-box">
-                    <span >学&emsp; &emsp;历 &emsp;&emsp; </span>
+                    <span >学&emsp; &emsp;历</span>
                     <p>{{dataObj.education}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>专&emsp; &emsp;业 &emsp;&emsp; </span>
+                    <span>专&emsp; &emsp;业 </span>
                     <p>{{dataObj.major}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>毕业时间 &emsp;&emsp; </span>
+                    <span>毕业时间 </span>
                     <p>{{dataObj.graduationDate.slice(0,-8)}} </p>
                 </div>
                 <div class="infor-box">
-                    <span>入司时间 &emsp;&emsp; </span>
+                    <span>入司时间 </span>
                     <p>{{dataObj.hireDate.slice(0,-8)}} </p>
                 </div>
                 <div class="infor-box">
@@ -423,7 +423,7 @@
                     }
 
 
-                    if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                    if(!arr[i].auditers.length&&(arr[i].approvalUserType==1||arr[i].approvalUserType==2)&&arr[i].approvalUserScope==2){
                         newArr.push(ar)
                     }
                 }
@@ -438,7 +438,8 @@
                 }
                     that.dataObj.links = newArr;
 
-                    if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
+                    if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
+
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"
@@ -661,6 +662,7 @@
             span{
                 color #666;
                 margin-right 0.15rem;
+                width:0.95rem;
             }
 
             p{

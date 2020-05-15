@@ -192,8 +192,7 @@ let save_leave = (index,text,that) =>{
 	    that.$toast('学历不能为空')
     }else if(that.education.length>10){
 	    that.$toast('学历不能超过10个字符')
-    }
-    else if(that.beginTime == '请选择试用开始时间'){
+    }else if(that.beginTime == '请选择试用开始时间'){
         that.$toast('请选择试用开始时间')
     }else if(that.endTime == '请选择试用结束时间'){
         that.$toast('请选择试用结束时间')
@@ -218,7 +217,7 @@ let save_leave = (index,text,that) =>{
 
         let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
@@ -290,6 +289,8 @@ let save_leave = (index,text,that) =>{
                                     
                                 },500)
                             }
+                            that.change_man([])
+            that.approver_man([])
                             localStorage.removeItem('regular')
                         }
                  })
@@ -368,7 +369,8 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
              let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,showGroup,}})
+             let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -525,18 +527,6 @@ export default {
                 this.change_man(this.$data.chosed_list)
             }
 
-             this.axios.get('/process/apply/enter?req=7').then((res)=>{
-                let data = res.data.b;
-
-                this.allApprovers = this.Util.approverDataInit(data.links);
-                this.linkAuditNum = data.linkAuditNum;
-                this.applyLinkIds = data.applyLinkIds;
-                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
-                if(data.receivers.length>0){
-                        this.chosed_list = data.receivers
-                        this.change_man(this.chosed_list);
-                }
-            })
 
             this.oldData = JSON.parse(JSON.stringify(this.$data))
             
@@ -548,8 +538,7 @@ export default {
 
              this.axios.get('/process/apply/enter?req=15').then((res)=>{
                 let data = res.data.b;
-     
-                this.allApprovers = data.links;
+                this.allApprovers = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;

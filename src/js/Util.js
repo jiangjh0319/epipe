@@ -132,19 +132,20 @@ const Util = {
   },
   deliverIds(arr,idName){
     let idStr = ''
-
     arr.forEach(item=>{
       if(item.flow&&item.status=='00'){
         idStr+=item[idName]+'|'
+
       }else if(item.auditers){
         item.auditers.forEach(el=>{
-          if(el.status=='00'){
+          if(el.status=='00'||el.status=='0'){
             idStr+=el[idName]+'|'
           }
         })
-      }
-    })
 
+      }
+      
+    })
       return idStr.slice(0,-1)
 
   },
@@ -155,7 +156,6 @@ const Util = {
     arr.forEach((item,index) => {
       if(item.index>-1){
         arrs[index]=item.auditers.length;
-        console.log(item,arrs)
       }
       if(item.approvalUserType==3){
         arrs = this.nullVal(arrs,item.auditers.length)
@@ -174,6 +174,7 @@ const Util = {
     let data = arr;
 
     data.forEach(item=>{
+          item.approvealList = []
         if(item.approvalUserType==1&&item.auditers.length>1&&item.remarks==2){
           item.isSelect=true;
           item.approvealList = item.auditers;
@@ -181,6 +182,7 @@ const Util = {
           item.index=-1;
         }
     })
+    console.log(data)
     return data
   },
   nullVal(arr,val){
@@ -194,11 +196,16 @@ const Util = {
     return arr;
   },
   checkApprovers(arr){
-    // for (let index = 0; index < arr.length; index++) {
-    //     if(arr[index].auditers.length<1&&(arr[index].approvalUserType==3||arr[index].approvalUserType==1)){
-    //       return true
-    //     } 
-    // }
+    for (let index = 0; index < arr.length; index++) {
+
+        if(arr[index].auditers.length<1&&arr[index].approvalUserType==3){
+          return true
+        }
+
+        if(arr[index].approvalUserType==1&&(arr[index].approvealList.length>0&&arr[index].auditers.length<1)){
+          return true
+        }
+    }
 
     return false
   },

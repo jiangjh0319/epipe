@@ -135,7 +135,7 @@ let save_leave = (index,text,that) =>{
 
         let receiverIds = '', receiverCompanyIds = "", fileObj = {}, params = {}, approObj = {};
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         approObj = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
@@ -201,6 +201,8 @@ let save_leave = (index,text,that) =>{
                     },500)
                 }
             }
+            that.change_man([])
+            that.approver_man([])
             localStorage.removeItem('absence')
       })
     }
@@ -330,6 +332,18 @@ export default {
                 this.chosed_list.splice(index, 1);
                 this.change_man(this.chosed_list)
             }
+        },
+        go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+            let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
         },
         removeData(index){
             this.datas.splice(index,1)
@@ -474,7 +488,7 @@ export default {
                             type:that.$route.query.resubmit,
                             absenceApplyId:this.$route.query.absenceId
                         }
-                    }).then(function(res){
+                    }).then((res)=>{
                       let data = res.data.b;
                        if(!that.$route.query.resubmit){
                                 that.id = data.absenceApplyId;

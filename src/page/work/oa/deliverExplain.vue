@@ -96,7 +96,11 @@ export default {
                     }
                     param.auditerIds=param.auditerIds[param.auditerIds.length-1]=='|'?param.auditerIds.slice(0,-1):param.auditerIds
                     param.auditCompanyIds=param.auditCompanyIds[param.auditCompanyIds.length-1]=='|'?param.auditCompanyIds.slice(0,-1):param.auditCompanyIds
-                 this.axios.post('/work/audit'+that.Service.queryString(param)).then(function(res){
+
+
+                    param.auditerIds = param.auditerIds.replace(localStorage.getItem('userId')+'|','')
+                    param.auditCompanyIds = param.auditCompanyIds.replace(localStorage.getItem('companyId')+'|','')
+                this.axios.post('/work/audit'+that.Service.queryString(param)).then(function(res){
                     if(res.data.h.code==200){
                         that.$toast('转交成功!')
                         setTimeout(()=>{

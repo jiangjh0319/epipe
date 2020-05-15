@@ -158,7 +158,7 @@ let save_leave = (index,text,that) =>{
     }else{
         let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
@@ -220,6 +220,8 @@ let save_leave = (index,text,that) =>{
                         
                     },500)
                 }
+                that.change_man([])
+            that.approver_man([])
                 localStorage.removeItem('payApply')
             }
       })
@@ -240,16 +242,16 @@ export default {
         data(){
             return{
                 id:'',
-                payTitle : 'fffff', // 标题
-                departmentName : 'fffff',//用印部门
-                payAmount : '100', //付款金额
-                // payDate:'请选择付款日期', //付款日期
-                payDate:'2019-12-03', //付款日期
-                userName : 'fsdf',//用印承办人
-                receiverName:'发的发顺丰',//收款人
-                bankAcount:'sfdsfd', //银行账户
-                bankName:'发的所发生的飞飞',//开户行
-                payReason : 'fafdf',//
+                payTitle : '', // 标题
+                departmentName : '',//用印部门
+                payAmount : '', //付款金额
+                payDate:'请选择付款日期', //付款日期
+                // payDate:'2019-12-03', //付款日期
+                userName : '',//用印承办人
+                receiverName:'',//收款人
+                bankAcount:'', //银行账户
+                bankName:'',//开户行
+                payReason : '',//
                 chosed_list : [], //抄送人
                 approver_list : [], //审批人
                 accessory : [],

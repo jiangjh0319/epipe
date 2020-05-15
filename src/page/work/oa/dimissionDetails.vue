@@ -12,7 +12,7 @@
                 <div class="content_head">
                     <img class="imgHead" :src="dataObj.profileImg" @click="go_user(dataObj.userId)">
                     <div>
-                        <p class="nameTl">{{dataObj.employeeName}}</p>
+                        <p class="nameTl">{{dataObj.username}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">等待{{dataObj.auditUserName}}的{{dataObj | awaits}}</p>
 
@@ -35,7 +35,7 @@
             </div>
             <div class="styles infor">
                 <div class="infor-box">
-                    <span style="letter-spacing:0.05rem">离职员工姓名 </span>
+                    <span style="width:0.9rem">离职员工姓名</span>
                     <p>{{dataObj.employeeName}}</p>
                 </div>
                 <div class="infor-box">
@@ -409,7 +409,7 @@
                     }
 
 
-                    if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                    if(!arr[i].auditers.length&&(arr[i].approvalUserType==1||arr[i].approvalUserType==2)&&arr[i].approvalUserScope==2){
                         newArr.push(ar)
                     }
                 }
@@ -424,7 +424,7 @@
                 }
                     that.dataObj.links = newArr;
 
-                    if(that.dataObj.userId==that.dataObj.auditUserId&&that.dataObj.myselfApply!=1){
+                    if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"
@@ -629,6 +629,7 @@
             }
 
             span{
+                width:0.8rem;
                 color #666;
                 margin-right 0.15rem;
             }
