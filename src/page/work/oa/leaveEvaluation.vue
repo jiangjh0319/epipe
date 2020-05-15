@@ -27,7 +27,7 @@
                     <div class="line_s"></div>
                     <div class="opinion">
                         <div class="sex_s_a">监交人意见</div>
-                        <div class="name_s_a">{{monitorComment}}</div>
+                        <div class="name_s_a">{{monitorcomment}}</div>
                     </div>
                 </div>
                  <div class="two_style">
@@ -111,7 +111,7 @@
             this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId='+ dimissionApplyId + '&type=1').then(res=>{
                 // this.axios.post('/work//dimission/hrsys/comment?dimissionApplyId=83e1704131e311ea98024ccc6ac12eca&type=1').then(res=>{
                 if(res.data.h.code==200){
-                    // console.log('8888',res.data.b)
+                    console.log('8888',res.data.b)
                     that.superleadName =res.data.b.superleadname;
                     that.superleadComment =res.data.b.superleadcomment;
                      that.monitorName =res.data.b.monitorname;
@@ -183,8 +183,8 @@
                    .name_s_a{
                        width:65%;
                        padding-top 0.1rem;
-                       padding-right 0.2rem;
-                       padding-bottom 0.1rem;
+                    //    padding-right 0.2rem;
+                    //    padding-bottom 0.1rem;
                        color #666;
                    }
                }

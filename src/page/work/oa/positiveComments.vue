@@ -9,7 +9,7 @@
         <div class="base-content">
             <div class="content">
                 <div class="first_one">
-                    <div class="one_s"><span>申请转正类型</span><span style="margin-left:1.7rem">{{processType}}</span></div>
+                    <div class="one_s"><span>申请转正类型</span><span style="padding-left:1.3125rem">{{processType}}</span></div>
                     <div class="line_s"></div>
                     <div class="two_s"><span>申请转正日期</span><span style="margin-left:1.4rem">{{applyTime}}</span></div>
                 </div>
@@ -110,6 +110,7 @@
                     padding-top 0.1rem;
                     padding-left 0.15rem;
                     padding-bottom 0.1rem;
+               
                }
                .line_s{
                    width 89%;
