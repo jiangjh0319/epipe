@@ -146,17 +146,22 @@ let save_leave = (index,text,that) =>{
     }
     else if(that.applicant.hireDate=='请选择入职日期'||!that.applicant.hireDate){
         that.$toast('选择入职日期')
-    }else if(that.applicant.userPosition&&that.applicant.userPosition.length>20){
+    }
+    else if(that.applicant.userPosition&&that.applicant.userPosition.length>20){
         that.$toast('你输入的岗位名称不能超过20字')
-    }else if(that.changeDate=="请选择调岗时间"){
+    }
+    else if(that.changeDate=="请选择调岗时间"){
         that.$toast('请选择调岗时间')
-    }else if(that.afterPosition==''){
+    }
+    else if(that.afterPosition==''){
         that.$toast('请输入调岗后岗位')
     }else if(that.afterPosition.length>20){
         that.$toast('岗位名称不能超过20字')
-    }else if(that.afterOfficeId<0){
+    }
+    else if(that.afterOfficeId<0){
         that.$toast('请选择调岗后部门')
-    }else if(that.reason.length>1000||that.reason.length<6){
+    }
+    else if(that.reason.length>1000||that.reason.length<6){
         that.$toast('调岗原因不能少于6个或超过1000字符')
     }else if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
@@ -186,9 +191,13 @@ let save_leave = (index,text,that) =>{
                     exOfficeId:that.applicant.officeId,
                     exPosition:that.applicant.userPosition,
                     hireDate:that.applicant.hireDate,
-                    afterOfficeId:that.afterOfficeId,
-                    afterPosition:that.afterPosition,
                     changeDate:that.changeDate,
+                    afterOfficeId:that.afterOfficeId,
+                    hireDate:that.applicant.hireDate, 
+
+                    // afterOfficeId:'1',
+                    // afterPosition:'2020-1-28',
+                    // changeDate:'2020-1-21',
                     urls : fileObj.urlStr, //附件
                     fileNames: fileObj.fileNameStr, 
                     fileSizes: fileObj.fileSizeStr,

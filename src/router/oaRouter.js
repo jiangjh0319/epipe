@@ -38,6 +38,8 @@ const ErpPermissionDetails = r => require.ensure([], () => r(require('@/page/wor
 // const PositionDetails = r => require.ensure([], () => r(require('@/page/work/oa/positionDetails.vue')), 'group-foo')
 
 
+
+
 export default [
     {
         path: '/leave',  //请假
@@ -156,4 +158,5 @@ export default [
         path:'/menu', //菜单
         component:Menu,
     },
+  
 ]

@@ -191,6 +191,27 @@
                     </li>
                 </ul>
             </div>
+            <div class="arch_main">
+                <div class="arch_i"> <p class="i_sty"></p> <span style="font-size:0.16rem">档案管理</span></div>      
+                <div class="arch_main_1">
+                    <div class="arch_con" @click="hanlderArchUpload">  
+                        <img src="../../assets/qingshihan.png" class="achr_img" style="display: inline-block;" />
+                        <p>档案上传</p>
+                    </div>
+                    <div class="arch_con">  
+                        <img src="../../assets/qingshihan.png" class="achr_img" style="display: inline-block;" />
+                        <p>借阅申请</p>
+                    </div>
+                    <div class="arch_con">  
+                        <img src="../../assets/qingshihan.png" class="achr_img" style="display: inline-block;" />
+                        <p>档案移交</p>
+                    </div>
+                    <div class="arch_con">  
+                        <img src="../../assets/qingshihan.png" class="achr_img" style="display: inline-block;" />
+                        <p>档案管理</p>
+                    </div>
+                </div>
+            </div>
             <div class="menu-item" v-for="(item,index) in workData" :key="index" v-if="index!=0&&item.hideFlag!='1'&&item.apps.length&&item.show=='show'">
                 <p class="item-title"> <i></i> <span>{{item.name}}</span></p>
                 <ul>
@@ -278,6 +299,9 @@
             ]),
             unfinishAffair(){
                  window.location.href = "epipe://?&mark=unfinishAffair";
+            },
+            hanlderArchUpload(){
+                this.$router.push({path:'/archUpload'})
             },
             getToken(){
                 let str = this.Service.getCookie('auth_token')
@@ -827,5 +851,33 @@
       border-radius: 2px;
     }
   }
-
+    .arch_main{
+        background-color: #fff;
+        margin: 0 0.15rem;
+        padding: 0.15rem;
+        margin-bottom: 0.15rem;
+        .arch_main_1{
+            display:flex;
+             justify-content: space-between;
+        .arch_con {
+            text-align: center;
+            .achr_img{
+                width: 0.27rem;
+                height: 0.27rem;
+            }
+        }
+        }
+        .arch_i{
+            display: flex;
+            margin-bottom:0.15rem;
+            .i_sty {
+                width: 0.03rem;
+                height: 0.16rem;
+                background-color: #f80;
+                border-radius: 0.03rem;
+                margin-top: 0.03rem;
+                margin-right: 0.06rem;
+            }
+        }
+    }
 </style>
