@@ -3,7 +3,7 @@
         
         <TopHead
         mark = 'mark'
-        bgcolor='#0fc37c'
+        bgcolor='#609EF7'
         title="上传档案" 
         v-on:history_back="history_back_click"
          ></TopHead>
@@ -12,83 +12,120 @@
         <div class="content">
             <div class="styles input_group">
                 <div class="bor_bottom">
-                    <span class="title"><a>*</a>申请事由</span>
-                    <input placeholder="请输入申请事由"  v-model="userBuyApplyTheme" />
-                </div>
-                
-                <div class="bor_bottom choose" @click="buyTypeSelect">
-                    <span class="title">采购类型</span>
-                     <p>
-                        <span class="nullValue">{{buyType}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>      
-                
-                <div class="choose" @click="getTime()">
-                    <span class="title"><a>*</a>期望交付日期</span>
-                    <p>
-                        <span class="nullValue">{{hopeDeliveryDate |times}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>      
-            </div>
-
-            <div class="styles input_group" v-for="(item,index) in buy" :key="item.id">
-                <div class="control" v-show="buy.length>1">
-                    <span>采购明细({{index+1}})</span>
-                    <span style="color:#fd545c" @click.stop="remove(index)">删除</span>
-                </div>
+                    <van-field v-model="archNum" clearable input-align="right" label="档案编号" placeholder="请输入档案编号" />
+                </div>   
                 <div class="bor_bottom">
-                    <span class="title"><a>*</a>名称</span>
-                    <input placeholder="请输入名称"  v-model="item.name" />
+                    <van-field v-model="archName" clearable input-align="right" label="档案名称" placeholder="请输入档案名称" />
                 </div>
-                
-                <div class="bor_bottom">
-                    <span class="title"><a>*</a>规格</span>
-                    <input placeholder="请输入规格"   v-model="item.specifications" />
-                </div>      
-                
-                <div class="">
-                    <span class="title"><a>*</a>数量</span>
-                    <input type="number" @input="totalPriceF" placeholder="请输入数量"   v-model="item.number" />
-                </div>
-                 <div class="bor_bottom">
-                    <span class="title"><a>*</a>单位</span>
-                    <input placeholder="请输入单位"   v-model="item.unit" />
-                </div>      
-                
-                <div class="">
-                    <span class="title"><a>*</a>价格</span>
-                    <input type="number" @input="totalPriceF" placeholder="请输入价格"   v-model="item.price" />
-                </div>       
             </div>
+            <div class="styles input_group">
+        
+                <div class="bor_bottom choose">
+                    <van-field
+                        v-model="valDate"
+                        label="档案日期"
+                        placeholder="请选择档案日期"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(1)"
+                    />
+                </div>      
+                
+                <div class="choose">
+                    <van-field
+                        v-model="valGrade"
+                        label="保密等级"
+                        placeholder="请选择保密等级"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(2)"
+                    />
+                </div>    
+         
+            </div>
+            <div class="styles input_group">
+        
+                <div class="bor_bottom choose">
+                    <van-field
+                        v-model="ageLimit"
+                        label="保管年限"
+                        placeholder="请输入保管年限"
+                        clearable
+                        input-align="right"
 
+                    />
+                </div>      
+                
+                <div class="choose">
+                    <van-field
+                        v-model="endTime"
+                        label="保管截止日期"
+                        placeholder="选择保管截止日期"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(3)"
+                    />
+                </div>    
+         
+            </div>
+            <div class="styles input_group">
+        
+                <div class="choose">
+                    <van-field
+                        v-model="wellmadestarm"
+                        label="所属公司"
+                        placeholder="选择所属公司"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(4)"
+                    />
+                </div>   
+                <div class="bor_bottom choose">
+                    <van-field
+                        v-model="archAdmin"
+                        clearable
+                        label="档案保管员"
+                        placeholder="请输入档案保管员"
+                        input-align="right"
 
-              <div class="addDiv styles" v-if="buy.length<3" @click="addEvection" >
-                + 增加采购明细
-              </div>
-             
-             <div style="margin-bottom:10px;">
-                 总价格  
-                 <span style="float:right">{{totalPrice}} 元</span>
-             </div>
-             <div class="styles input_group choose" @click="payTypeSelect">
-                <div>
-                    <span class="title">支付方式</span>
-                     <p>
-                        <span class="nullValue">{{payType}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>
-             </div>
+                    />
+                </div>      
+         
+            </div>
+            <div class="styles input_group">
+        
+                <div class="choose">
+                    <van-field
+                        v-model="placeArch"
+                        label="存放位置"
+                        placeholder="选择存放位置"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(5)"
+                    />
+                </div>            
+            </div>
+            <van-popup v-model="showPicker"  position="bottom">
+                <van-picker
+                    show-toolbar
+                    :columns="columns"
+                    @cancel="showPicker = false"
+                    @confirm="onConfirm"
+                />
+            </van-popup>  
+            <van-popup v-model="showPickerTime"  position="bottom">
+                   <van-datetime-picker
+                    v-model="currentDate"
+                    type="date"
+                    title="选择年月日"
+                    :min-date="minDate"
+                    :max-date="maxDate"
+                    @confirm="onConfirmTime"
+                    />
+            </van-popup> 
+          
              <div class="styles" style="padding:0 0.15rem;">
-                 <p class="title">备注</p>
+                 <p class="title">档案描述</p>
                     <textarea v-model.trim="userBuyApplyRemarks" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入备注,限定1000字">
 
                     </textarea>
@@ -96,6 +133,9 @@
                             <span>{{textNum}}/1000</span>
                     </div>
              </div>
+            <div>
+                
+            </div>
             <Accessory
                 :accessory ='accessory'
             >
@@ -146,9 +186,9 @@
 <script>
 let reg = /[\u4e00-\u9fa5]/g;
 let save_leave = (index,text,that) =>{
-    if(that.userBuyApplyTheme==''){
-        that.$toast('申请事由不能为空')
-    }else if(that.userBuyApplyTheme.length<2||that.userBuyApplyTheme.length>100){
+    if(that.archName==''){
+        that.$toast('档案编号不能为空')
+    }else if(that.archName.length<2||that.archName.length>100){
         that.$toast('申请事由不能低于2个或超过100个字符')
     }else if(that.userBuyApplyRemarks!=''&&(that.userBuyApplyRemarks<6||that.userBuyApplyRemarks>1000)){
         that.$toast('备注不能低于6个或超过1000个字符')
@@ -191,7 +231,8 @@ let save_leave = (index,text,that) =>{
         params = {
             Id : that.id, // id
             urls : fileObj.urlStr, //附件
-            userBuyApplyTheme:that.userBuyApplyTheme, //
+            archName:that.archName, //
+            archNum:that.archNum,
             payType:that.payTypeCode,
             buyType:that.buyTypeCode,
             hopeDeliveryDate:that.hopeDeliveryDate,
@@ -269,7 +310,8 @@ export default {
         data(){
             return{
                 id : '',
-                userBuyApplyTheme : '', //标题
+                archName : '', 
+                archNum:'',
                 chosed_list: [], //抄送人
                 approver_list : [], //审批人
                 accessory :[], //附件
@@ -287,6 +329,20 @@ export default {
                 userName:'',
                 isShow:false,
                 oldData:null,
+                valDate:'',
+                valGrade:'',
+                showPicker:false,
+                showPickerTime:false,
+                minDate: new Date(1690, 0, 1),
+                currentDate: new Date(),
+                columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
+                endTime:'',
+                index_:'',
+                picker_index:'',
+                ageLimit:'',
+                wellmadestarm:'',
+                archAdmin:'',
+                placeArch:''
             }
         },
         components: {
@@ -305,6 +361,46 @@ export default {
         },
         submit_btn(){ //提
             save_leave(0, "提交成功", this)
+        },
+        handlerShowPicker(i){
+            if(i===1){
+                this.index_ = i;
+                this.showPickerTime = true;
+             }else if(i===2){
+                 this.picker_index = i;
+                this.showPicker = true;
+             }else if(i===3){
+                this.index_ = i;
+                this.showPickerTime = true;
+             }else if(i===4){
+                 this.picker_index = i;
+                this.showPicker = true;
+             }else if(i===5){
+                this.picker_index = i;
+                this.showPicker = true;
+             }
+        },
+        onConfirm(value) {
+            if(this.picker_index===2){
+                this.valGrade = value;
+            }else if(this.picker_index===4){
+                this.wellmadestarm = value;
+            }else if(this.picker_index===5){
+                this.placeArch = value;
+            }
+            this.showPicker = false;
+        },
+        format(date, index){
+        date = new Date(date);
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        },
+        onConfirmTime(value){
+            if(this.index_==1){
+                this.valDate =this.format(value);
+            }else if(this.index_==3){
+                this.endTime =this.format(value);
+            }
+            this.showPickerTime = false;
         },
         lf_click(){
 
@@ -521,7 +617,7 @@ export default {
                         that.buyTypeCode = data.buyTypeCode
                         that.payType = data.payType
                         that.payTypeCode = data.payTypeCode
-                        that.userBuyApplyTheme = data.userBuyApplyTheme;
+                        that.archName = data.archName;
                         that.userBuyApplyRemarks = data.userBuyApplyRemarks;
                         that.hopeDeliveryDate = data.hopeDeliveryDate;
                         that.chosed_list = data.receivers;

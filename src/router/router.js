@@ -925,10 +925,12 @@ export default new Router({
     {
       path:'/archUpload', //档案上传
       component:ArchUpload,
+      meta: {keepAlive: true}
     },
     {
         path:'/uploadArch', //档案上传
         component:UploadArch,
+        meta: {keepAlive: true}
     },
     ...routeData
   ],
