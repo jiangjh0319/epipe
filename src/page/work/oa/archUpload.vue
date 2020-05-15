@@ -1,75 +1,141 @@
 <template>
     <section>
+        
         <TopHead
         mark = 'mark'
-        bgcolor = '#0fc37c'
-        title="借款" 
+        bgcolor='#609EF7'
+        title="上传档案" 
         v-on:history_back="history_back_click"
          ></TopHead>
+
+
         <div class="content">
             <div class="styles input_group">
                 <div class="bor_bottom">
-                    <span class="title">文件标题</span>
-                    <input placeholder="请输入标题"  v-model="borrowTitle" />
-                </div>
-                  <div>
-                    <span class="title">申请人</span>
-                    <input placeholder="请输入申请人"  v-model="userName" disabled/>
-                </div>
+                    <van-field v-model="archNum" clearable input-align="right" label="档案编号" placeholder="请输入档案编号" />
+                </div>   
                 <div class="bor_bottom">
-                    <span class="title">所属部门</span>
-                    <input placeholder="请输入所属部门"  v-model="departmentName" disabled/>
+                    <van-field v-model="archName" clearable input-align="right" label="档案名称" placeholder="请输入档案名称" />
                 </div>
             </div>
             <div class="styles input_group">
-                <div class="bor_bottom">
-                    <span class="title">借款金额</span>
-                    <input style="color:#666" v-model="borrowerAmount" placeholder="请输入借款金额"/>
-                </div>
-    
-                 <div class="bor_bottom choose" @click="getTime(0)">
-                     <span class="title">使用日期</span>
-                    <p>
-                        <span class="nullValue">{{useDate}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>
-                 <div class="bor_bottom choose" @click="getTime(1)">
-                     <span class="title">预计归还日期</span>
-                    <p>
-                        <span class="nullValue">{{returnDate}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>
-                 <div class="bor_bottom">
-                    <span class="title">收款人全称</span>
-                    <input style="color:#666" v-model="borrowerName" placeholder="请输入收款人全称"/>
-                </div>
-                 <div class="bor_bottom">
-                    <span class="title">银行账户</span>
-                    <input style="color:#666" v-model="borrowerAccount" placeholder="请输入银行账户"/>
-                </div>
-                 <div class="bor_bottom">
-                    <span class="title">开户行</span>
-                    <input style="color:#666" v-model="borrowerBank" placeholder="请输入开户行"/>
-                </div>
-           
+        
+                <div class="bor_bottom choose">
+                    <van-field
+                        v-model="valDate"
+                        label="档案日期"
+                        placeholder="请选择档案日期"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(1)"
+                    />
+                </div>      
+                
+                <div class="choose">
+                    <van-field
+                        v-model="valGrade"
+                        label="保密等级"
+                        placeholder="请选择保密等级"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(2)"
+                    />
+                </div>    
+         
             </div>
+            <div class="styles input_group">
+        
+                <div class="bor_bottom choose">
+                    <van-field
+                        v-model="ageLimit"
+                        label="保管年限"
+                        placeholder="请输入保管年限"
+                        clearable
+                        input-align="right"
 
-            <div class="styles" style="padding:0 0.15rem;">
-                <p class="title">借款事由</p>
-                <textarea v-model.trim="borrowReason" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入借款事由,限定1000字">
-
-                </textarea>
-                <div class="record_box">
-                        <span>{{textNum}}/1000</span>
-                </div>
+                    />
+                </div>      
+                
+                <div class="choose">
+                    <van-field
+                        v-model="endTime"
+                        label="保管截止日期"
+                        placeholder="选择保管截止日期"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(3)"
+                    />
+                </div>    
+         
             </div>
+            <div class="styles input_group">
+        
+                <div class="bor_bottom choose">
+                    <van-field
+                        v-model="wellmadestarm"
+                        label="所属公司"
+                        placeholder="选择所属公司"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(4)"
+                    />
+                </div>   
+                <div class=" choose">
+                    <van-field
+                        v-model="archAdmin"
+                        clearable
+                        label="档案保管员"
+                        placeholder="请输入档案保管员"
+                        input-align="right"
 
+                    />
+                </div>      
+         
+            </div>
+            <div class="styles input_group">
+        
+                <div class="choose">
+                    <van-field
+                        v-model="placeArch"
+                        label="存放位置"
+                        placeholder="选择存放位置"
+                         right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(5)"
+                    />
+                </div>            
+            </div>
+            <van-popup v-model="showPicker"  position="bottom">
+                <van-picker
+                    show-toolbar
+                    :columns="columns"
+                    @cancel="showPicker = false"
+                    @confirm="onConfirm"
+                />
+            </van-popup>  
+            <van-popup v-model="showPickerTime"  position="bottom">
+                   <van-datetime-picker
+                    v-model="currentDate"
+                    type="date"
+                    title="选择年月日"
+                    :min-date="minDate"
+                    :max-date="maxDate"
+                    @confirm="onConfirmTime"
+                    />
+            </van-popup> 
+          
+             <div class="styles" style="padding:0 0.15rem;">
+                 <p class="title">档案描述</p>
+                    <textarea v-model.trim="userBuyApplyRemarks" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入备注,限定1000字">
+
+                    </textarea>
+                    <div class="record_box">
+                            <span>{{textNum}}/1000</span>
+                    </div>
+             </div>
+            <div>
+
+            </div>
             <Accessory
                 :accessory ='accessory'
             >
@@ -82,7 +148,7 @@
                 v-on:remove_item="remove_item"
                 :special_class='1'
                 :isGroup = true
-                type = 10
+                type= 1
             ></ApproverMan>
 
             <CopeMan 
@@ -95,74 +161,65 @@
                 :isGroup = true
             ></CopeMan>
         </div>
-        <WorkButton
-            v-if="!has_journal"
-            v-on:left_click="save_btn"
-            v-on:right_click="submit_btn"
-            left_title="存草稿"
-            right_title="提交"
-            noSvg = true
-            bgcolor="#fd545c"
-        ></WorkButton>
-        <Dialog
-            lfText="保存"
-            rgText="不保存"
-            content="保存此次编辑?"
-            v-on:lfClick="lf_click"
-            v-on:rgClick="rg_click"
-            v-show="isShow"
-            >
-        </Dialog>
+            <WorkButton
+                v-if="!has_journal"
+                v-on:left_click="save_btn"
+                v-on:right_click="submit_btn"
+                left_title="存草稿"
+                right_title="提交"
+                noSvg = true
+                bgcolor="#fd545c"
+            ></WorkButton>
+            <Dialog
+                lfText="保存"
+                rgText="不保存"
+                content="保存此次编辑?"
+                v-on:lfClick="lf_click"
+                v-on:rgClick="rg_click"
+                v-show="isShow"
+                >
+            </Dialog>
 
     </section>
 </template>
 
 <script>
-let reg = /^[\u4e00-\u9fa5]+$/;
-var regs =/^[1-9]+\d*$/;
-let rule = /^[A-Za-z0-9]+$/;
+let reg = /[\u4e00-\u9fa5]/g;
 let save_leave = (index,text,that) =>{
-    if(that.borrowTitle== ''){
-        that.$toast('文件标题不能为空')
-    }else if(that.borrowTitle.length>100 ||that.borrowTitle.length<2){
-        that.$toast('文件标题不能低于2个或超过100个字符')
-    }
-    else if(that.useDate == '请选择使用日期'){
-        that.$toast('请选择使用日期')
-    }else if(that.returnDate == '请选择预计归还日期'){
-        that.$toast('请选择预计归还日期')
-    }
-    else if(that.borrowerAmount == ''){
-        that.$toast('请输入借款金额')
-    }else if(isNaN(that.borrowerAmount)){
-        that.$toast('借款金额为数字')
-    }else if(that.borrowerAmount.length>8){
-        that.$toast('借款金额不能大于8位数')
-    }else if(that.borrowerName == ''){
-        that.$toast('请输入收款人姓名')
-    }else if(that.borrowerName.length<2||that.borrowerName>30){
-        that.$toast('收款人不能低于2个或超过30个字符')
-    }else if(that.borrowerBank == ''){
-        that.$toast('请输入开户行')
-    }else if(!reg.test(that.borrowerBank)){
-        that.$toast('开户行必须为中文')
-    }else if(that.borrowerBank.length<4||that.borrowerBank.length>30){
-        that.$toast('开户行不能少于4个或超过30个字符')
-    }else if(that.borrowerAccount == ''){
-        that.$toast('请输入银行账户')
-    }else if(!regs.test(that.borrowerAccount)){
-        that.$toast('银行账户必须为数字')
-    }else if(that.borrowerAccount.length<2||that.borrowerAccount.length>20){
-        that.$toast('银行账户不能少于2个或超过20个字符')
-    }else if(that.borrowReason == ''){
-        that.$toast('借款事由不能为空')
-    }else if(that.borrowReason.length>1000||that.borrowReason.length<6){
-        that.$toast('借款事由不能少于6个或超过1000字符')
+    if(that.archName==''){
+        that.$toast('档案编号不能为空')
+    }else if(that.archName.length<2||that.archName.length>100){
+        that.$toast('申请事由不能低于2个或超过100个字符')
+    }else if(that.userBuyApplyRemarks!=''&&(that.userBuyApplyRemarks<6||that.userBuyApplyRemarks>1000)){
+        that.$toast('备注不能低于6个或超过1000个字符')
+    }else if(that.hopeDeliveryDate=='请选择'){
+        that.$toast('请选择期望交付日期')
     }else if(that.approver_list.length == 0){
         that.$toast('请选择审批人')
     }else{
 
-        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
+        for(let i=0;i<that.buy.length;i++){
+            
+            if(that.buy[i].name==''){
+                that.$toast('请输入名称')
+            }else if(that.buy[i].name&&(that.buy[i].name.length<2||that.buy[i].name.length>30)){
+                that.$toast('物品名称必须为2-30个字符')
+            }else if(!that.buy[i].price){
+                that.$toast('价格不能为空')
+            } else if(isNaN(that.buy[i].price) || that.buy[i].price.length>8){
+                that.$toast('价格为1-8位数字')
+            }else if(that.buy[i].unit==''){
+                that.$toast('请输入单位')
+            }else if(that.buy[i].specifications==''){
+                that.$toast('请输入规格')
+            }else if(that.buy[i].number==''){
+                that.$toast('请输入数量')
+            }else if(isNaN(that.buy[i].number)){
+                that.$toast('数量需为数字')
+            }
+        }
+
+         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
         receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
         auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
@@ -171,74 +228,80 @@ let save_leave = (index,text,that) =>{
 
         fileObj = that.Util.fileFo(that.accessory)
 
-        // let contDesc = that.borrowReason.replace(/\n|\r\n/g,"<br>")
-        // https://blog.csdn.net/xiaobao5214/article/details/68923023/
+        params = {
+            Id : that.id, // id
+            urls : fileObj.urlStr, //附件
+            archName:that.archName, //
+            archNum:that.archNum,
+            payType:that.payTypeCode,
+            buyType:that.buyTypeCode,
+            hopeDeliveryDate:that.hopeDeliveryDate,
+            userBuyApplyRemarks:that.userBuyApplyRemarks,
+            fileNames : fileObj.fileNameStr, //文件名称s
+            fileSizes : fileObj.fileSizeStr, //文件大小
+            auditUserIds, //审批人
+            receiverIds, //抄送人
+            auditCompanyIds,
+            receiverCompanyIds,
+            draftFlag : index, //草稿还是发送
+        }
+
+        that.buy.forEach((item,index)=>{
+            params['list['+index+'].name'] = item.name
+            params['list['+index+'].specifications'] = item.specifications
+            params['list['+index+'].number'] = item.number
+            params['list['+index+'].price'] = item.price
+            params['list['+index+'].unit'] = item.unit
+        })
+
         that.axios({
                 method:"post",
-                url:"/work/borrow/save",
+                url:"/work/buy/save",
                 headers:{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
-                data:{
-                    Id :that.id, // id
-                    borrowTitle:that.borrowTitle,//标题
-                    borrowReason:that.borrowReason.replace(/\n/g, '<br/>'), //付款说明
-                    borrowAmount:that.borrowerAmount, //付款金额
-                    borrowerBank:that.borrowerBank,
-                    useDate:that.useDate,//付款时间
-                    returnDate:that.returnDate,//付款时间
-                    // useDate:'2020-1-5',//付款时间
-                    // returnDate:'2020-1-5',//付款时间
-                    borrowerAccount:that.borrowerAccount,
-                    borrowerName:that.borrowerName, //收款人
-                    urls : fileObj.urlStr, //附件
-                    fileNames:fileObj.fileNameStr, 
-                    fileSizes:fileObj.fileSizeStr,
-                    auditUserIds, //审批人
-                    receiverIds, //抄送人
-                    auditCompanyIds,
-                    receiverCompanyIds,
-                    draftFlag : index, //草稿还是发送
-                    },
-                    transformRequest: [function (data) {
+                data:params,
+                transformRequest: [function (data) {
                         let ret = ''
                         for (let it in data) {
                         ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
                         }
                         return ret
                     }],
-                }).then((res)=>{
-                        if(res.data.h.code!=200){
-                            that.$toast(res.data.h.msg)
-                        }else if(res.data.h.code == 200){
-                            if(index){
+                }).then((res)=>{ 
 
-                                that.$toast('已保存至草稿箱!')
-                                setTimeout(()=>{
-                                    if(that.$route.query.borrowId){
-                                        window.location.href = "epipe://?&mark=goWork"
-                                    }else{
-                                        window.location.href = "epipe://?&mark=history_back" 
-                                    }
-                                },700)
-                            }else{
-                                that.$toast('提交成功！')
-                                window.location.href = "epipe://?&mark=workUpdate";
-                                setTimeout(()=>{
-                                    window.location.href = "epipe://?&mark=submitBorrow&_id="+res.data.b.borrowApplyId;
-                                    
-                                },500)
-                            }
-                            localStorage.removeItem('borrowApply')
+        // that.axios.post('/work/reimburse/save' + encodeURI(that.Service.queryString(params))).then(function (res){
+
+            if(res.data.h.code!=200){
+                that.$toast(res.data.h.msg)
+            }else if(res.data.h.code == 200){
+                if(index){
+                    that.$toast('已保存至草稿箱!')
+                    setTimeout(()=>{
+
+                         if(that.$route.query.buyId){
+                             window.location.href = "epipe://?&mark=goWork"
+                        }else{
+                            window.location.href = "epipe://?&mark=history_back" 
                         }
-                 })
+                    },500)
+                }else{
+                    that.$toast('提交成功!')
+                    window.location.href = "epipe://?&mark=workUpdate";
+                    setTimeout(()=>{
+                        window.location.href = "epipe://?&mark=submitBuy&_id="+res.data.b.userBuyApplyId;
+                    },500)
+                }
+            }
+            localStorage.removeItem('buy')
+      })
     }
 }
-
 import {mapState, mapMutations} from 'vuex';
-import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
 import WorkButton  from '../../../components/worknews/work_button.vue'   //提交按钮
 import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
+import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
+import ReiTemplate  from '../../../components/worknews/reiTemplate.vue'    //报销组件
 import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
 import TopHead  from '../../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
@@ -246,23 +309,40 @@ import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
 export default {
         data(){
             return{
-                id:'',
-                borrowTitle : '', // 标题
-                departmentName : '',//用印部门
-                borrowerAmount : '', //付款金额
-                useDate:'请选择使用日期', //
-                returnDate:'请选择预计归还日期', //
-                userName : '',//用印承办人
-                borrowerName:'',//收款人
-                borrowerAccount:'', //银行账户
-                borrowerBank:'',//开户行
-                borrowReason : '',//用印说明
-                chosed_list : [], //抄送人
+                id : '',
+                archName : '', 
+                archNum:'',
+                chosed_list: [], //抄送人
                 approver_list : [], //审批人
-                accessory : [],
-                textNum:0,
+                accessory :[], //附件
                 isDraftFlag : 0, //判断是不是草稿
+                textNum : 0,
+                userBuyApplyRemarks:'',
+                buyType:'请选择',
+                buyTypeCode:'',
+                payType:'请选择',
+                payTypeCode:'',
+                hopeDeliveryDate:'请选择',
+                totalPrice:0,
+                buy: [{name:'',number:'',price:'',specifications:'',unit:''}], //
+                departmentName:'',
+                userName:'',
                 isShow:false,
+                oldData:null,
+                valDate:'',
+                valGrade:'',
+                showPicker:false,
+                showPickerTime:false,
+                minDate: new Date(1690, 0, 1),
+                currentDate: new Date(),
+                columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
+                endTime:'',
+                index_:'',
+                picker_index:'',
+                ageLimit:'',
+                wellmadestarm:'',
+                archAdmin:'',
+                placeArch:''
             }
         },
         components: {
@@ -271,42 +351,86 @@ export default {
             ApproverMan,
             TopHead,
             Accessory,
+            ReiTemplate,
             Dialog
         },
         methods:{
-        ...mapMutations(['change_man','approver_man']),
-        save_btn(){ //保存草稿
-           save_leave(1, "存入草稿成功", this)
+        ...mapMutations(['change_man','approver_man',"remburseData"]),
+        save_btn(){ //保存草
+         save_leave(1, "存入草稿成功", this)
         },
-        submit_btn(){ //提交
-           save_leave(0, "提交成功", this)
+        submit_btn(){ //提
+            save_leave(0, "提交成功", this)
         },
-         history_back_click(){
-            if(!this.Util.isUpdate(this.$data,this.oldData)){
-                 window.location.href = "epipe://?&mark=history_back"
-            }else{
-                this.isShow = true;
+        handlerShowPicker(i){
+            if(i===1){
+                this.index_ = i;
+                this.showPickerTime = true;
+             }else if(i===2){
+                 this.picker_index = i;
+                this.showPicker = true;
+             }else if(i===3){
+                this.index_ = i;
+                this.showPickerTime = true;
+             }else if(i===4){
+                 this.picker_index = i;
+                this.showPicker = true;
+             }else if(i===5){
+                this.picker_index = i;
+                this.showPicker = true;
+             }
+        },
+        onConfirm(value) {
+            if(this.picker_index===2){
+                this.valGrade = value;
+            }else if(this.picker_index===4){
+                this.wellmadestarm = value;
+            }else if(this.picker_index===5){
+                this.placeArch = value;
             }
+            this.showPicker = false;
+        },
+        format(date, index){
+        date = new Date(date);
+        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        },
+        onConfirmTime(value){
+            if(this.index_==1){
+                this.valDate =this.format(value);
+            }else if(this.index_==3){
+                this.endTime =this.format(value);
+            }
+            this.showPickerTime = false;
         },
         lf_click(){
-            this.isShow=false;
-            if(this.$route.query.borrowApplyId&&!this.$route.query.resubmit){
+
+             this.isShow=false;
+            if(this.$route.query.buyId&&!this.$route.query.resubmit){
                  save_leave(1, "存入草稿成功", this)
             }else{
-                localStorage.setItem('borrowApply',JSON.stringify(this.$data))
+                localStorage.setItem('buy',JSON.stringify(this.$data))
             }
             window.location.href = "epipe://?&mark=history_back"
         },
         rg_click(){
             this.isShow=false;
-            localStorage.removeItem('borrowApply')
+            localStorage.removeItem('buy')
             window.location.href = "epipe://?&mark=history_back"
         },
         addAccessory:function(){
+            let that = this;
+            window["epipe_camera_callback"] = (url,fileSize,fileName) => {
+                    var obj = {
+                            url,
+                            fileSize,
+                            fileName
+                    }
+                    that.isImg(url)?obj.isImg=true:obj.isImg=false;
+                    that.accessory.push(obj)
+            }
             window.location.href = "epipe://?&mark=addAccessory"
         },
         deleteFile:function(index){  //删除附件
-
             this.accessory.splice(index,1)
         },
         remove_item: function (itme, index,typess) {   //删除
@@ -317,6 +441,10 @@ export default {
                 this.chosed_list.splice(index, 1);
                 this.change_man(this.chosed_list)
             }
+        },
+        remove(index){
+          this.buy.splice(index,1)
+          this.totalPriceF()
         },
         isImg:function(str){
                  //判断是否是图片 - strFilter必须是小写列举
@@ -331,7 +459,7 @@ export default {
                 }        
                 return false;   
             },
-        accessoryFor:function(data){
+        accessoryFor:function(data){ //详情获得的附件数据格式化
               if(!data.accessory||data.accessory.url==null) return false;
                var urlArr = data.accessory.url.split('|')
                var fileSizeArr = data.accessory.fileSize.split('|')
@@ -343,9 +471,23 @@ export default {
                         fileName:fileNameArr[i]
                     })
                 }
+        },
+        totalPriceF(){
+            let total = 0
+            console.log(11)
+            this.buy.forEach(item=>{
+                let num = item.number==''?0:item.number
+                let price = item.price==''?0:item.price
 
-            },
-            getTime(num){ //获取原生时间
+                if(isNaN(num)||isNaN(price)){
+                    return
+                }
+                total+=parseFloat(num) * parseFloat(price)
+            })
+
+            this.totalPrice = total.toFixed(1);
+        },
+        getTime(){ //获取原生时间
                 let that = this;
                 window.location.href = "epipe://?&mark=getLeaveTime";
 
@@ -359,73 +501,93 @@ export default {
                     }else{
                         date = new Date(str)
                     }
-
-                    if(!num){
-                    if(that.returnDate!='请选择预计归还日期'){
-                        let endDate = that.tiemF(that.returnDate)
-                        if(date.getTime()>endDate.getTime()||date.getTime()==endDate.getTime()){
-                            that.$toast('开始时间不能大于等于结束时间')
-                        }else{
-                           that.useDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str; 
-                        }
-                    }else{
-                        that.useDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str;
-                    }
-                }else{            
-                    if(that.useDate!='请选择使用日期'){
-                        let beginDate = that.tiemF(that.useDate);
-                        if(date.getTime()<beginDate.getTime()||date.getTime()==beginDate.getTime()){
-                            that.$toast('归还时间不能小于等于使用时间')
-                        }else{
-                            that.returnDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str;
-                        }
-                    }else{
-                        that.returnDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str;
-                    }  
+                    that.hopeDeliveryDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str; 
                 }
-
-                }
-            },
-             tiemF(timeStr){ //传入原生的时间格式化
-                timeStr+=':00';
-                timeStr = timeStr.split(/[- : \/]/);
-                return new Date(timeStr[0],timeStr[1]-1,timeStr[2],timeStr[3],timeStr[4])
-             },
         },
-         watch:{
-            borrowReason : function(){
-                if(this.borrowReason.length>1000){
+        history_back_click:function(){
+                // window.location.href = "epipe://?&mark=history_back&url=myApply"
+                // if(!this.Util.isUpdate(this.$data,this.oldData)){
+                //      window.location.href = "epipe://?&mark=history_back"
+                // }else{
+                //     this.isShow = true;
+                // }
+                history.back();
+        },
+        tiemF(timeStr){
+            timeStr+=':00';
+            timeStr = timeStr.split(/[- : \/]/);
+            return new Date(timeStr[0],timeStr[1]-1,timeStr[2],timeStr[3],timeStr[4])
+        },
+        addEvection(){ //添加行程明细
+           this.buy.push({
+                    // price: '', //报销金额
+                    // unit: '',  //报销日期
+                    // number : '',
+                    // name : '',
+                    // specifications:''
+                });
+        },
+        buyTypeSelect(){
+            this.$router.push({path:'/option',query:{indexs:this.buyTypeCode,type:'buy',color:'#0fc37c',title:'采购类型',getType:1}})
+        },
+        payTypeSelect(){
+            this.$router.push({path:'/option',query:{indexs:this.payTypeCode,type:'pay2',color:'#0fc37c',title:'采购类型',getType:1}})
+        }
+        },
+        filters:{
+          fileSize:function(value){
+                 value = value - 0
+                var num =  parseInt(value)/1024/1024
+                return num.toFixed(2)
+          },
+          times:function(value){
+              if(value=='请选择') return value
+              return value.slice(0,10)
+          }
+        },
+        watch: {
+             userBuyApplyRemarks : function(){
+                if(this.userBuyApplyRemarks.length>1000){
                     this.$toast("最多输入1000字~")
-                    this.borrowReason = this.borrowReason.slice(0,1000)
+                    this.userBuyApplyRemarks = this.userBuyApplyRemarks.slice(0,1000)
                     return
                 }
-                this.textNum = this.borrowReason.length
-            }
+                this.textNum = this.userBuyApplyRemarks.length
+            },
+
         },
-        activated(){
-            this.approver_list = this.approver_man_state
-            this.chosed_list = this.chosed_man_state
-         },
-         created() {
-             if(localStorage.getItem('borrowApply')){
-                let borrowApplydata = JSON.parse(localStorage.getItem('borrowApply'))
-                for(let key in borrowApplydata){
-                    this.$data[key] = borrowApplydata[key]
+        created() {
+
+            if(localStorage.getItem('buy')){
+                let buydata = JSON.parse(localStorage.getItem('buy'))
+                for(let key in buydata){
+                    this.$data[key] = buydata[key]
                 }
                 this.approver_man(this.$data.approver_list)
                 this.change_man(this.$data.chosed_list)
             }
+
             this.oldData = JSON.parse(JSON.stringify(this.$data))
+            let that = this;
 
              eventBus.$on('leaveType', res =>{
                 if(res.name=='') return;
-                this.borrowType = res.index;
-                this.borrowName = res.name;
+                if(res.type=='buy'){
+                    this.buyTypeCode = res.index;
+                    this.buyType = res.name;
+                }else{
+                    this.payTypeCode = res.index;
+                    this.payType = res.name;
+                }
             })
+
+        },
+        activated(){
+            this.approver_list = this.approver_man_state
+            this.chosed_list = this.chosed_man_state
+		    this.$forceUpdate();
          },
         mounted(){
-            let that = this;
-
                 window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                     var obj = {
                             url,
@@ -436,49 +598,44 @@ export default {
                     that.accessory.push(obj)
                 }
 
-            this.axios.post('/user/current/userinfo').then(function(res){
-                that.departmentName = res.data.b.officeName
-                that.userName = res.data.b.name
-                that.oldData = JSON.parse(JSON.stringify(that.$data))
-            })
-
-            if(this.$route.query.borrowId){
-                  this.axios.get('/work/borrow/info',{
-                    params:{
-                        type:that.$route.query.resubmit,
-                        borrowApplyId:this.$route.query.borrowId
-                    }
-                }).then(function(res){
+            let that = this;
+            if(this.$route.query.buyId){
+                   this.axios.get('/work/buy/info',{
+                        params:{
+                            type:that.$route.query.resubmit,
+                            userBuyApplyId:this.$route.query.buyId
+                        }
+                    }).then(function(res){ 
                    let data = res.data.b;
                        if(!that.$route.query.resubmit){
-                                that.id = data.borrowApplyId;
+                                that.id = data.userBuyId;
                         }
-                        that.isDraftFlag = 1;
+
+                       that.isDraftFlag = 1;
                         that.accessoryFor(data)
-                        that.borrowTitle = data.borrowTitle;
-                        that.borrowerAmount = data.borrowAmount;
-                        that.borrowType = data.borrowTypeCode
-                        that.borrowName = data.borrowType;
-                        that.borrowerName = data.borrowerName
-                        that.borrowReason = data.borrowReason.replace(/<br\/>/g,'\n');
-                        that.useDate = data.useDate;
-                        that.returnDate = data.returnDate;
-                        that.borrowerAccount = data.borrowerAccount;
-                        that.borrowerBank=data.borrowerBank;
-                        that.textNum = that.borrowReason.length
+                        that.buyType = data.buyType
+                        that.buyTypeCode = data.buyTypeCode
+                        that.payType = data.payType
+                        that.payTypeCode = data.payTypeCode
+                        that.archName = data.archName;
+                        that.userBuyApplyRemarks = data.userBuyApplyRemarks;
+                        that.hopeDeliveryDate = data.hopeDeliveryDate;
                         that.chosed_list = data.receivers;
-                        that.change_man(that.chosed_list);
+                        that.change_man(that.chosed_list)
                         that.approver_list = data.auditers;
                         that.approver_man(that.approver_list);
+                        that.buy = data.list
+                        that.totalPriceF()
+                        that.textNum = data.userBuyApplyRemarks.length;
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
-                    })
-                    return
+
+                    })  
             }
         },
-        beforeDestroy() {
-            eventBus.$off('leaveType');
-        },
-        computed: mapState(["chosed_man_state","approver_man_state"])
+        computed:{
+            ...mapState(["chosed_man_state","approver_man_state",]),
+        } 
+
         
 }
 </script>
@@ -492,8 +649,6 @@ export default {
 
          .styles{
             margin-bottom 0.15rem;
-             -webkit-box-shadow: 0 0 0.2rem rgba(238,65,54,.1);    
-             box-shadow 0 0 0.2rem rgba(238,65,54,.1);
              background-color #fff;
              overflow hidden
 
@@ -507,10 +662,15 @@ export default {
                  font-size:0.14rem;
                  text-align right;
                  padding-right 0.15rem;
+                 color:#666;
              }
              input::-webkit-input-placeholder{
                  font-size:0.13rem;
                  color:#666;
+             }
+
+             a{
+                 color:#fd545c;
              }
 
              textarea{
@@ -533,6 +693,15 @@ export default {
                  font-weight:bold;
              }
         }
+    }
+    .omit{
+        width:2.2rem;
+        display:block;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        text-align:right;
+        float:left;
     }
 
     .accessory{
@@ -593,20 +762,38 @@ export default {
         }
     }
 
-    .input_group>div{
-        overflow hidden;
-        padding 0 0.15rem;
+        .input_group>div{
+            overflow hidden;
+            padding 0 0.15rem;
+            //  -webkit-box-shadow: 0 0 0.2rem rgba(238,65,54,.1);    
+            //  box-shadow 0 0 0.2rem rgba(238,65,54,.1);
+        }
+
+        input[disabled],input:disabled,input.disabled{  
+        color: #666;  
+        -webkit-text-fill-color:#666;  
+        -webkit-opacity:1;  
+        opacity: 1;
+        background-color:#fff;
+} 
+
+.content .control{
+        background-color: #f5f5f5;
+        padding 0;
+        font-size:0.15rem;
+        padding-bottom:0.08rem;
+
+        span:first-child{
+            float:left;
+            color:#609df6;
+        }
+
+        span:last-child{
+            float:right;
+        }
     }
 
-    input[disabled],input:disabled,input.disabled{  
-    color: #666;  
-    -webkit-text-fill-color:#666;  
-    -webkit-opacity:1;  
-    opacity: 1;
-    background-color:#fff;
-    } 
-
-    .choose{
+.choose{
          p{
             float:right;
             line-height 0.44rem;
@@ -615,7 +802,6 @@ export default {
 
     .bor_bottom{
         position:relative;
-
     }
 
     .bor_bottom:after{
@@ -627,6 +813,32 @@ export default {
         height:0.01rem;
         width:100%;
         background-color:#f5f5f5;
+    }
+
+    .items{
+            height 0.44rem;
+            line-height 0.44rem;
+            font-size 0.15rem;
+            color #333;
+            font-weight bold;
+
+            p{
+                float right 
+            }
+
+            .nullValue{
+                color #999;
+                font-size 0.14rem;
+            }
+        }
+
+    .addDiv{
+        height:0.44rem;
+        text-align:center;
+        line-height:0.44rem;
+        font-size:0.16rem;
+        color: #609df6;
+        font-weight: 600;
     }
 
     .record_box{
@@ -641,10 +853,11 @@ export default {
         }
     }
 
-    .nullValue{
-        color:#666;
+    .amount{
+        float:right;
+        line-height 0.44rem;
     }
 
-    
+
 
 </style>

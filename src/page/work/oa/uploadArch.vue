@@ -70,7 +70,7 @@
             </div>
             <div class="styles input_group">
         
-                <div class="choose">
+                <div class="bor_bottom choose">
                     <van-field
                         v-model="wellmadestarm"
                         label="所属公司"
@@ -80,7 +80,7 @@
                         @click="handlerShowPicker(4)"
                     />
                 </div>   
-                <div class="bor_bottom choose">
+                <div class=" choose">
                     <van-field
                         v-model="archAdmin"
                         clearable
@@ -134,7 +134,7 @@
                     </div>
              </div>
             <div>
-                
+
             </div>
             <Accessory
                 :accessory ='accessory'
