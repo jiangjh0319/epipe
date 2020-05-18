@@ -140,12 +140,10 @@ let save_leave = (index,text,that) =>{
       
         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
-
-
         fileObj = that.Util.fileFo(that.accessory)
 
         that.axios({
@@ -203,6 +201,8 @@ let save_leave = (index,text,that) =>{
                             window.location.href = "epipe://?&mark=submitContract&_id="+res.data.b.contractId;
                         },500)
                     }
+                    that.change_man([])
+            that.approver_man([])
                     localStorage.removeItem('contract')
                 }
             })
@@ -238,8 +238,12 @@ export default {
                 isShow:false,
                 textNum:0,
                 oldData:null,
+                addressListIndex:-1,
                 showCopy:0,
+                showGroup:false,
+                applyLinkIds:'',
                 allApprovers:[],
+                linkAuditNum:'',
             }
         },
         components: {
@@ -270,7 +274,8 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
              let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#fd545c',num:1,amount:1,showGroup,}})
+             let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#fd545c',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -383,8 +388,7 @@ export default {
 
             this.axios.get('/process/apply/enter?req=2').then((res)=>{
                 let data = res.data.b;
-
-                this.allApprovers = data.links;
+                this.allApprovers = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
@@ -425,8 +429,6 @@ export default {
                         that.chosed_list = data.receivers;
                         that.textNum = that.contractDesc.length
                         that.change_man(that.chosed_list);
-                        that.allApprovers = data.links;
-
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

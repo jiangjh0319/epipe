@@ -31,6 +31,7 @@
                         </div>
 
                     </div>
+                    
                 </div>
                 <div v-for="(item,index) in datas.links" :key="index" class="flow_item" v-if="index<=endIndex&&datas.auditStatus!='3'">
                     <div v-if="item.flow" >
@@ -146,6 +147,8 @@
                     return item.auditers.length+'人依次审批'
                 }else if(item.linkType==4){
                     return item.auditers.length+'人或签'
+                }else if(item.linkType==3){
+                    return item.auditers.length+'人会签'
                 }
             },
              statusClass:function(value){

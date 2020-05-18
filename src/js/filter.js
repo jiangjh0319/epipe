@@ -47,9 +47,21 @@ Vue.filter("escape2Html", function (str) {  //解码html标签
 });
 
 Vue.filter("timeSlice", function (value) {  //时间截取后三位 （秒）
+  value+=''
   return value.slice(0,-3)
 });
 
 Vue.filter("timeSlice9", function (value) {  //时间截取后9位 （秒）
+  value+=''
   return value.slice(0,-9)
+});
+
+Vue.filter("awaits", function (value) {  //时间截取后9位 （秒）
+  let str = '';
+  if(value.linkType==4){
+      str='或签'
+  }else if(value.linkType==3){
+      str='会签'
+  }
+  return  str+'审批'
 });

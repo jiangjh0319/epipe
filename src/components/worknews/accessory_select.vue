@@ -18,7 +18,7 @@
                 </li>
             </ul>
             
-            <div v-if="accessory.length<10"  @click="addAccessory()" class="add-btn">
+            <div v-if="accessory.length<30"  @click="addAccessory()" class="add-btn">
                 <svg style="font-size: 0.33rem;width:0.33rem;" class="icon" aria-hidden="false">
                     <use xlink:href="#icon-tianjiarenyuan"></use>
                 </svg>

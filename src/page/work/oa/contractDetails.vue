@@ -13,7 +13,8 @@
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'" v-if="leaveType!=''&leaveType!=3">{{leaveType |oa_details_status}}</p>
-                        <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditName+'的审批'}}</p>
+                        <p class="res" v-if="leaveType==3||leaveType==4">等待{{dataObj.auditName}}的{{dataObj | awaits}}</p>
+
                     </div>
                 </div>
             </div>
@@ -141,7 +142,7 @@ import { mapState, mapMutations } from "vuex";
 import TopHead from "../../../components/topheader.vue"; //header导航栏
 import CopeMan from "../../../components/worknews/copy_man.vue"; //抄送人
 import AccessoryList  from '../../../components/oa/accessoryList.vue'  //附件
-// import Approver  from '../../../components/oa/approverDetails.vue'  // 审批人
+// import Approver  from '../../../components/oa/approver_details_template.vue'  // 审批人
 import Approver  from '../../../components/oa/approver_details_template.vue'  // 审批人
 
 import Copy  from '../../../components/oa/copyDetails.vue'  // 抄送人
@@ -360,7 +361,7 @@ export default {
                     ar.auditers = [];
                     let data = arr[i].auditers;
 
-                    if(arr[i].admins.length){
+                    if(arr[i].admins&&arr[i].admins.length){
                         let flow = arr[i]
                         flow.auditers = arr[i].admins;
                         flow.admins = [];
@@ -392,13 +393,13 @@ export default {
                     }
 
 
-                    if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
+                    if(!arr[i].auditers.length&&(arr[i].approvalUserType==1||arr[i].approvalUserType==2)&&arr[i].approvalUserScope==2){
                         newArr.push(ar)
                     }
                     
                 }
                
-            //    this.dataObj.links = newArr;
+            //    that.dataObj.links = newArr;
 
                 for (let i = 0; i < newArr.length; i++) {
 
@@ -408,7 +409,7 @@ export default {
                         
                     }
                 }
-                this.dataObj.links = newArr;
+                that.dataObj.links = newArr;
                 // for(let i =0;i<that.dataObj.auditers.length;i++){   
              //         if(that.dataObj.auditers[i].status=='2'){
                 //             that.leaveType = '0';  //已经拒绝
@@ -427,7 +428,7 @@ export default {
                     // that.newAppr = arr
                     // that.approver_man(arr)
 
-                    if(that.dataObj.userId==that.dataObj.auditUserId){
+                    if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"

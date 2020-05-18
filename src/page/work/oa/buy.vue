@@ -101,7 +101,7 @@
             >
             </Accessory>
             
-            <ApproverMan 
+            <!-- <ApproverMan 
                 :has_journal="!has_journal"
                 color="#0fc37c"
                 :data_list=approver_list
@@ -109,7 +109,14 @@
                 :special_class='1'
                 :isGroup = true
                 type= 1
-            ></ApproverMan>
+            ></ApproverMan> -->
+
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=1
+            ></ApproMan>
 
             <CopeMan 
                 :has_journal="!has_journal"
@@ -119,6 +126,7 @@
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
             ></CopeMan>
         </div>
             <WorkButton
@@ -150,11 +158,11 @@ let save_leave = (index,text,that) =>{
         that.$toast('申请事由不能为空')
     }else if(that.userBuyApplyTheme.length<2||that.userBuyApplyTheme.length>100){
         that.$toast('申请事由不能低于2个或超过100个字符')
-    }else if(that.userBuyApplyRemarks!=''&&(that.userBuyApplyRemarks<6||that.userBuyApplyRemarks>1000)){
+    }else if(that.userBuyApplyRemarks.length<6||that.userBuyApplyRemarks.length>1000){
         that.$toast('备注不能低于6个或超过1000个字符')
     }else if(that.hopeDeliveryDate=='请选择'){
         that.$toast('请选择期望交付日期')
-    }else if(that.approver_list.length == 0){
+    }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
 
@@ -179,12 +187,12 @@ let save_leave = (index,text,that) =>{
             }
         }
 
-         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
+        let receiverIds = '',receiverCompanyIds="",fileObj = {}, params={}, approver = {}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
+
+        approver = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
 
         fileObj = that.Util.fileFo(that.accessory)
 
@@ -198,10 +206,12 @@ let save_leave = (index,text,that) =>{
             userBuyApplyRemarks:that.userBuyApplyRemarks,
             fileNames : fileObj.fileNameStr, //文件名称s
             fileSizes : fileObj.fileSizeStr, //文件大小
-            auditUserIds, //审批人
             receiverIds, //抄送人
-            auditCompanyIds,
             receiverCompanyIds,
+            auditUserIds:approver.userIdsStr, //审批人
+            auditCompanyIds:approver.companyIdsStr,
+            applyLinkIds:that.applyLinkIds,
+            linkAuditNum:approver.numStr,
             draftFlag : index, //草稿还是发送
         }
 
@@ -252,6 +262,8 @@ let save_leave = (index,text,that) =>{
                     },500)
                 }
             }
+            that.change_man([])
+            that.approver_man([])
             localStorage.removeItem('buy')
       })
     }
@@ -261,7 +273,8 @@ import WorkButton  from '../../../components/worknews/work_button.vue'   //提�
 import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
 import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
 import ReiTemplate  from '../../../components/worknews/reiTemplate.vue'    //报销组件
-import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+// import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+import ApproMan  from '../../../components/oa/approver_template.vue'    
 import TopHead  from '../../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
 
@@ -287,12 +300,19 @@ export default {
                 userName:'',
                 isShow:false,
                 oldData:null,
+                addressListIndex:-1,
+                showCopy:0,
+                showGroup:false,
+                applyLinkIds:'',
+                allApprovers:[],
+                linkAuditNum:'',
+
             }
         },
         components: {
             WorkButton,
             CopeMan,
-            ApproverMan,
+            ApproMan,
             TopHead,
             Accessory,
             ReiTemplate,
@@ -320,6 +340,18 @@ export default {
             this.isShow=false;
             localStorage.removeItem('buy')
             window.location.href = "epipe://?&mark=history_back"
+        },
+        go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+            let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
         },
         addAccessory:function(){
             let that = this;
@@ -484,9 +516,24 @@ export default {
                 }
             })
 
+             this.axios.get('/process/apply/enter?req=20').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
+            })
+
         },
         activated(){
-            this.approver_list = this.approver_man_state
+            if(this.addressListIndex>0){
+                this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }
             this.chosed_list = this.chosed_man_state
 		    this.$forceUpdate();
          },
@@ -525,8 +572,6 @@ export default {
                         that.hopeDeliveryDate = data.hopeDeliveryDate;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list)
-                        that.approver_list = data.auditers;
-                        that.approver_man(that.approver_list);
                         that.buy = data.list
                         that.totalPriceF()
                         that.textNum = data.userBuyApplyRemarks.length;

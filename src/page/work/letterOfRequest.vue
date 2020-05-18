@@ -38,7 +38,7 @@
             >
             </Accessory>
             
-            <ApproverMan 
+            <!-- <ApproverMan 
                 :has_journal="!has_journal"
                 color="#ff8800"
                 :data_list=approver_list
@@ -46,7 +46,14 @@
                 :special_class='1'
                 :isGroup = true
                 type = 3
-            ></ApproverMan>
+            ></ApproverMan> -->
+
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=3
+            ></ApproMan>
 
             <CopeMan 
                 :has_journal="!has_journal"
@@ -56,6 +63,7 @@
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
             ></CopeMan>
         </div>
             <WorkButton
@@ -95,20 +103,18 @@ let save_leave = (index,text,that) =>{
     }
     else if(that.content==''){
         that.$toast('请示函内容不能为空')
-    }else if(that.approver_list.length == 0){
+    }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
       
 
-        let fileObj = {},params={}
-        fileObj = that.Util.fileFo(that.accessory)
+        let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds=""
-
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
+
+        params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+        fileObj = that.Util.fileFo(that.accessory)
 
         that.axios({
                 method:"post",
@@ -123,10 +129,12 @@ let save_leave = (index,text,that) =>{
                     Url : fileObj.urlStr, //附件
                     fileName:fileObj.fileNameStr, 
                     fileSize:fileObj.fileSizeStr,
-                    auditUserIds, //审批人
                     receiverIds, //抄送人
-                    auditCompanyIds,
                     receiverCompanyIds,
+                    auditUserIds:params.userIdsStr, //审批人
+                    auditCompanyIds:params.companyIdsStr,
+                    applyLinkIds:that.applyLinkIds,
+                    linkAuditNum:params.numStr,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -157,7 +165,8 @@ let save_leave = (index,text,that) =>{
                     setTimeout(()=>{
                         window.location.href = "epipe://?&mark=submitLetter&_id="+res.data.b;
                     },300)
-
+            that.change_man([])
+            that.approver_man([])
                     localStorage.removeItem('letter')
                 
                 }
@@ -170,7 +179,9 @@ import {mapState, mapMutations} from 'vuex';
 import Accessory  from '../../components/worknews/accessory_select.vue'    //附件
 import WorkButton  from '../../components/worknews/work_button.vue'   //提交按钮
 import CopeMan  from '../../components/worknews/copy_man.vue'    //抄送人
-import ApproverMan  from '../../components/worknews/approver_man.vue'    //审批人
+// import ApproverMan  from '../../components/worknews/approver_man.vue'    //审批人
+import ApproMan  from '../../components/oa/approver_template.vue'    
+
 import TopHead  from '../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../components/oa/dialog.vue'    //弹窗
 
@@ -189,13 +200,18 @@ export default {
                 oldData:null,
                 letterType:'请选择',
                 letterIndex:-1,
-                
+                addressListIndex:-1,
+                showCopy:0,
+                showGroup:false,
+                applyLinkIds:'',
+                allApprovers:[],
+                linkAuditNum:'',
             }
         },
         components: {
             WorkButton,
             CopeMan,
-            ApproverMan,
+            ApproMan,
             TopHead,
             Accessory,
             Dialog
@@ -228,6 +244,18 @@ export default {
             this.isShow=false;
             localStorage.removeItem('letter')
             window.location.href = "epipe://?&mark=history_back"
+        },
+        go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+            let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
         },
         isUpdate(){
             let data = this.$data;
@@ -338,7 +366,9 @@ export default {
           }  
         },
         activated(){
-            this.approver_list = this.approver_man_state
+            if(this.addressListIndex>0){
+                this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }
             this.chosed_list = this.chosed_man_state
          },
         created(){
@@ -350,6 +380,19 @@ export default {
                 this.approver_man(this.$data.approver_list)
                 this.change_man(this.$data.chosed_list)
             }
+
+             this.axios.get('/process/apply/enter?req=1').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
+            })
 
             eventBus.$on('leaveType', res =>{
                 if(res.name=='') return;
@@ -378,7 +421,7 @@ export default {
                     type:that.$route.query.resubmit,
                     letterId:this.$route.query.letterId
                 }
-            }).then(function(res){
+            }).then((res)=>{
                        let data = res.data.b.data[0];
                        if(!that.$route.query.resubmit){
                             that.id = data.letterId;
@@ -393,8 +436,6 @@ export default {
                         that.textNum = that.content.length;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.approver_list = data.auditers;
-                        that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return

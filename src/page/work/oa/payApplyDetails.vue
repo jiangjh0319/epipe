@@ -14,7 +14,7 @@
                     <div>
                         <p class="nameTl">{{dataObj.username}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |oa_details_status}}</p>
-                        <p class="res" v-if="leaveType==3||leaveType==4">{{'等待'+dataObj.auditUserName+'的审批'}}</p>
+                        <p class="res" v-if="leaveType==3||leaveType==4">等待{{dataObj.auditUserName}}的{{dataObj | awaits}}</p>
                     </div>
                 </div>
             </div>
@@ -177,8 +177,6 @@
                 title:'',
                 myself:false,
                 isBackout:false,
-                amount:0,
-                approverData:[],
                 endIndex:999,
 
             }
@@ -194,6 +192,7 @@
             Dialog
         },
         methods :{
+
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
                  this.$router.push({path:'/opinion',query:{id:this.dataObj.payApplyId,typeName:'payApply',applyType:7,color:'#f80'}})
@@ -220,7 +219,6 @@
                      auditerIds = this.Util.deliverIds(this.dataObj.links,'userId')
                      auditCompanyId = this.Util.deliverIds(this.dataObj.links,'companyId')
                 }
-
                 
                 receiverIds = this.Util.getIds(this.newCopy,'userId')
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
@@ -254,7 +252,6 @@
                 })
             },
             appAndCopy:function(arr,type){
-                console.log(arr)
                 if(!type) type='userId'
                 let str = '';
                 for(let i=0;i<arr.length;i++){
@@ -316,17 +313,10 @@
                 this.newCopy.splice(index, 1);
                 this.change_man(this.newCopy)
             },
-            removeApp:function(index){
-                this.newAppr.splice(index, 1);
-                this.approver_man(this.newAppr)
-            },
              go_user(id){
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
 
-            approverSet(arr){
-
-            }
         },
         created() {
         },
@@ -335,109 +325,78 @@
             let that = this;
             this.payApplyId = this.$route.query.payApplyId;
             let pusthId = this.$route.query.pushId
-            // let res = {"h":{"code":200,"msg":"操作成功","tid":"52da93ae-43b9-47a1-b55b-2a2c74229be5"},"b":{"payApplyId":"b2f448920b6911eabac24ccc6ac12eca","userId":"d691a0f689424d9fad1a5b8620bf41de","username":"唐大斌","officeId":"7b1e6589507f48eb85a2c28fea007547","officeName":"研发中心-质量管理部","profileImg":"https://qiniu.epipe.cn/5451149257757159424","auditUserId":"6c48a3e6bf9b11e781854ccc6ac12eca","auditUserName":"王小二","auditStatus":"0","finalStatus":"0","applyNo":"201911201127","applyTime":"2019-11-20 15:44:37","payAmount":200.00,"payType":"支票","payTypeCode":"1","payDate":"2019-12-03 00:00:00","receiverName":"fffsfsd","bankAcount":"2534sfdsf","bankName":"中国银行","payReason":"防守打法发第三方","payTitle":"放水电费第三方说","draftFlag":"0","myselfApply":"ziji","accessory":null,"receivers":[{"receiverId":"2841bca60e45487685c407173990bb7e","userId":"2841bca60e45487685c407173990bb7e","name":"啦啦啦啦1","profileImg":"https://qiniu.epipe.cn/default_photo.png","companyId":"e433a72b7b6b11e986bf4ccc6ac12eca"}],"auditers":null,
-            // "links":
-            // [
-           
-            // {"id":"sjokdjaosdijoasijosdijoiao","approvalId":null,"parentLinkId":"0","parentLinkStep":null,"linkType":"2","linkIntroduce":null,"conditionLevel":null,"conditionSql":null,"approvalUserType":null,"approvalUserScope":null,"approvlDesignMembers":null,"auditers":[
-            // {"auditUserId":"6c48a3e6bf9b11e781854ccc6ac12eca","userId":"6c48a3e6bf9b11e781854ccc6ac12eca","name":"王小二","profileImg":"https://qiniu.epipe.cn/default_photo.png","status":"1","reason":"fffffffffffffffffffffffffffffffff丰富丰富付付付付付付付付付付付付","accessory":{url:'fsdf',fileSize:'255',fileName:'5533555f'},"auditTime":null,"companyId":"17859b51bfb611e78df94ccc6ac12eca","stepSort":null,"connectflag":null},
-            // {"auditUserId":"0ce5564ce3b24de0a4d2bfce189d8bc6","userId":"0ce5564ce3b24de0a4d2bfce189d8bc6","name":"老石","profileImg":"https://qiniu.epipe.cn/default_photo.png","status":"0","reason":"null","accessory":null,"auditTime":null,"companyId":"c66424c2c018421f888b33bb3c674c3a","stepSort":null,"connectflag":null},
-            // {"auditUserId":"12ed40f8aefd49ee862e837aeda21e9c","userId":"12ed40f8aefd49ee862e837aeda21e9c","name":"11","profileImg":"https://qiniu.epipe.cn/default_photo.png","status":"00","reason":null,"accessory":null,"auditTime":null,"companyId":"a1c66cba31d84bd19ae85e478a4efa79","stepSort":null,"connectflag":null}]},
-            //  {"id":"sadnisdhnaisdnhadnhdisa","approvalId":null,"parentLinkId":"sjokdjaosdijoasijosdijoiao","parentLinkStep":null,"linkType":"2","linkIntroduce":null,"conditionLevel":null,"conditionSql":null,"approvalUserType":null,"approvalUserScope":null,"approvlDesignMembers":null,"auditers":[{"auditUserId":"52b18075af2711e781854ccc6ac12eca","userId":"52b18075af2711e781854ccc6ac12eca","name":"丁建","profileImg":"https://qiniu.epipe.cn/5467202183013335040","status":"00","reason":null,"accessory":null,"auditTime":null,"companyId":"a1fa05c443dd495fbc3b62b3d00d3d5f","stepSort":null,"connectflag":null}]},
-            // {"id":"sajdoijasdiojnaisifanhia","approvalId":null,"parentLinkId":"sadnisdhnaisdnhadnhdisa","parentLinkStep":null,"linkType":"2","linkIntroduce":null,"conditionLevel":null,"conditionSql":null,"approvalUserType":null,"approvalUserScope":null,"approvlDesignMembers":null,"auditers":[{"auditUserId":"49b3fbb4b23f11e781854ccc6ac12eca","userId":"49b3fbb4b23f11e781854ccc6ac12eca","name":"张雄文","profileImg":"https://qiniu.epipe.cn/5465321955496177664","status":"00","reason":null,"accessory":null,"auditTime":null,"companyId":"29d13eec6bb746c2a0c35326e940c1ab","stepSort":null,"connectflag":null}]},
-            // ]}}
             this.axios.get('/work/pay/info?payApplyId='+this.payApplyId+'&pushId='+pusthId).then((res)=>{
 
                 that.dataObj = res.data.b;
-
-                let arr= [];
-                let newArr = [];
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
                 that.title = that.dataObj.username+'的付款申请'
 
-                arr = res.data.b.links;
-                
-                 arr.forEach(item=>{
-                     for(let i =0;i<item.auditers.length;i++){
-                          if(item.auditers[i].accessory!=null){
-                                item.auditers[i].accessory = that.accessoryFors(item.auditers[i].accessory)
-                        }
-                     }
-                })
-
-                for(let i=0;i<arr.length;i++){
-                      let ar = JSON.parse(JSON.stringify(arr[i]))
-                    ar.auditers = [];
-                    let data = arr[i].auditers;
-
-                    if(arr[i].admins.length){
-                        let flow = arr[i]
-                        flow.auditers = arr[i].admins;
-                        flow.admins = [];
-                        flow.linkType = 4;
-                        arr.splice(i,0,flow)
-                    }
+                   let arr=  that.dataObj.links, newArr = [];
 
 
-                    data.forEach(item=>{
-                        if(item.status!=='00'&&item.status!='0'){
-                            item.flow = true;
-                            newArr.push(item)
-                        }else{
-                            item.hide = true;
-                            ar.auditers.push(item)
-                        }
-
-                        if(item.status=='0'){
-
-                            ar.status = '0'
+                    arr.forEach(item=>{
+                        for(let i =0;i<item.auditers.length;i++){
+                            if(item.auditers[i].accessory!=null){
+                                    item.auditers[i].accessory = that.accessoryFors(item.auditers[i].accessory)
+                            }
                         }
                     })
 
-                    if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
-                        ar.auditers[0].flow = true
-                        newArr.push(ar.auditers[0])
-                    }else if(ar.auditers.length>0){
-                        newArr.push(ar)
-                    }
+                    for(let i=0;i<arr.length;i++){//审批人数据进行循环
+                        let ar = JSON.parse(JSON.stringify(arr[i]))
+                        ar.auditers = [];
+                        let data = arr[i].auditers;
+                        console.log(arr[i],ar,data)
 
 
-                    if(!ar.auditers.length&&(ar.approvalUserType==1||ar.approvalUserType==2)&&ar.approvalUserScope==2){
-                        newArr.push(ar)
-                    }
-                    
-                }
-               
-            //    this.dataObj.links = newArr;
+                        data.forEach(item=>{// 如果每一个环节里的审批人 有人审批过来就将它放入 newArr
+                            if(item.status!=='00'&&item.status!='0'){
+                                item.flow = true;
+                                newArr.push(item)
+                            }else{
+                                item.hide = true;
+                                ar.auditers.push(item)
+                            }
 
-                for (let i = 0; i < newArr.length; i++) {
+                            if(item.status=='0'){
+                                ar.status = '0'
+                            }
+                        })
+                        console.log('============')
+                        console.log(ar)
 
-                    if(newArr[i].status&&newArr[i].status=='2'){
-                        this.endIndex = i;
-                        this.leaveType = '0';  //已经拒绝
+                        if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
+                            ar.auditers[0].flow = true
+                            newArr.push(ar.auditers[0])
+                        console.log(newArr,'3')
+
+                        }else if(ar.auditers.length>0){
+                            newArr.push(ar)
+                        console.log(newArr,'4')
+
+                        }
+
+                        if(!arr[i].auditers.length&&(arr[i].approvalUserType==1||arr[i].approvalUserType==2)&&arr[i].approvalUserScope==2){
+                            newArr.push(ar)
+
+                        }
                         
                     }
-                }
-                this.dataObj.links = newArr;
-                // for(let i =0;i<that.dataObj.auditers.length;i++){   
-             //         if(that.dataObj.auditers[i].status=='2'){
-                //             that.leaveType = '0';  //已经拒绝
-                //         }
-                //         if(that.dataObj.auditers[i].status=='00'){
-                //             arr.push(that.dataObj.auditers[i])
-                //         }else{
-                //             that.amount++;
-                //         }
 
-                //         if(that.dataObj.auditers[i].accessory!=null){
-                //             that.dataObj.auditers[i].accessory = that.accessoryFors(that.dataObj.auditers[i].accessory)
-                //         }
-                //     }
+                    for (let i = 0; i < newArr.length; i++) {
 
-                    // that.newAppr = arr
-                    // that.approver_man(arr)
+                        if(newArr[i].status&&newArr[i].status=='2'){
+                            this.endIndex = i;
+                            this.leaveType = '0';  //已经拒绝
+                            
+                        }
+                    }
 
-                    if(that.dataObj.userId==that.dataObj.auditUserId){
+                        console.log(newArr,'end')
+
+                    that.dataObj.links = newArr;
+
+                    if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
                         that.myself=true;
                         if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
                             that.dataObj.myselfApply="0"
@@ -448,7 +407,6 @@
                         that.leaveType='5'
                         return;
                     }
-
 
                     if(that.dataObj.links[that.dataObj.links.length-1].status == 1){ // 已同意
                         that.leaveType = '1';

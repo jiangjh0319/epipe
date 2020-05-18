@@ -219,6 +219,23 @@
       <div class="im_div">
         <ul class="im_div2">
           <div v-for="(item,index) in datalist" :key="index">
+              <li @click="set_open(item)">
+                <span>{{item.name}}</span>
+                <div style="padding-right: 0.15rem;">
+                  <svg v-bind:class="{top_ul_yuan22:item.open}" style="width: 0.15rem;height: 0.15rem" class="icon"
+                      aria-hidden="false">
+                    <use xlink:href="#icon-back"></use>
+                  </svg>
+                </div>
+              </li>
+              <AddressList
+                v-show="item.open"
+                :list="item.offices"
+                v-on:pitchOn = "pitchOn"
+              >
+              </AddressList>
+          </div>
+          <!-- <div v-for="(item,index) in datalist" :key="index">
             <li @click="open_item(index)">
               <span>{{item.name}}</span>
               <div style="padding-right: 0.15rem;">
@@ -252,8 +269,8 @@
                 </div>
             </div>
               
-          </div>
-          <div v-if="item.offices==0" v-for="(item,index) in datalist.offices">
+          </div> -->
+          <!-- <div v-if="item.offices==0" v-for="(item,index) in datalist.offices">
             <li @click="open_item(index)">
               <span>{{item.name}}&nbsp; （{{item.personNO}}）</span>
               <div style="padding-right: 0.15rem;">
@@ -274,7 +291,7 @@
               <img v-show="!p.profileImg" src="../../../assets/tou.png"/>
               <div>{{p.name}}</div>
             </div>
-          </div>
+          </div> -->
         </ul>
         
       </div>
@@ -294,7 +311,7 @@
         <div class="bottom_button">
 
         </div>
-        <li @click="reduce(item)"  v-if="type_num" v-for="item in chose_array" class="chose">
+        <li @click="reduce(item)"  v-if="type_num" v-for="(item,index) in chose_array" class="chose" :key="index">
           <div style="height: 0.15rem">
             <svg style="font-size: 0.15rem;position: relative;top: 0.08rem;left: 0.135rem" class="icon">
               <use xlink:href="#icon-shanchu"></use>
@@ -304,7 +321,8 @@
           <img :src=item.profileImg|man_photo_format v-show="item.profileImg"/>
           <div class="name">{{item.name}}</div>
         </li>
-        <li @click="reduce(item)" v-if="!type_num"  v-for="item in approver_array" class="approver">
+
+        <li @click="reduce(item)" v-if="!type_num"  v-for="(item,index) in approver_array" :key="index" class="approver">
           <div style="height: 0.15rem">
             <svg style="font-size: 0.15rem;position: relative;top: 0.08rem;left: 0.135rem" class="icon">
               <use xlink:href="#icon-shanchu"></use>
@@ -352,6 +370,7 @@
 <script>
   import {mapState, mapMutations} from 'vuex';
   import TopHead  from '../../../components/topheader.vue'
+  import AddressList  from '../../../components/worknews/addressList.vue'
   export default {
     data () {
       return {
@@ -371,16 +390,120 @@
         peerData:[],//同行人员
         iscareOf:false,
         showGroup:true,
-        fun:''
+        chose_data:[],
       }
     },
     components: {
-      TopHead
+      TopHead,
+      AddressList
     },
     methods: {
       ...mapMutations([
         'change_man','approver_man'
       ]),
+      dataInit(data){
+        data.forEach(item => {
+            item.open = false;
+            if(item.subOffice.length){
+                this.dataInit(item.subOffice)
+            }
+
+            if(item.staff.length){
+                let arr = item.staff
+                arr.forEach(el=>{
+                  el.mark_chose = false
+                })
+            }
+        })
+      },
+      pitchOn(item){
+          if(this.iscareOf){
+            if(item.mark_chose){
+              this.$toast('该用户为审批人')
+              return;
+            }
+            this.submitDeliver(item)//是否为转交
+            return false;
+         } 
+
+         if(this.$route.query.amount=='1'){ //为1既为 选中立马回到之前的界面
+
+              this.approver_array.push(item)
+              this.approver_man(this.approver_array)
+              window.history.back()
+              return false;
+          }
+
+          item.mark_chose = !item.mark_chose
+
+          if(item.mark_chose){
+            this.chose_data.push(item)
+          }else{
+            for(let i=0;i<this.chose_data.length;i++){
+              if(this.chose_data[i].userId==item.userId){
+                this.chose_data.splice(i,1)
+              }
+            }
+          }
+
+          if(this.type_num){
+              this.chose_array = this.chose_data;
+              this.change_man(this.chose_array)
+          }else{
+              this.approver_array = this.chose_data;
+              this.approver_man(this.approver_array)
+          }
+      },
+      submitDeliver(data){
+        
+        this.$router.push({path:'/deliverExplain',query:{
+              id:this.$route.query.id,
+              userName:data.name,
+              userId:data.userId,
+              auditerIds:this.$route.query.auditerIds,
+              receiverIds:this.$route.query.receiverIds,
+              auditCompanyId :data.companyId+'|'+this.$route.query.auditCompanyId,
+              receiverCompanyId: this.$route.query.receiverCompanyId,
+              type:this.$route.query.type,
+              typeName:this.$route.query.typeName,
+              applyType:this.$route.query.applyType,
+              color:this.$route.query.color
+        }})
+      },
+      chose_people(data,id,val){
+         for(let i=0;i<data.length;i++){
+            if(data[i].subOffice.length){
+                this.chose_people(data[i].subOffice,id,val)
+            }
+            if(data[i].staff.length){
+                let arr = data[i].staff
+                for(let j=0;j<arr.length;j++){
+                  if(arr[j].userId==id){
+                    arr[j].mark_chose = val;
+                    return
+                  }
+                }
+            }
+         }
+      },
+      get_chose_data(data,array){
+        for(let i=0;i<data.length;i++){
+            if(data[i].subOffice.length){
+                this.get_chose_data(data[i].subOffice,array)
+            }
+            if(data[i].staff.length){
+                let arr = data[i].staff
+                for(let j=0;j<arr.length;j++){
+                  if(arr[j].mark_chose==true){
+                    array = array.concat(arr[j])
+                  }
+                }
+            }
+         }
+      },
+      set_open(item){
+          item.open = !item.open;
+      },
       open_item(index){  //点开分组
         this.datalist[index].open = !this.datalist[index].open
       },
@@ -412,43 +535,7 @@
       },
       chose_child(index,num,el,c){
 
-          if(this.iscareOf){
-
-           if(el.mark_chose){
-             this.$toast('该用户为审批人')
-             return;
-           }
-        
-            this.$router.push({path:'/deliverExplain',query:{
-              id:this.$route.query.id,
-              userName:el.name,
-              userId:el.userId,
-              auditerIds:this.$route.query.auditerIds,
-              receiverIds:this.$route.query.receiverIds,
-              auditCompanyId :el.companyId+'|'+this.$route.query.auditCompanyId,
-              receiverCompanyId: this.$route.query.receiverCompanyId,
-              type:this.$route.query.type,
-              typeName:this.$route.query.typeName,
-              applyType:this.$route.query.applyType,
-              color:this.$route.query.color
-              }})
-             return false;
-         } 
-
-        if(this.$route.query.amount){
-
-            this.approver_array.push(el)
-            this.approver_man(this.approver_array)
-            window.history.back()
-            return false;
-        }
-
         let array = []
-        if(c!='department'){
-            this.datalist[index].offices[num].staff[c].mark_chose = !this.datalist[index].offices[num].staff[c].mark_chose  //设置这个人是否被选中
-        }else{
-            this.datalist[index].staff[num].mark_chose = !this.datalist[index].staff[num].mark_chose  //设置这个人是否被选中
-        }
 
         
         if(this.type_num){
@@ -456,8 +543,11 @@
               for (let i = 0; i < this.datalist.length; i++) {
                       for (let j = 0; j < this.datalist[i].offices.length; j++) {
                           for (let a = 0; a < this.datalist[i].offices[j].staff.length; a++) {
+
                             if (this.datalist[i].offices[j].staff[a].mark_chose == true) {
+
                                 this.datalist[i].offices[j].staff[a].receiverId = this.datalist[i].offices[j].staff[a].userId;
+
                                 array = array.concat(this.datalist[i].offices[j].staff[a])
                             }
                         }
@@ -530,32 +620,21 @@
       },
       reduce(item){ //删除选中人
         let that = this;
-        let array = []
-
-          for (let i = 0; i < that.datalist.length; i++) {
-              for (let j = 0; j < that.datalist[i].offices.length; j++) {
-                  for (let a = 0; a < that.datalist[i].offices[j].staff.length; a++) {
-                      if (this.datalist[i].offices[j].staff[a].userId != item.userId) {
-                          if (this.datalist[i].offices[j].staff[a].mark_chose == true) {
-                            if(that.type_num){
-                                this.datalist[i].offices[j].staff[a].receiverId = this.datalist[i].offices[j].staff[a].userId;
-                            }else{
-                                this.datalist[i].offices[j].staff[a].auditUserId = this.datalist[i].offices[j].staff[a].userId;
-                            }
-                              array = array.concat(this.datalist[i].offices[j].staff[a])
-                          }
-                      } else {
-                          this.datalist[i].offices[j].staff[a].mark_chose = false
-                      }
-                  }
-              }
+        for(let i=0;i<this.chose_data.length;i++){
+          if(this.chose_data[i].userId==item.userId){
+            this.chose_data.splice(i,1)
+          }
         }
 
+        this.datalist.forEach(el=>{
+              that.chose_people(el.offices,item.userId,false)
+        })
+
         if(this.type_num){
-          this.chose_array = array;
+          this.chose_array = this.chose_data;
           this.change_man(this.chose_array)
         }else{
-          this.approver_array = array;
+          this.approver_array = this.chose_data;
           this.approver_man(this.approver_array)
         }
       },
@@ -581,66 +660,49 @@
              this.$toast('该用户为审批人')
              return;
            }
-              this.$router.push({path:'/deliverExplain',
-              query:{id:this.$route.query.id,
-              userName:item.name,
-              auditerIds:this.$route.query.auditerIds,
-              userId:item.userId,
-              auditCompanyId :item.companyId+'|'+this.$route.query.auditCompanyId,
-              receiverCompanyId: this.$route.query.receiverCompanyId,
-              typeName:this.$route.query.typeName,
-              applyType:this.$route.query.applyType,
-              color:this.$route.query.color,
-              receiverIds:this.$route.query.receiverIds,
-              }})
-             return false;
-         } 
-        
-        if(this.$route.query.amount){
 
+          this.submitDeliver(item)
+          return false; 
+         } 
+
+        
+        if(this.$route.query.amount=='1'){
             this.approver_array.push(item)
             this.approver_man(this.approver_array)
             window.history.back()
             return false;
         }
 
+
+
         let that = this;
         if (!item.mark_chose) {
           that.seach_list_man[index].mark_chose = true
 
           if(this.type_num){
-            item.receiverId = item.userId;
             that.chose_array.push(item)
             that.change_man(this.chose_array)
           }else{
-            item.auditUserId = item.userId;
             that.approver_array.push(item)
             that.approver_man(this.approver_array)
           }
 
-          that.seach_value = ""
+          this.datalist.forEach(el=>{
+           this.chose_people(el.offices,item.userId,true)
+          })
 
-          for (let i = 0; i < this.datalist.length; i++) {
-              for (let j = 0; j < this.datalist[i].offices.length; j++) {
-                  for (let a = 0; a < this.datalist[i].offices[j].staff.length; a++) {
-                      if (item.userId == that.datalist[i].offices[j].staff[a].userId) {
-                        that.datalist[i].offices[j].staff[a].mark_chose = true
-                      }
-                  }
-              }
-          }
-          setTimeout(function () { //300毫秒后去掉搜索界面
-            that.is_search = false
-            that.seach_list_man = []
-          }, 100)
         }else{
           that.seach_list_man[index].mark_chose = false;
           that.reduce(item)
+        }
+
           setTimeout(function () { //300毫秒后去掉搜索界面
             that.is_search = false
             that.seach_list_man = []
           }, 100)
-        }
+
+          that.seach_value = ""
+
       },
       hide_seach: function () {
         this.seach_value = ""
@@ -654,23 +716,15 @@
           this.axios.get(this.Service.selectReceiver, {params: {name: this.seach_value}}).then(function (data) {
             if (data.data.h.code == 200) {
               that.seach_list_man = data.data.b.data
+
               for (let b = 0; b < that.seach_list_man.length; b++) {
                 that.seach_list_man[b].mark_chose = false
-
-                if(that.type_num){
-                  for (let a = 0; a < that.chose_array.length; a++) {
+                for (let a = 0; a < that.chose_data.length; a++) {
                     //这是把默认抄送人加上
-                    if (that.seach_list_man[b].userId == that.chose_array[a].receiverId) {
+                    if (that.seach_list_man[b].userId == that.chose_data[a].userId) {
                       that.seach_list_man[b].mark_chose = true
                     }
                   }
-                }else{
-                  for (let a = 0; a < that.approver_array.length; a++) {
-                    if (that.seach_list_man[b].userId == that.approver_array[a].auditUserId) {
-                      that.seach_list_man[b].mark_chose = true
-                    }
-                  }
-                }
               }
               that.seach_list_man = JSON.parse(JSON.stringify(that.seach_list_man))
             }
@@ -704,7 +758,7 @@
         params:{
           showGroup : this.showGroup,
         }
-      }).then(function (data) {
+      }).then( (data)=> {
         if(data.data.h.code == 200) {
           let datas = data.data.b.data
           let arrs = [];
@@ -714,39 +768,54 @@
             arrs = that.approver_man_state;
           }
 
-          if(that.type_num){
+          this.chose_data = arrs;
 
-            for (let i = 0; i < datas.length; i++) {
-              datas[i].open = false;
-                for (let j = 0; j < datas[i].offices.length; j++) {
-                      datas[i].offices[j].open = false;
+          // this.dataInit(datas,arrs)
 
-                      for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
-                          for (let b = 0; b <arrs.length; b++) {
-                              if (arrs[b].receiverId == datas[i].offices[j].staff[a].userId) {
-                                    datas[i].offices[j].staff[a].mark_chose = true
-                                }
-                          }
-                      }
-                }
-            }
+          datas.forEach(item=>{
+            item.open = false;
+            that.dataInit(item.offices,arrs)
 
-          }else{
+            arrs.forEach(el=>{
+              that.chose_people(item.offices,el.userId,true)
+            })
+          })
 
-             for (let i = 0; i < datas.length; i++) {
-                datas[i].open = false;
-                  for (let j = 0; j < datas[i].offices.length; j++) {
-                      datas[i].offices[j].open = false;
-                      for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
-                          for (let b = 0; b <arrs.length; b++) {
-                              if (arrs[b].auditUserId == datas[i].offices[j].staff[a].userId) {
-                                  datas[i].offices[j].staff[a].mark_chose = true
-                              }
-                          }
-                      }
-                  }
-              }
-          }
+
+
+          // if(that.type_num){
+
+          //   for (let i = 0; i < datas.length; i++) {
+          //     datas[i].open = false;
+          //       for (let j = 0; j < datas[i].offices.length; j++) {
+          //             datas[i].offices[j].open = false;
+
+          //             for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
+          //                 for (let b = 0; b <arrs.length; b++) {
+          //                     if (arrs[b].receiverId == datas[i].offices[j].staff[a].userId) {
+          //                           datas[i].offices[j].staff[a].mark_chose = true
+          //                       }
+          //                 }
+          //             }
+          //       }
+          //   }
+
+          // }else{
+
+          //    for (let i = 0; i < datas.length; i++) {
+          //       datas[i].open = false;
+          //         for (let j = 0; j < datas[i].offices.length; j++) {
+          //             datas[i].offices[j].open = false;
+          //             for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
+          //                 for (let b = 0; b <arrs.length; b++) {
+          //                     if (arrs[b].auditUserId == datas[i].offices[j].staff[a].userId) {
+          //                         datas[i].offices[j].staff[a].mark_chose = true
+          //                     }
+          //                 }
+          //             }
+          //         }
+          //     }
+          // }
 
           that.datalist = datas
         }

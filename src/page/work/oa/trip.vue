@@ -45,7 +45,7 @@
             >
             </Accessory>
             
-            <ApproverMan 
+            <!-- <ApproverMan 
                 :has_journal="!has_journal"
                 color="#609df6"
                 :data_list=approver_list
@@ -53,7 +53,14 @@
                 :special_class='1'
                 :isGroup = true
                 type= 1
-            ></ApproverMan>
+            ></ApproverMan> -->
+
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=1
+            ></ApproMan>
 
             <CopeMan 
                 :has_journal="!has_journal"
@@ -63,6 +70,7 @@
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
             ></CopeMan>
         </div>
             <WorkButton
@@ -101,7 +109,7 @@ let save_leave = (index,text,that) =>{
     }else if(that.contractDesc&&that.contractDesc.length>1000){
         that.$toast('出差事由不能超过1000字')
     }
-    else if(that.approver_list.length == 0){
+    else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
 
@@ -136,12 +144,13 @@ let save_leave = (index,text,that) =>{
                 }
         }
 
-        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
+        let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}, approver = {}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
-        auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
+
+        approver = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+
         fileObj = that.Util.fileFo(that.accessory)
 
          params = {
@@ -151,10 +160,12 @@ let save_leave = (index,text,that) =>{
             tripReason:that.contractDesc.replace(/\n/g, '<br/>'),//出差事由
             fileNames : fileObj.fileNameStr, //文件名称 
             fileSizes : fileObj.fileSizeStr, //文件大小
-            auditUserIds, //审批人
             receiverIds, //抄送人
-            auditCompanyIds,
             receiverCompanyIds,
+            auditUserIds:approver.userIdsStr, //审批人
+            auditCompanyIds:approver.companyIdsStr,
+            applyLinkIds:that.applyLinkIds,
+            linkAuditNum:approver.numStr,
             draftFlag : index, //草稿还是发送
         }
 
@@ -207,6 +218,8 @@ let save_leave = (index,text,that) =>{
                                 window.location.href = "epipe://?&mark=submitTrip&_id="+res.data.b.tripId;
                             },500)
                         }
+                    that.change_man([])
+                    that.approver_man([])
                     localStorage.removeItem('trip')
                 }
             })
@@ -217,7 +230,8 @@ import WorkButton  from '../../../components/worknews/work_button.vue'   //提�
 import CopeMan  from '../../../components/worknews/copy_man.vue'    //抄送人
 import Accessory  from '../../../components/worknews/accessory_select.vue'    //附件
 import EvectionTemp  from '../../../components/worknews/evectionTemplate.vue'    //出差行程组件
-import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+// import ApproverMan  from '../../../components/worknews/approver_man.vue'    //审批人
+import ApproMan  from '../../../components/oa/approver_template.vue'    
 import TopHead  from '../../../components/topheader.vue'  //header导航栏
 import Dialog  from '../../../components/oa/dialog.vue'    //弹窗
 
@@ -245,12 +259,17 @@ export default {
                     tripDuration :'', // 出差天数
                 }],
                 oldData:null,
+                addressListIndex:-1,
+                linkAuditNum:'',
+                showCopy:0,
+                applyLinkIds:'',
+                allApprovers:[],
             }
         },
         components: {
             WorkButton,
             CopeMan,
-            ApproverMan,
+            ApproMan,
             TopHead,
             Accessory,
             EvectionTemp,
@@ -285,7 +304,18 @@ export default {
             localStorage.removeItem('trip')
             window.location.href = "epipe://?&mark=history_back"
         },
-       
+       go_address(index){
+            this.addressListIndex = index
+            this.approver_list =  this.allApprovers[index].auditers;
+            this.approver_man(this.approver_list)
+            let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+
+        },
+        del_poeple(index,num){
+            this.allApprovers[index].auditers.splice(num,1 )
+        },
         addAccessory:function(){
             let that = this;
             window["epipe_camera_callback"] = (url,fileSize,fileName) => {
@@ -405,10 +435,26 @@ export default {
                 this.change_man(this.$data.chosed_list)
                 this.peerArrs_man(this.$data.peerArr)
             }
+
+             this.axios.get('/process/apply/enter?req=4').then((res)=>{
+                let data = res.data.b;
+
+                this.allApprovers = this.Util.approverDataInit(data.links);
+                this.linkAuditNum = data.linkAuditNum;
+                this.applyLinkIds = data.applyLinkIds;
+                this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+                if(data.receivers.length>0){
+                        this.chosed_list = data.receivers
+                        this.change_man(this.chosed_list);
+                }
+            })
+
             this.oldData = JSON.parse(JSON.stringify(this.$data))
         },
         activated(){
-            this.approver_list = this.approver_man_state
+            if(this.addressListIndex>0){
+                this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }
             this.chosed_list = this.chosed_man_state
             this.peerArr = this.peer_man_state
 		    this.$forceUpdate();
@@ -443,8 +489,6 @@ export default {
                         that.textNum = data.tripReason.length;
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.approver_list = data.auditers;
-                        that.approver_man(that.approver_list);
 
                         for(let i =0;i<data.tripList.length;i++){
                             that.datas[i] = {

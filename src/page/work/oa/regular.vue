@@ -105,12 +105,18 @@
             >
             </Accessory>
 
-            <ApproMan 
+            <!-- <ApproMan 
               :approver_list="allApprovers"
               v-on:address="go_address"
               v-on:del_poeple="del_poeple"
               hintType=9
               :isMore=true
+            ></ApproMan> -->
+            <ApproMan 
+              :approver_list="allApprovers"
+              v-on:address="go_address"
+              v-on:del_poeple="del_poeple"
+              hintType=9
             ></ApproMan>
             
             <!-- <ApproverMan 
@@ -129,15 +135,16 @@
 
             <CopeMan 
             :has_journal="!showCopy"
-                :showAdd="showCopy"
                 color="#609df6"
                 :data_list=chosed_list
                 v-on:remove_item="remove_item"
                 :special_class='1'
                 :types = '2'
                 :isGroup = true
+                :showAdd="showCopy"
             ></CopeMan>
         </div>
+
         <WorkButton
             v-if="!has_journal"
             v-on:left_click="save_btn"
@@ -185,8 +192,7 @@ let save_leave = (index,text,that) =>{
 	    that.$toast('学历不能为空')
     }else if(that.education.length>10){
 	    that.$toast('学历不能超过10个字符')
-    }
-    else if(that.beginTime == '请选择试用开始时间'){
+    }else if(that.beginTime == '请选择试用开始时间'){
         that.$toast('请选择试用开始时间')
     }else if(that.endTime == '请选择试用结束时间'){
         that.$toast('请选择试用结束时间')
@@ -209,13 +215,13 @@ let save_leave = (index,text,that) =>{
     }else{
        
 
-        let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
+        let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
-        fileObj = that.Util.fileFo(that.accessory)
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
+        fileObj = that.Util.fileFo(that.accessory)
         
 
         that.axios({
@@ -225,13 +231,6 @@ let save_leave = (index,text,that) =>{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
                 data:{
-
-                    // beginTime: '2020-1-13',  
-                    // endTime: '2020-1-22',  
-                    // birthday:'1998-10-8',
-                    // graduationDate:'2005-10-8',
-                    // hireDate:'2020-3-16',
-
 
                     Id :that.id, // id
                     regularTitle:that.regularTitle,//申请主题
@@ -290,6 +289,8 @@ let save_leave = (index,text,that) =>{
                                     
                                 },500)
                             }
+                            that.change_man([])
+            that.approver_man([])
                             localStorage.removeItem('regular')
                         }
                  })
@@ -331,13 +332,13 @@ export default {
                 isDraftFlag : 0, //判断是不是草稿
                 isShow:false,
                 textNum: 0,
-                addressListIndex:1,
                 addressListIndex:-1,
                 showCopy:0,
                 userInfo:{},
                 allApprovers:[],
                 applyLinkIds:'',
                 linkAuditNum:'',
+                
             }
         },
         components: {
@@ -368,7 +369,8 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
              let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,showGroup,}})
+             let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -512,7 +514,6 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
-                // console.log('员工userInfo',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -525,7 +526,10 @@ export default {
                 this.approver_man(this.$data.approver_list)
                 this.change_man(this.$data.chosed_list)
             }
+
+
             this.oldData = JSON.parse(JSON.stringify(this.$data))
+            
             eventBus.$on('leaveType', res =>{
             if(res.name=='') return;
                 this.sex = res.index;
@@ -534,8 +538,7 @@ export default {
 
              this.axios.get('/process/apply/enter?req=15').then((res)=>{
                 let data = res.data.b;
-     
-                this.allApprovers = data.links;
+                this.allApprovers = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
@@ -579,7 +582,6 @@ export default {
                     }
                 }).then(function(res){
                    let data = res.data.b;
-                        console.log('data',data)
                        if(!that.$route.query.resubmit){
                                 that.id = data.regularApplyId;
                        }

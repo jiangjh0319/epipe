@@ -156,15 +156,14 @@ let save_leave = (index,text,that) =>{
     }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
-         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
+        let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
-
         fileObj = that.Util.fileFo(that.accessory)
-        // https://blog.csdn.net/xiaobao5214/article/details/68923023/
+
         that.axios({
                 method:"post",
                 url:"/work/pay/save",
@@ -190,7 +189,6 @@ let save_leave = (index,text,that) =>{
                     auditCompanyIds:params.companyIdsStr,
                     applyLinkIds:that.applyLinkIds,
                     linkAuditNum:params.numStr,
-                    receiverCompanyIds,
                     draftFlag : index, //草稿还是发送
                     },
                     transformRequest: [function (data) {
@@ -222,6 +220,8 @@ let save_leave = (index,text,that) =>{
                         
                     },500)
                 }
+                that.change_man([])
+            that.approver_man([])
                 localStorage.removeItem('payApply')
             }
       })
@@ -242,19 +242,18 @@ export default {
         data(){
             return{
                 id:'',
-                payTitle : 'fffff', // 标题
-                departmentName : 'fffff',//用印部门
-                payAmount : '100', //付款金额
-                // payDate:'请选择付款日期', //付款日期
-                payDate:'2019-12-03', //付款日期
-                userName : 'fsdf',//用印承办人
-                receiverName:'发的发顺丰',//收款人
-                bankAcount:'sfdsfd', //银行账户
-                bankName:'发的所发生的飞飞',//开户行
-                payReason : 'fafdf',//
+                payTitle : '', // 标题
+                departmentName : '',//用印部门
+                payAmount : '', //付款金额
+                payDate:'请选择付款日期', //付款日期
+                // payDate:'2019-12-03', //付款日期
+                userName : '',//用印承办人
+                receiverName:'',//收款人
+                bankAcount:'', //银行账户
+                bankName:'',//开户行
+                payReason : '',//
                 chosed_list : [], //抄送人
                 approver_list : [], //审批人
-                allApprovers:[],
                 accessory : [],
                 isDraftFlag : 0, //判断是不是草稿
                 textNum : 0,
@@ -263,10 +262,9 @@ export default {
                 isShow:false,
                 addressListIndex:-1,
                 showCopy:0,
-                showGroup:false,
                 applyLinkIds:'',
+                allApprovers:[],
                 linkAuditNum:'',
-                
             }
         },
         components: {
@@ -297,7 +295,8 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
             let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:1,showGroup,}})
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -405,6 +404,7 @@ export default {
             }
             value = value/1024/1024
             return value.toFixed(2)+'mb';
+            
           }  
         },
         activated(){
@@ -422,12 +422,18 @@ export default {
                 this.approver_man(this.$data.approver_list)
                 this.change_man(this.$data.chosed_list)
             }
+
             this.oldData = JSON.parse(JSON.stringify(this.$data))
 
-             eventBus.$on('leaveType', res =>{
+            eventBus.$on('leaveType', res =>{
                 if(res.name=='') return;
                 this.payType = res.index;
                 this.payName = res.name;
+            })
+            eventBus.$on('approver', res =>{
+                this.allApprovers[res.approverIndex].isSelect = false;
+                this.allApprovers[res.approverIndex].index = res.index;
+                this.$set(this.allApprovers[res.approverIndex].auditers,0,this.allApprovers[res.approverIndex].approvealList[res.index])
             })
          },
         mounted(){
@@ -446,7 +452,7 @@ export default {
             this.axios.get('/process/apply/enter?req=7').then((res)=>{
                 let data = res.data.b;
 
-                this.allApprovers = data.links;
+                this.allApprovers = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
@@ -470,8 +476,8 @@ export default {
                         }
                     }).then(function(res){ 
                      let data = res.data.b;
-                       that.id = data.payApplyId;
-                       that.isDraftFlag = 1;
+                        that.id = data.payApplyId;
+                        that.isDraftFlag = 1;
                         that.accessoryFor(data)
                         that.payTitle = data.payTitle;
                         that.payAmount = data.payAmount;
@@ -485,9 +491,6 @@ export default {
                         that.textNum = data.payReason.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.allApprovers = data.links;
-                        // that.approver_list = data.auditers;
-                        // that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return
@@ -495,6 +498,7 @@ export default {
         },
         beforeDestroy() {
             eventBus.$off('leaveType');
+            eventBus.$off('approver');
         },
         computed: mapState(["chosed_man_state","approver_man_state"])
         

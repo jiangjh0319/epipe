@@ -189,7 +189,7 @@ let save_leave = (index,text,that) =>{
       
         let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
         fileObj = that.Util.fileFo(that.accessory)
 
@@ -215,9 +215,6 @@ let save_leave = (index,text,that) =>{
                     hireDate:that.hireDate,//入职时间
                     dimissionDate:that.dimissionDate,//离职日期
                     contractEndDate:that.contractEndDate,//合同终止日期
-                    // hireDate:'2020-1-13',//入职时间
-                    // dimissionDate:'2020-2-22',//离职日期
-                    // contractEndDate:'2020-8-9',//合同终止日期
                     receiverIds, //抄送人
                     receiverCompanyIds,
                     urls : fileObj.urlStr, //附件
@@ -263,6 +260,8 @@ let save_leave = (index,text,that) =>{
                         
                     },500)
                 }
+                that.change_man([])
+            that.approver_man([])
                 localStorage.removeItem('dimission')
             }
       })
@@ -311,6 +310,8 @@ export default {
                 userInfo:{},
                 applyLinkIds:'',
                 linkAuditNum:'',
+                allApprovers:[],
+
             }
         },
         components: {
@@ -341,7 +342,8 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
              let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,showGroup,}})
+              let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -498,7 +500,6 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }else{
                 this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
-                console.log('userInfo',this.userInfo)
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -526,7 +527,7 @@ export default {
 
             this.axios.get('/process/apply/enter?req=8').then((res)=>{
                 let data = res.data.b;
-                this.allApprovers = data.links;
+                this.allApprovers = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;

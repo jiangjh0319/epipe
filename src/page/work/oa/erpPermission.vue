@@ -131,16 +131,12 @@ let save_leave = (index,text,that) =>{
     }else{
          let auditUserIds = '',receiverIds = '',auditCompanyIds="",receiverCompanyIds="",fileObj = {},params={}
 
-        receiverIds = that.Util.getIds(that.chosed_list,'receiverId')
+        receiverIds = that.Util.getIds(that.chosed_list,'userId')
         receiverCompanyIds = that.Util.getIds(that.chosed_list,'companyId')
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
-        // auditUserIds = that.Util.getIds(that.approver_list,'auditUserId')
-        // auditCompanyIds = that.Util.getIds(that.approver_list,'companyId')
-
         fileObj = that.Util.fileFo(that.accessory)
-        // let contDesc = that.applyReason.replace(/\n|\r\n/g,"<br>")
-        // https://blog.csdn.net/xiaobao5214/article/details/68923023/
+
         that.axios({
                 method:"post",
                 url:"/move/erpprimove/save",
@@ -160,7 +156,6 @@ let save_leave = (index,text,that) =>{
                     fileNames: fileObj.fileNameStr, 
                     fileSizes: fileObj.fileSizeStr,
                     receiverIds, //抄送人
-                    receiverCompanyIds,
                     auditUserIds:params.userIdsStr, //审批人
                     auditCompanyIds:params.companyIdsStr,
                     applyLinkIds:that.applyLinkIds,
@@ -196,6 +191,8 @@ let save_leave = (index,text,that) =>{
                         
                     },500)
                 }
+                that.change_man([])
+            that.approver_man([])
                 localStorage.removeItem('erpPermission')
             }
       })
@@ -226,16 +223,15 @@ export default {
                 wantPriName:'请选择',
                 chosed_list : [], //抄送人
                 approver_list : [], //审批人
-                allApprovers:[],
                 accessory : [],
                 isDraftFlag : 0, //判断是不是草稿
                 textNum : 0,
                 isShow:false,
                 addressListIndex:-1,
+                linkAuditNum:'',
                 showCopy:0,
                 applyLinkIds:'',
-                linkAuditNum:'',
-                
+                allApprovers:[],
             }
         },
         components: {
@@ -278,7 +274,8 @@ export default {
             this.approver_list =  this.allApprovers[index].auditers;
             this.approver_man(this.approver_list)
             let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:1,showGroup,}})
+            let flag = this.allApprovers[index].remarks=='0'?'1':null;
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -417,8 +414,7 @@ export default {
 
             this.axios.get('/process/apply/enter?req=22').then((res)=>{
                 let data = res.data.b;
-
-                this.allApprovers = data.links;
+                this.allApprovers = this.Util.approverDataInit(data.links);
                  this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
@@ -453,7 +449,6 @@ export default {
                         that.textNum = data.applyRason.length
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list);
-                        that.allApprovers = data.links;
                         // that.approver_list = data.auditers;
                         // that.approver_man(that.approver_list);
                         that.oldData = JSON.parse(JSON.stringify(that.$data))

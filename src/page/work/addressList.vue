@@ -204,6 +204,7 @@
 </style>
 <template>
   <section>
+
     <div v-show="!is_search">
       <TopHead mark="mark" v-on:history_back="history_back_click" :bgcolor="bgcolor" title="选择联系人" :show='states'></TopHead>
       <div :style="states=='pro'?'':'margin-top: 0.44rem'" @click="is_search=!is_search" class="im_top_div_2">
@@ -218,6 +219,23 @@
       <div class="im_div">
         <ul class="im_div2">
           <div v-for="(item,index) in datalist" :key="index">
+              <li @click="set_open(item)">
+                <span>{{item.name}}</span>
+                <div style="padding-right: 0.15rem;">
+                  <svg v-bind:class="{top_ul_yuan22:item.open}" style="width: 0.15rem;height: 0.15rem" class="icon"
+                      aria-hidden="false">
+                    <use xlink:href="#icon-back"></use>
+                  </svg>
+                </div>
+              </li>
+              <AddressList
+                v-show="item.open"
+                :list="item.offices"
+                v-on:pitchOn = "pitchOn"
+              >
+              </AddressList>
+          </div>
+          <!-- <div v-for="(item,index) in datalist" :key="index">
             <li @click="open_item(index)">
               <span>{{item.name}}</span>
               <div style="padding-right: 0.15rem;">
@@ -251,8 +269,8 @@
                 </div>
             </div>
               
-          </div>
-          <div v-if="item.offices==0" v-for="(item,index) in datalist.offices">
+          </div> -->
+          <!-- <div v-if="item.offices==0" v-for="(item,index) in datalist.offices">
             <li @click="open_item(index)">
               <span>{{item.name}}&nbsp （{{item.personNO}}）</span>
               <div style="padding-right: 0.15rem;">
@@ -273,7 +291,7 @@
               <img v-show="!p.profileImg" src="../../assets/tou.png"/>
               <div>{{p.name}}</div>
             </div>
-          </div>
+          </div> -->
         </ul>
         
       </div>
@@ -333,6 +351,8 @@
 <script>
   import {mapState, mapMutations} from 'vuex';
   import TopHead  from '../../components/topheader.vue'
+  import AddressList  from '../../components/worknews/addressList.vue'
+
   export default {
     data () {
       return {
@@ -347,21 +367,72 @@
         peArrIndex:0,
         peerData:[],//同行人员
         old_peerData:[],
+        chose_data:[],
+
       }
     },
     components: {
-      TopHead
+      TopHead,
+      AddressList
     },
     methods: {
         ...mapMutations([
         'peerData_man',
       ]),
-      open_item(index){  //点开分组
-        this.datalist[index].open = !this.datalist[index].open
+      dataInit(data){
+        data.forEach(item => {
+            item.open = false;
+            if(item.subOffice.length){
+                this.dataInit(item.subOffice)
+            }
+
+            if(item.staff.length){
+                let arr = item.staff
+                arr.forEach(el=>{
+                  el.mark_chose = false
+                })
+            }
+        })
       },
-      open_child(index,num){
-        //   hasOwnProperty
-            this.datalist[index].offices[num].open = !this.datalist[index].offices[num].open 
+      set_open(item){
+          item.open = !item.open;
+      },
+      chose_people(data,id,val){
+         for(let i=0;i<data.length;i++){
+            if(data[i].subOffice.length){
+                this.chose_people(data[i].subOffice,id,val)
+            }
+            if(data[i].staff.length){
+                let arr = data[i].staff
+                for(let j=0;j<arr.length;j++){
+                  if(arr[j].userId==id){
+                    arr[j].mark_chose = val;
+                    return
+                  }
+                }
+            }
+         }
+      },
+      pitchOn(item){
+          item.mark_chose = !item.mark_chose
+
+          if(item.mark_chose){
+            this.chose_data.push(item)
+          }else{
+            for(let i=0;i<this.chose_data.length;i++){
+              if(this.chose_data[i].userId==item.userId){
+                this.chose_data.splice(i,1)
+              }
+            }
+          }
+
+          this.peerData = this.chose_data;
+            this.peerData_man({
+              index:this.peArrIndex,
+              array:this.peerData,
+            })
+
+        
       },
       chose_child(index,num,el,c){     
         let array = []
@@ -395,27 +466,17 @@
       },
       reduce(item){ //删除选中人
         let that = this;
-        let array = []
+        for(let i=0;i<this.chose_data.length;i++){
+          if(this.chose_data[i].userId==item.userId){
+            this.chose_data.splice(i,1)
+          }
+        }
 
-        for (let i = 0; i < that.datalist.length; i++) {
-            for (let j = 0; j < that.datalist[i].offices.length; j++) {
-                for (let a = 0; a < that.datalist[i].offices[j].staff.length; a++) {
-                    if (this.datalist[i].offices[j].staff[a].userId != item.userId) {
-                        if (this.datalist[i].offices[j].staff[a].mark_chose == true) {
-                          if(that.type_num){
-                              this.datalist[i].offices[j].staff[a].receiverId = this.datalist[i].offices[j].staff[a].userId;
-                          }else{
-                              this.datalist[i].offices[j].staff[a].auditUserId = this.datalist[i].offices[j].staff[a].userId;
-                          }
-                            array = array.concat(this.datalist[i].offices[j].staff[a])
-                        }
-                    } else {
-                        this.datalist[i].offices[j].staff[a].mark_chose = false
-                    }
-                }
-            }
-      }
-          this.peerData = array;
+        this.datalist.forEach(el=>{
+              that.chose_people(el.offices,item.userId,false)
+        })
+
+       this.peerData = this.chose_data;
           this.peerData_man({
               index:this.peArrIndex,
               array:this.peerData,
@@ -443,28 +504,24 @@
               array:this.old_peerData,
             })
 
-          that.seach_value = ""
-
-          for (let i = 0; i < this.datalist.length; i++) {
-              for (let j = 0; j < this.datalist[i].offices.length; j++) {
-                  for (let a = 0; a < this.datalist[i].offices[j].staff.length; a++) {
-                      if (item.userId == that.datalist[i].offices[j].staff[a].userId) {
-                        that.datalist[i].offices[j].staff[a].mark_chose = true
-                      }
-                  }
-              }
-          }
-          setTimeout(function () { //300毫秒后去掉搜索界面
-            that.is_search = false
-            that.seach_list_man = []
-          }, 300)
+          this.datalist.forEach(el=>{
+            this.chose_people(el.offices,item.userId,true)
+          })
 
           if(this.$route.query.back){
               window.history.back(-1)
             }
         }else{
           that.seach_list_man[index].mark_chose = false;
+          that.reduce(item)
+
         }
+
+        setTimeout(function () { //300毫秒后去掉搜索界面
+            that.is_search = false
+            that.seach_value = ""
+            that.seach_list_man = []
+          }, 300)
       },
       hide_seach: function () {
         this.seach_value = ""
@@ -504,23 +561,24 @@
         params:{
           showGroup : this.$route.query.showGroup,
         }
-      }).then(function (data) {
+      }).then( (data)=>{
         if(data.data.h.code == 200) {
           let datas = data.data.b.data
           let arrs = that.peerData;
-        for (let i = 0; i < datas.length; i++) {
-            datas[i].open = false;
-            for (let j = 0; j < datas[i].offices.length; j++) {
-                    datas[i].offices[j].open = false;
-                    for (let a = 0; a < datas[i].offices[j].staff.length; a++) {
-                        for (let b = 0; b <arrs.length; b++) {
-                            if (arrs[b].userId == datas[i].offices[j].staff[a].userId) {
-                                datas[i].offices[j].staff[a].mark_chose = true
-                            }
-                        }
-                    }
-            }
-        }
+
+          this.chose_data = arrs;
+
+          // this.dataInit(datas,arrs)
+
+          datas.forEach(item=>{
+            item.open = false;
+            that.dataInit(item.offices,arrs)
+
+            arrs.forEach(el=>{
+              that.chose_people(item.offices,el.userId,true)
+            })
+          })
+
           that.datalist = datas
         }
       });

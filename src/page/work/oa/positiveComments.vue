@@ -81,7 +81,7 @@
                 this.hrcomment = res.data.b.hrcomment;
                 this.superleadname = res.data.b.superleadname;
                 this.superleadcomment = res.data.b.superleadcomment;
-                this.processType = res.data.b.processType;
+                this.processType = res.data.b.processDetailType;
                 this.applyTime = res.data.b.applyTime.slice(0,10);
                }else{
                    this.$toast(res.data.h.msg)
