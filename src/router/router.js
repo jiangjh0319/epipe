@@ -206,6 +206,7 @@ const AddGroup = r => require.ensure([], () => r(require('@/page/work/addgroup.v
 
 const SupplierAllBack = r => require.ensure([], () => r(require('@/page/work/supplierAllBack.vue')), 'group-work')
 
+const OaMenu = r =>  require.ensure([], () => r(require('@/page/work/oaMenu.vue')), 'group-work')
 
 
 
@@ -740,6 +741,10 @@ export default new Router({
     {
       path:'/workReport', //工作汇报
       component: WorkReport
+    },
+    {
+      path:'/oaMenu', //自定义表单
+      component: OaMenu
     },
     {
       path:'/trip', //出差

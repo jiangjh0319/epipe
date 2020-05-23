@@ -172,10 +172,21 @@
                         <span>审批记录</span>
                         <span class="num redDot" v-if="workRed"></span>
                     </li>
+                    <li  @click="to_link('oaMenu')">
+                         <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                            <use xlink:href="#icon-yiban"></use>
+                        </svg>
+                        <span>审批</span>
+                        <span class="num redDot" v-if="workRed"></span>
+                    </li>
+                    <li  @click="to_link('attendanceStatistics')">
+                         <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                            <use xlink:href="#icon-yiban"></use>
+                        </svg>
+                        <span>考勤统计</span>
+                        <span class="num redDot" v-if="workRed"></span>
+                    </li>
                     <li  @click="to_link('cloud_file')">
-                         <!-- <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
-                            <use xlink:href="#icon-gongzuohuibao"></use>
-                        </svg> -->
                         <img src="../../assets/file.png"/>
                         <span>我的云盘</span>
                     </li>
@@ -395,6 +406,10 @@
             },
             to_link(url){
                  window.location.href = "epipe://?&mark="+url;
+            },
+            open_menu(){
+                 window.location.href = "epipe://?&mark=oaMenu";
+
             },
             total(){
                  window.location.href = "epipe://?&mark=total";

@@ -49,6 +49,10 @@ Vue.use(Toast);
 Vue.use(Alert);
 Vue.use(wcSwiper);
 
+
+import Vant from 'vant'
+import 'vant/lib/index.css';
+Vue.use(Vant)
 // import Vconsole from 'vconsole'
 // let vConsole = new Vconsole()
 // Vue.use(vConsole)

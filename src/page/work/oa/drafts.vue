@@ -42,6 +42,40 @@
                     </div>
             </div>
 
+            <div v-if="item.typecode == 'MY_'" @click="go_Apply(item,'all_oa')" :key="index"  class="affairs_item myaffairs_shadow">
+                <div class="item_infor">
+                    <div class="select" v-if="redactState">
+                             <svg v-if="item.isDel" class="icon" style="font-size:0.16rem;color:#f80" aria-hidden="false">
+                                <use xlink:href="#icon-xuanzhong2"></use>
+                            </svg>
+                            <svg v-else  class="icon" style="font-size:0.16rem;" aria-hidden="false">
+                                <use xlink:href="#icon-meiyouxuanzhong"></use>
+                            </svg>
+                    </div>
+                    <div class="affirs_child">
+                        <div class="affairs_title">
+                            <img :src="item.profileImg" @click="go_user(item.userId)"/>
+                            <h2 >我的{{item.applyName}}</h2>
+                            <time >{{item.applyTime | timeFormat}}</time>
+                        </div>
+                        <div class="affairs_infor">
+                            <div class="request_infor lineHeight">
+                                <span>提交人  :</span>
+                                <p class="line1">{{item.userName}}</p>
+                            </div>
+                            <div class="request_infor lineHeight">
+                                <span>部门&emsp; :</span>
+                                <p class="line1">{{item.officeName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div  class="skip" tag="div">
+                    查看详情
+                </div>
+            </div>
+
             <div v-if="item.typecode == 2" @click="go_Apply(item,'letterOfRequest')" :key="index"  class="affairs_item myaffairs_shadow">
                 <div class="item_infor">
                     <div class="select" v-if="redactState">
@@ -1094,7 +1128,12 @@
             go_Apply(item,typeName){
                 this.delFor(item)
                 if(this.redactState) return
-                window.location.href = "epipe://?&mark="+typeName+"&_id="+item.applyId;
+
+                if(typeName=='all_oa'){
+                    window.location.href = "epipe://?&mark=oaDetails&_id="+item.applyId;
+                }else{
+                    window.location.href = "epipe://?&mark="+typeName+"&_id="+item.applyId;
+                }
             },
 
             redact(){ //编辑

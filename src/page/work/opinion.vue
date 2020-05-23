@@ -116,7 +116,12 @@ export default {
                                 that.$toast('已拒绝该审批!')                            
                             }
                             setTimeout(()=>{
-                                window.location.href = "epipe://?&mark="+that.$route.query.typeName+"Details&_id="+that.id+'&data='+JSON.stringify({text:1});
+                                let applyType = that.$route.query.applyType+''
+                                if(applyType.indexOf('MY_')>-1){
+                                    window.location.href = "epipe://?&mark=oaDetails&_id="+that.id+'&data='+JSON.stringify({text:1});
+                                }else{
+                                    window.location.href = "epipe://?&mark="+that.$route.query.typeName+"Details&_id="+that.id+'&data='+JSON.stringify({text:1});
+                                }
                             },300) 
 
                         }else{
