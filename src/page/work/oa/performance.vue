@@ -2,79 +2,62 @@
     <section>
         <TopHead
         mark = 'mark'
-        bgcolor = '#f80'
-        title="付款" 
+        bgcolor = '#609ef7'
+        title="绩效考核" 
         v-on:history_back="history_back_click"
          ></TopHead>
         <div class="content">
             <div class="styles input_group">
-                <div class="bor_bottom">
-                    <span class="title">文件标题</span>
-                    <input placeholder="请输入标题"  v-model="payTitle" />
+                <div class="bor_bottom choose" >
+                    <span class="title">绩效周期</span>
+                    <input v-model="date" disabled placeholder="请输入绩效周期"/>
                 </div>
-                  <div>
-                    <span class="title">申请人</span>
-                    <input placeholder="请输入申请人"  v-model="userName" disabled/>
+                <div class="bor_bottom choose" >
+                    <span class="title">考核人数</span>
+                    <input v-model="num" disabled placeholder="请输入考核人数"/>
                 </div>
-                <div class="bor_bottom">
-                    <span class="title">所属部门</span>
-                    <input placeholder="请输入所属部门"  v-model="departmentName" disabled/>
+                <div class="bor_bottom choose performance">
+                    <div class="performance_title">
+                        考核员工
+                        <span  @click="to_more_members">
+                             
+                                {{num}}人<svg style="width: 0.12rem;height: 0.12rem;" class="icon" aria-hidden="false">
+                                    <use xlink:href="#icon-right"></use>
+                                </svg>
+                            </span>
+                    </div>
+                    <div class="performanceList">
+                        <div v-for="(el,ind) in peopleData" :key="ind" class="performanceList_item" @click="to_people_info(ind)"> 
+                            <img  :src="el.photo"/>
+                            <span>{{el.name}}</span>
+                        </div>
+                    </div>
+
+                    <div v-if="peopleData.length>15" style="text-align:center;line-height:0.3rem;margin-bottom:0.1rem;" @click="to_more_members">查看全部成员</div>
                 </div>
+
             </div>
+
             <div class="styles input_group">
+
                 <div class="bor_bottom">
-                    <span class="title">付款金额</span>
-                    <input style="color:#666" v-model="payAmount" placeholder="请输入付款金额"/>
+                    <p class="title">备注</p>
+                    <textarea v-model.trim="reason" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入备注,限定1000字">
+
+                    </textarea>
+                    <div class="record_box">
+                            <span>{{reason.length}}/1000</span>
+                    </div>
                 </div>
-                <router-link :to="{ path:'/option', query: {indexs:payType,type:'payApply',color:'#f80'}}"  class="bor_bottom choose" tag="div">
-                    <span class="title">付款方式</span>
-                    <p>
-                        <span class="nullValue">{{payName}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </router-link>
-                 <div class="bor_bottom choose" @click="getTime">
-                     <span class="title">付款日期</span>
-                    <p>
-                        <span class="nullValue">{{payDate}}</span>
-                        <svg class="icon icon-back" aria-hidden="false">
-                                <use xlink:href="#icon-right"></use>
-                        </svg>
-                    </p>
-                </div>
-                 <div class="bor_bottom">
-                    <span class="title">收款人全称</span>
-                    <input style="color:#666" v-model="receiverName" placeholder="请输入收款人全称"/>
-                </div>
-                 <div class="bor_bottom">
-                    <span class="title">银行账户</span>
-                    <input style="color:#666" v-model="bankAcount" placeholder="请输入银行账户"/>
-                </div>
-                 <div class="bor_bottom">
-                    <span class="title">开户行</span>
-                    <input style="color:#666" v-model="bankName" placeholder="请输入开户行"/>
-                </div>
-           
             </div>
 
-            <div class="styles" style="padding:0 0.15rem;">
-                <p class="title">付款事由</p>
-                <textarea v-model.trim="payReason" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入付款事由,限定1000字">
-
-                </textarea>
-                <div class="record_box">
-                        <span>{{textNum}}/1000</span>
-                </div>
-            </div>
 
             <Accessory
                 :accessory ='accessory'
             >
             </Accessory>
             
-            <ApproMan 
+             <ApproMan 
               :approver_list="allApprovers"
               v-on:address="go_address"
               v-on:del_poeple="del_poeple"
@@ -115,45 +98,9 @@
 </template>
 
 <script>
-let reg = /^[\u4e00-\u9fa5]+$/;
-var regs =/^[1-9]+\d*$/;
-let rule = /^[A-Za-z0-9]+$/;
+
 let save_leave = (index,text,that) =>{
-    if(that.payTitle== ''){
-        that.$toast('文件标题不能为空')
-    }else if(that.payTitle.length>100 ||that.payTitle.length<2){
-        that.$toast('文件标题不能低于2个或超过100个字符')
-    }else if(that.payType == -1){
-        that.$toast('请选择付款方式')
-    }else if(that.payDate == '请选择付款日期'){
-        that.$toast('请选择付款日期')
-    }else if(that.payAmount == ''){
-        that.$toast('请输入付款金额')
-    }else if(isNaN(that.payAmount)){
-        that.$toast('付款金额为数字')
-    }else if(that.payAmount.length>8){
-        that.$toast('付款金额不能大于8位数')
-    }else if(that.receiverName == ''){
-        that.$toast('请输入收款人姓名')
-    }else if(that.receiverName.length<2||that.receiverName>30){
-        that.$toast('收款人不能低于2个或超过30个字符')
-    }else if(that.bankName == ''){
-        that.$toast('请输入开户行')
-    }else if(!reg.test(that.bankName)){
-        that.$toast('开户行必须为中文')
-    }else if(that.bankName.length<4||that.bankName.length>30){
-        that.$toast('开户行不能少于4个或超过30个字符')
-    }else if(that.bankAcount == ''){
-        that.$toast('请输入银行账户')
-    }else if(!rule.test(that.bankAcount)){
-        that.$toast('银行账户必须为数字字母')
-    }else if(that.bankAcount.length<2||that.bankAcount.length>20){
-        that.$toast('银行账户不能少于2个或超过20个字符')
-    }else if(that.payReason == ''){
-        that.$toast('付款事由不能为空')
-    }else if(that.payReason.length>1000||that.payReason.length<6){
-        that.$toast('付款事由不能少于6个或超过1000字符')
-    }else if(that.Util.checkApprovers(that.allApprovers)){
+    if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
         let receiverIds = '',receiverCompanyIds="",fileObj = {},params={}
@@ -166,20 +113,16 @@ let save_leave = (index,text,that) =>{
 
         that.axios({
                 method:"post",
-                url:"/work/pay/save",
+                url:"/work/performanceApply/save1",
                 headers:{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
                 data:{
                     Id :that.id, // id
-                    payTitle:that.payTitle,//标题
-                    payReason:that.payReason, //付款说明
-                    payType : that.payType,//付款方式
-                    payAmount:that.payAmount, //付款金额
-                    bankName:that.bankName,
-                    payDate:that.payDate,//付款时间
-                    bankAcount:that.bankAcount,
-                    receiverName:that.receiverName, //收款人
+                    performanceCycle:that.date, 
+                    assessNum:that.num, 
+                    remarks:that.reason, 
+                    sequenceId:that.sequenceId,
                     urls : fileObj.urlStr, //附件
                     fileNames: fileObj.fileNameStr, 
                     fileSizes: fileObj.fileSizeStr,
@@ -206,7 +149,7 @@ let save_leave = (index,text,that) =>{
 
                     that.$toast('已保存至草稿箱!')
                     setTimeout(()=>{
-                        if(that.$route.query.payApplyId){
+                        if(that.$route.query.performanceId){
                              window.location.href = "epipe://?&mark=goWork"
                         }else{
                             window.location.href = "epipe://?&mark=history_back" 
@@ -216,13 +159,13 @@ let save_leave = (index,text,that) =>{
                     that.$toast('提交成功！')
                     window.location.href = "epipe://?&mark=workUpdate";
                     setTimeout(()=>{
-                        window.location.href = "epipe://?&mark=submitPayApply&_id="+res.data.b.payApplyId;
+                        window.location.href = "epipe://?&mark=submitPerformance&_id="+res.data.b.performanceApplyId;
                         
                     },500)
                 }
                 that.change_man([])
             that.approver_man([])
-                localStorage.removeItem('payApply')
+                localStorage.removeItem('performance')
             }
       })
     }
@@ -242,29 +185,23 @@ export default {
         data(){
             return{
                 id:'',
-                payTitle : '', // 标题
-                departmentName : '',//用印部门
-                payAmount : '', //付款金额
-                payDate:'请选择付款日期', //付款日期
-                // payDate:'2019-12-03', //付款日期
-                userName : '',//用印承办人
-                receiverName:'',//收款人
-                bankAcount:'', //银行账户
-                bankName:'',//开户行
-                payReason : '',//
+                sequenceId:'',
+                data:'',
+                num:'',
+                reason:'',
                 chosed_list : [], //抄送人
                 approver_list : [], //审批人
                 accessory : [],
                 isDraftFlag : 0, //判断是不是草稿
                 textNum : 0,
-                payType:-1,
-                payName:'请选择付款方式',
                 isShow:false,
                 addressListIndex:-1,
                 showCopy:0,
                 applyLinkIds:'',
                 allApprovers:[],
                 linkAuditNum:'',
+                peopleData:[],
+                oldData:[],
             }
         },
         components: {
@@ -296,7 +233,7 @@ export default {
             this.approver_man(this.approver_list)
             let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
             let flag = this.allApprovers[index].remarks=='0'?'1':null;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609ef7',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -304,16 +241,16 @@ export default {
         },
         lf_click(){
             this.isShow=false;
-            if(this.$route.query.payApplyId&&!this.$route.query.resubmit){
+            if(this.$route.query.performanceId&&!this.$route.query.resubmit){
                  save_leave(1, "存入草稿成功", this)
             }else{
-                localStorage.setItem('payApply',JSON.stringify(this.$data))
+                localStorage.setItem('performance',JSON.stringify(this.$data))
             }
             window.location.href = "epipe://?&mark=history_back"
         },
         rg_click(){
             this.isShow=false;
-            localStorage.removeItem('payApply')
+            localStorage.removeItem('performance')
             window.location.href = "epipe://?&mark=history_back"
         },
         addAccessory:function(){
@@ -379,6 +316,13 @@ export default {
                     that.payDate = flag?str[0]+'-'+str[1]+'-'+str[2]+' '+str[3]+':'+str[4]:str; 
                 }
             },
+            to_more_members(){
+                this.$router.push({path:'/performanceList',query:{data:JSON.stringify(this.peopleData),id:this.$route.query.performanceId}})
+            },
+            to_people_info(index){
+                this.$router.push({path:'/performanceInfo',query:{index,id:this.$route.query.performanceId}})
+
+            },
              tiemF(timeStr){ //传入原生的时间格式化
                 timeStr+=':00';
                 timeStr = timeStr.split(/[- : \/]/);
@@ -386,14 +330,6 @@ export default {
              },
         },
          watch:{
-            payReason : function(){
-                if(this.payReason.length>1000){
-                    this.$toast("最多输入1000字~")
-                    this.payReason = this.payReason.slice(0,1000)
-                    return
-                }
-                this.textNum = this.payReason.length
-            }
         },
         filters:{
           fileSize:function(value){
@@ -411,25 +347,23 @@ export default {
             if(this.addressListIndex>0){
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }
-            this.chosed_list = this.chosed_man_state
+            
+            this.chosed_list = this.chosed_man_state?this.chosed_man_state:[];
+
          },
          created() {
-             if(localStorage.getItem('payApply')){
-                let payApplydata = JSON.parse(localStorage.getItem('payApply'))
-                for(let key in payApplydata){
-                    this.$data[key] = payApplydata[key]
+             if(localStorage.getItem('performance')){
+                let performancedata = JSON.parse(localStorage.getItem('performance'))
+                for(let key in performancedata){
+                    this.$data[key] = performancedata[key]
                 }
                 this.approver_man(this.$data.approver_list)
                 this.change_man(this.$data.chosed_list)
+
             }
 
             this.oldData = JSON.parse(JSON.stringify(this.$data))
 
-            eventBus.$on('leaveType', res =>{
-                if(res.name=='') return;
-                this.payType = res.index;
-                this.payName = res.name;
-            })
             eventBus.$on('approver', res =>{
                 this.allApprovers[res.approverIndex].isSelect = false;
                 this.allApprovers[res.approverIndex].index = res.index;
@@ -449,48 +383,56 @@ export default {
                     that.accessory.push(obj)
                 }
 
-            this.axios.get('/process/apply/enter?req=7').then((res)=>{
+            this.axios.get('/process/apply/enter?req=24').then((res)=>{
                 let data = res.data.b;
 
                 this.allApprovers = this.Util.approverDataInit(data.links);
                 this.linkAuditNum = data.linkAuditNum;
                 this.applyLinkIds = data.applyLinkIds;
                 this.showCopy = data.approvalReceiverFlag=='1'?false:true;
-                if(data.receivers.length>0){
-                        this.chosed_list = data.receivers
+                if(data.receivers&&data.receivers.length>0){
+                        this.chosed_list = data.receivers?data.receivers:[];
                         this.change_man(this.chosed_list);
+
                 }
             })
 
-            this.axios.post('/user/current/userinfo').then(function(res){
+            this.axios.post('/user/current/userinfo').then((res)=>{
                 that.departmentName = res.data.b.officeName
                 that.userName = res.data.b.name
                 that.oldData = JSON.parse(JSON.stringify(that.$data))
             })
 
-            if(this.$route.query.payApplyId){
-                    this.axios.get('/work/pay/info',{
+            if(this.$route.query.performanceId){
+                this.id = this.$route.query.performanceId;
+                    this.axios.get('/work/performanceApply/info',{
                         params:{
                             type:that.$route.query.resubmit,
-                            payApplyId:this.$route.query.payApplyId
+                            performanceId:this.$route.query.performanceId
+                            // performanceId:'c5186d129f1f11ea88fa4ccc6ac12eca',
                         }
-                    }).then(function(res){ 
+                    }).then((res)=>{ 
                      let data = res.data.b;
-                        that.id = data.payApplyId;
                         that.isDraftFlag = 1;
                         that.accessoryFor(data)
-                        that.payTitle = data.payTitle;
-                        that.payAmount = data.payAmount;
-                        that.payType = data.payTypeCode
-                        that.payName = data.payType;
-                        that.receiverName = data.receiverName
-                        that.payReason = data.payReason;
-                        that.payDate = data.payDate;
-                        that.bankAcount = data.bankAcount;
-                        that.bankName=data.bankName;
-                        that.textNum = data.payReason.length
-                        that.chosed_list = data.receivers;
-                        that.change_man(that.chosed_list);
+                        that.date = data.performanceApplyInfoApp.performanceCycle;
+                        that.num = data.performanceApplyInfoApp.assessNum;
+                        that.sequenceId = data.performanceApplyInfoApp.sequenceId;
+                        that.reason = data.performanceApplyInfoApp.performanceReason?data.performanceApplyInfoApp.performanceReason:'';
+                        // this.peopleData = data.performanceApplyHr.result.data;
+                        this.chosed_list = data.performanceApplyInfoApp.receivers?data.performanceApplyInfoApp.receivers:[];
+                        this.change_man(this.chosed_list);
+
+                        let arrs = data.performanceApplyHr.result.data;
+                        arrs.forEach((item,index)=>{
+                            this.peopleData.push({
+                                photo:item.photo,
+                                name:item.employee,
+                                position:item.position,
+                                index,
+                            })
+                        })
+
                         that.oldData = JSON.parse(JSON.stringify(that.$data))
                     })
                     return
@@ -507,6 +449,7 @@ export default {
 
 
 <style lang="stylus" scoped>
+
     .content{
         margin-top 0.59rem;
         margin-bottom 0.3rem;
@@ -528,6 +471,7 @@ export default {
                  outline none;
                  font-size:0.14rem;
                  text-align right;
+                 color:#666;
                  padding-right 0.15rem;
              }
              input::-webkit-input-placeholder{
@@ -557,63 +501,6 @@ export default {
         }
     }
 
-    .accessory{
-
-        li{
-            display:flex;
-            margin-bottom 0.1rem;
-            padding-left 0.15rem;
-         }
-
-        img{
-            width 0.34rem;
-            height 0.34rem;
-            margin-right 0.1rem;
-        }
-
-
-        .accessory-cont{
-            flex 1;
-
-            p{
-                width 2.4rem;
-                font-size 0.14rem;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            }
-
-            span{
-                font-size 0.13rem;
-                color #666
-            }
-        }
-
-        .accessory-delete{
-            width 0.3rem;
-            text-align right;  
-        }
-    }
-
-    .add-btn{
-        display flex;
-        padding-left:0.15rem;
-
-        div{
-            height:0.33rem;
-            display: table;
-            margin-left:0.1rem;
-        }
-
-        p{
-            font-size:0.12rem;
-            color:#999;
-            display: table-cell;  
-            vertical-align: middle; 
-            word-wrap: break-word;
-            word-break: break-all;
-        }
-    }
 
     .input_group>div{
         overflow hidden;
@@ -668,5 +555,55 @@ export default {
     }
 
     
+
+    .performance{
+
+        &_title{
+            line-height: 0.44rem;
+            font-size: 0.15rem;
+            color: #333;
+            font-weight: bold;
+
+            span{
+                float:right;
+                font-size:0.14rem;
+                color:#808080;
+            }
+        }
+
+    }
+
+
+    .performanceList{
+        display:flex;
+        max-height:2rem;
+        overflow:hidden;
+        flex-wrap:wrap;
+       
+       &_item{
+           text-align:center;
+           width:20%;
+           margin-bottom:0.1rem;
+
+           img{
+               width:0.32rem;
+               height:0.32rem;
+               border-radius:50%;
+               display:block;
+               margin 0 auto;
+               margin-bottom:0.05rem;
+           }
+
+           span{
+               display:block;
+               color:#808080;
+               font-size 0.14rem;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+           }
+       }
+    }
+
 
 </style>

@@ -9,7 +9,6 @@
         <div style="height:0.49rem;" >
         </div>
 
-
         <div class="content">
 
             <div class="styles">
@@ -289,7 +288,7 @@
             },
             consent:function(type){//同意、转交
                 let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
-
+            console.log(this.dataInfo.links)
                 if(type==2){
                 auditerIds = this.Util.deliverIds(this.dataInfo.links,'userId')
                 auditCompanyId = this.Util.deliverIds(this.dataInfo.links,'companyId')
@@ -298,10 +297,10 @@
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
                 url = type!=2?'/opinion':'/imchoices';
 
+
                 params={id:this.dataInfo.applyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
                 color:'#0fc37c',applyType:this.dataInfo.applyType,typeName:'MY_',pageType:type,careOf:true,num:1}
-
-              this.$router.push({path:url,query:params})
+                  this.$router.push({path:url,query:params})
 
             },
             urge(){ //催办
@@ -320,7 +319,7 @@
                 })
             },
             approveBack(){ //退回
-                 this.$router.push({path:'/approveBack',query:{id:this.dataInfo.applyId,typeName:'MY_',applyType:this.dataInfo.applyType,color:'#f80'}})
+                 this.$router.push({path:'/approveBack',query:{id:this.dataInfo.applyId,typeName:'MY_',applyType:this.dataInfo.applyType,color:'#0fc37c'}})
             },
             resubmit(){
                 this.$router.replace({path:'/oaForm',query:{applyId:this.dataInfo.applyId,resubmit:1}})

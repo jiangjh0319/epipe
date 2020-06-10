@@ -182,6 +182,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
     export default {
         data() {
             return {
+                applyId:'',
                 formData:{},
                 allApprovers:[],
                 linkAuditNum:'',
@@ -252,7 +253,8 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
             }
 
             if(this.$route.query.applyId){
-                this.axios.get('/process/apply/info?applyId='+this.$route.query.applyId).then(res=>{
+                this.applyId = this.$route.query.applyId
+                this.axios.get('/process/apply/info?applyId='+this.applyId).then(res=>{
                     let data = res.data.b;
                     let newData = []
                     this.getData(data.applyType,1)
@@ -265,6 +267,9 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                              child.endVal = item.secondStringValue?item.secondStringValue:'';
                          }else if(child.ename=='singleBox'||child.ename=='checkbox'||child.ename=='contactPerson'||child.ename=='department'){
                              child.valueCode = item.secondStringValue?item.secondStringValue:'';
+                         }else if(child.ename=='location'){
+                             child.lon = item.lon?item.lon:''
+                             child.lat = item.lat?item.lon:''
                          }
                         child.id = item.componentId
                         newData.push(child)
@@ -280,34 +285,37 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
             ...mapMutations(['change_man','approver_man','peerData_man']),
             getData(id,type){
                 this.axios.get('/process/apply/enter?req='+id).then(res=>{
-                let param = res.data.b
+                    let param = res.data.b
 
-                if(!type){
-                    param.components.forEach(item=>{
-                        if(item.ename=='dateRange'){
-                            item.endVal = ''
-                        }
-                        item.value = ''
-                        item.valueCode = ''
-                    })
-                    this.formData = param;
-                }else{
-                     this.formData.linkAuditNum = param.linkAuditNum;
-                     this.formData.applyLinkIds = param.applyLinkIds;
-                     this.formData.approvalReceiverFlag = param.approvalReceiverFlag;
-                     this.formData.receivers = param.receivers;
-                     this.formData.approvalFormId = id;
-                     this.formData.approvalName =param.approvalName
-                }
-                this.allApprovers = this.Util.approverDataInit(param.links);
-                this.linkAuditNum = this.formData.linkAuditNum;
-                this.applyLinkIds = this.formData.applyLinkIds;
-                this.showCopy = this.formData.approvalReceiverFlag=='1'?false:true;
-                if(this.formData.receivers&&this.formData.receivers.length>0){
-                        this.chosed_list = this.formData.receivers
-                        this.change_man(this.chosed_list);
-                }
-            })
+                    if(!type){
+                        param.components.forEach(item=>{
+                            if(item.ename=='dateRange'){
+                                item.endVal = ''
+                            }else if(item.ename=='location'){
+                                item.lon = ''
+                                item.lat = ''
+                            }
+                            item.value = ''
+                            item.valueCode = ''
+                        })
+                        this.formData = param;
+                    }else{
+                        this.formData.linkAuditNum = param.linkAuditNum;
+                        this.formData.applyLinkIds = param.applyLinkIds;
+                        this.formData.approvalReceiverFlag = param.approvalReceiverFlag;
+                        this.formData.receivers = param.receivers;
+                        this.formData.approvalFormId = id;
+                        this.formData.approvalName =param.approvalName
+                    }
+                    this.allApprovers = this.Util.approverDataInit(param.links);
+                    this.linkAuditNum = this.formData.linkAuditNum;
+                    this.applyLinkIds = this.formData.applyLinkIds;
+                    this.showCopy = this.formData.approvalReceiverFlag=='1'?false:true;
+                    if(this.formData.receivers&&this.formData.receivers.length>0){
+                            this.chosed_list = this.formData.receivers
+                            this.change_man(this.chosed_list);
+                    }
+                })
             },
             onConfirm(value, index) {
                 let item =  this.formData.components[this.choseIndex]
@@ -330,8 +338,8 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                     item.endVal = this.timeF(value,item.dataType)
                 }else if(item.ename=='singleBox'){
                     item.value = value;
-                    item.valueIndex = index+1;
-                    item.valueCode = index+1;
+                    item.valueIndex = index;
+                    item.valueCode = index;
                 }else if(item.ename=='department'){
                     item.value = value
                     item.valueIndex = index
@@ -381,7 +389,6 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                             return false
                         }
                     }
-
                     if(item.ename=='numberInputBox'&&(item.req==1||item.value!='')){
                         if( isNaN(item.value)){
                             this.$toast(item.title+'必须为数字')
@@ -424,7 +431,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 fileObj = this.Util.fileFo(this.accessory)
 
                  params = {
-
+                    id:this.applyId,
                     applyType:this.formData.approvalFormId,
                     applyName:this.formData.approvalName,
                     auditUserIds:approver.userIdsStr, //审批人
@@ -439,6 +446,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                     draftFlag:type,
                 }
 
+
                 this.formData.components.forEach((item,index)=>{
 
                     params['list['+index+'].componentId'] = item.id
@@ -446,9 +454,9 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                     if(item.ename=='singleBox'||item.ename=='checkbox'||item.ename=='contactPerson'||item.ename=='department'){
                         params['list['+index+'].stringValue'] = item.valueCode
                     } else if(item.ename=='location'){
-                        params['list['+index+'].stringValue'] = '测试地点 勿介意'
-                        params['list['+index+'].lat'] = 111.62
-                        params['list['+index+'].lon'] = 123.6
+                        params['list['+index+'].stringValue'] = item.value
+                        params['list['+index+'].lat'] = item.lat
+                        params['list['+index+'].lon'] = item.lon
                     } else if(item.ename=='dateRange'){
                         params['list['+index+'].stringValue'] = item.value
                         params['list['+index+'].secondStringValue'] = item.endVal
@@ -459,6 +467,8 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                         params['list['+index+'].stringValue'] = item.value
                     }
                 })
+
+                console.log(params)
 
                 this.axios({
                 method:"post",
@@ -475,15 +485,27 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                         return ret
                     }],
                 }).then((res)=>{ 
-
                     if(res.data.h.code==200){
-                          this.$toast('提交成功！')
-                        window.location.href = "epipe://?&mark=workUpdate";
-                        setTimeout(()=>{
-                            window.location.href = "epipe://?&mark=oaDetails&_id="+res.data.b.applyId;
-                        },500)
+                        if(type){
+                            this.$toast('已保存至草稿箱!')
+                            setTimeout(()=>{
+                                    if(this.$route.query.applyId){
+                                        window.location.href = "epipe://?&mark=goWork"
+                                    }else{
+                                        window.location.href = "epipe://?&mark=history_back" 
+                                    }
+                            },500)
+                        }else{
+                            this.$toast('提交成功！')
+                            window.location.href = "epipe://?&mark=workUpdate";
+                            setTimeout(()=>{
+                                window.location.href = "epipe://?&mark=oaDetails&_id="+res.data.b.applyId;
+                            },500)
+                        }
+
                     }else{
                         this.$toast(res.data.h.msg)
+
                     }
 
                 })
@@ -578,7 +600,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 this.approver_man(this.approver_list)
                 let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
                 let flag = this.allApprovers[index].remarks=='0'?'1':null;
-                this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+                this.$router.push({path: 'imchoices', query: {bgcolor:'#0fc37c',amount:flag,num:1,showGroup,}})
 
             },
             del_poeple(index,num){//删除审批人

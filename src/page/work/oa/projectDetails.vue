@@ -61,6 +61,10 @@
                     <span>立项时间&emsp; </span>
                     <p>{{dataObj.buildDate}} </p>
                 </div>
+                <div class="infor-box" v-if="dataObj.isFromHr&&dataObj.isFromHr==1">
+                    <span >第二负责人 </span>
+                    <p>{{dataObj.connectSecName}} </p>
+                </div>
                  <div class="infor-box">
                     <span >单位联系人 </span>
                     <p>{{dataObj.connectionName}} </p>

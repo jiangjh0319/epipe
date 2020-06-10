@@ -2,7 +2,7 @@
     <div class="main">
         <div class="input_div">
             <span><a v-if="info.req==1">*</a>{{info.title}}</span>
-            <input  v-model="info.value"  :placeholder="info.tip">
+            <input maxlength="10"  v-model="info.value"  :placeholder="info.tip">
         </div>
     </div>
 </template>

@@ -768,6 +768,29 @@
                         </div>
                 </div>
             </div>
+            <div v-else-if="item.typecode == 25" @click="goDetails(item.applyId,item.fianlStatus,'performance')"   class="affairs_item" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的绩效考核申请</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>考核周期 :</span><p class="line1">{{item.performanceCycle}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>考核人数 :</span>
+                                    <p class="line1">{{item.assessNum}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                </div>
+            </div>
 
             </div>
 

@@ -148,8 +148,8 @@ let save_leave = (index,text,that) =>{
         that.$toast('结束时间不能为空')
     }else if(that.address == '请选择公出地点'){
         that.$toast('公出地点不能为空')
-    }else if(that.contractDesc&&that.contractDesc.length>1000){
-        that.$toast('附加内容不能超过1000字')
+    }else if(that.contractDesc.length<4||that.contractDesc.length>1000){
+        that.$toast('附加内容不能少于4个或超过1000字')
     }
     else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')

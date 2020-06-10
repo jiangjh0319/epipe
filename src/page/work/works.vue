@@ -165,27 +165,36 @@
                         <span>工作汇报</span>
                         <span class="num redDot" v-if="workRed"></span>
                     </li>
-                    <li v-if="show_app"  @click="to_link('approvalRecords')">
-                         <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                    <li @click="to_xmgl()">
+                         <!-- <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
                             <use xlink:href="#icon-gongzuohuibao"></use>
-                        </svg>
+                        </svg> -->
+                        <img src="https://qiniu.epipe.cn/5432667296461844480.png" />
+                        <span>项目管理</span>
+                    </li>
+                    <li v-if="show_app"  @click="to_link('approvalRecords')">
+                         <!-- <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                            <use xlink:href="#icon-gongzuohuibao"></use>
+                        </svg> -->
+                        <img src="../../assets/shengpi.png"/>
                         <span>审批记录</span>
                         <span class="num redDot" v-if="workRed"></span>
                     </li>
-                    <li  @click="to_link('oaMenu')">
-                         <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
+                    <li  @click="to_link('oaMenu')" v-if="haveOa">
+                         <!-- <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
                             <use xlink:href="#icon-yiban"></use>
-                        </svg>
+                        </svg> -->
+                        <img src="../../assets/record.png"/>
+
                         <span>审批</span>
-                        <span class="num redDot" v-if="workRed"></span>
                     </li>
-                    <li  @click="to_link('attendanceStatistics')">
+                    <!-- <li  @click="to_link('attendanceStatistics')">
                          <svg style="font-size: 0.33rem;"  class="icon img" aria-hidden="false">
                             <use xlink:href="#icon-yiban"></use>
                         </svg>
                         <span>考勤统计</span>
                         <span class="num redDot" v-if="workRed"></span>
-                    </li>
+                    </li> -->
                     <li  @click="to_link('cloud_file')">
                         <img src="../../assets/file.png"/>
                         <span>我的云盘</span>
@@ -246,6 +255,7 @@
                 companyname:'',
                 organshow:false,
                 show_app:false,
+                haveOa:false,
             }
         },
         created() {
@@ -328,7 +338,6 @@
                  window.location.href = "epipe://?&mark=exercise";
             },
             openUrl(url){
-                console.log(url)
                     this.organshow = false
                     window.location.href = "epipe://?&mark="+url;
             },
@@ -336,6 +345,9 @@
                 this.axios.get('work/report/new').then(res=>{
                     this.workRed = res.data.b;
                 })
+            },
+            to_xmgl(){
+                this.go_jump({"id":"a0b07fbb691f468ebf9cac8de1b8db4f","name":"项目管理","icon":"https://qiniu.epipe.cn/5432667296461844480.png","url":"epipe://?&openurl=https://apps.epipe.cn/app-https/projectManagement/#/","displayType":"1","shareFlag":"1","collectFlag":"1","order":"01","delFlag":"0"})
             },
             getCount(){
                 let that = this;
@@ -350,6 +362,10 @@
 
                  this.axios.get('/work/copy/list').then(function(res){
                     that.copyCount = res.data.b.data[0].count 
+                 })
+
+                 this.axios.get('/process/apply/exit').then(res=>{
+                     this.haveOa = res.data.b.flag
                  })
 
             },
@@ -389,7 +405,6 @@
                 if(obj.url.indexOf('openurl')>-1){
                 
                  let url = obj.url.slice(obj.url.indexOf('openurl')+8) 
-                //  console.log(url)
                         window.location.href ='epipe://?&mark=openurl&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name,url})
                         // console.log('epipe://?&mark=openurl&data='+JSON.stringify({displayType:obj.displayType,shareFlag:obj.shareFlag,collectFlag:obj.collectFlag,name:obj.name,url}))
                       return;

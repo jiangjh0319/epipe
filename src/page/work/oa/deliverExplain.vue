@@ -94,18 +94,21 @@ export default {
                         auditCompanyIds :this.$route.query.auditCompanyId,
                         receiverCompanyIds: this.$route.query.receiverCompanyId,
                     }
-                    param.auditerIds=param.auditerIds[param.auditerIds.length-1]=='|'?param.auditerIds.slice(0,-1):param.auditerIds
-                    param.auditCompanyIds=param.auditCompanyIds[param.auditCompanyIds.length-1]=='|'?param.auditCompanyIds.slice(0,-1):param.auditCompanyIds
 
-
+                    // param.auditerIds=param.auditerIds[param.auditerIds.length-1]=='|'?param.auditerIds.slice(0,-1):param.auditerIds
+                    // param.auditCompanyIds=param.auditCompanyIds[param.auditCompanyIds.length-1]=='|'?param.auditCompanyIds.slice(0,-1):param.auditCompanyIds
+                    param.auditerIds+='|'
+                    param.auditCompanyIds+='|'
                     param.auditerIds = param.auditerIds.replace(localStorage.getItem('userId')+'|','')
                     param.auditCompanyIds = param.auditCompanyIds.replace(localStorage.getItem('companyId')+'|','')
+                    console.log(param)
                 this.axios.post('/work/audit'+that.Service.queryString(param)).then(function(res){
                     if(res.data.h.code==200){
                         that.$toast('转交成功!')
                         setTimeout(()=>{
+
                             window.location.href = "epipe://?&mark="+that.$route.query.typeName+"Details&_id="+that.id+'&data='+JSON.stringify({text:1});
-                        },500)      
+                        },5000)      
                     }else{
                         that.$toast(res.data.h.msg)
                     }

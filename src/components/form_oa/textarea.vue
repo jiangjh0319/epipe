@@ -2,11 +2,11 @@
     <div>
         <div class="input_box">
             <p class="title"><a v-if="info.req==1">*</a>{{info.title}}</p>
-            <textarea v-model.trim="info.value" @input="textCount()" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入备注,限定1000字">
+            <textarea v-model.trim="info.value" @input="textCount()" name="" maxlength="5000" id="" cols="30" rows="10" placeholder="请输入备注,限定1000字">
 
             </textarea>
             <div class="record_box">
-                    <span>{{info.value.length}}/1000</span>
+                    <span>{{info.value.length}}/5000</span>
             </div>
         </div>
     </div>

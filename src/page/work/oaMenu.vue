@@ -32,7 +32,7 @@
     export default {
         data() {
             return {
-                title:'自定义表单',
+                title:'审批表单',
                 data:[],
             }
         },
