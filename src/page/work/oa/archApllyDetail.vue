@@ -241,7 +241,7 @@
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
                 url = type!=2?'/opinion':'/imchoices';
 
-                params={id:this.dataObj.tripId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                params={id:this.dataObj.dossierBorrowApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
                 color:'#609df6',applyType:4,typeName:'trip',pageType:type,careOf:true,num:1}
 
                 this.$router.push({path:url,query:params})

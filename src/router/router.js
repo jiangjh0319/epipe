@@ -965,7 +965,7 @@ export default new Router({
       meta: {keepAlive: true}
     },
     {
-      path:'/archApllyDetail', //档案借阅详情
+      path:'/archApllyDetails', //档案借阅详情
       component:ArchApllyDetail,
       meta: {keepAlive: true}
     },
@@ -991,7 +991,7 @@ export default new Router({
       meta: {keepAlive: true}
     },
     {
-      path:'/archMoveApplyDetail', //档案移交详情
+      path:'/archMoveApplyDetails', //档案移交详情
       component:ArchMoveApplyDetail,
       meta: {keepAlive: true}
     },
