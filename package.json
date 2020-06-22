@@ -20,11 +20,7 @@
     "jquery": "^3.2.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
-<<<<<<< HEAD
-    "vant": "^2.8.1",
-=======
     "vant": "^2.8.2",
->>>>>>> 5aefa7db01ae56c6e6a8d7df3dbc02917dd1238f
     "vconsole": "^3.3.4",
     "vue": "^2.3.3",
     "vue-awesome-swiper": "^3.1.3",
