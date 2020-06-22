@@ -47,6 +47,8 @@ const ArchivesBorrow = r => require.ensure([], () => r(require('@/page/work/oa/a
 const OaForm = r => require.ensure([], () => r(require('@/page/work/oa/oaForm.vue')), 'group-foo')
 const OaDetails = r => require.ensure([], () => r(require('@/page/work/oa/oaDetails.vue')), 'group-foo')
 
+
+
 export default [
     {
         path: '/leave',  //请假

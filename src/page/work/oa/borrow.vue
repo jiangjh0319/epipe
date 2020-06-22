@@ -134,11 +134,13 @@ let save_leave = (index,text,that) =>{
         that.$toast('文件标题不能为空')
     }else if(that.borrowTitle.length>100 ||that.borrowTitle.length<2){
         that.$toast('文件标题不能低于2个或超过100个字符')
-    }else if(that.useDate == '请选择使用日期'){
+    }
+    else if(that.useDate == '请选择使用日期'){
         that.$toast('请选择使用日期')
     }else if(that.returnDate == '请选择预计归还日期'){
         that.$toast('请选择预计归还日期')
-    }else if(that.borrowerAmount == ''){
+    }
+    else if(that.borrowerAmount == ''){
         that.$toast('请输入借款金额')
     }else if(isNaN(that.borrowerAmount)){
         that.$toast('借款金额为数字')
@@ -193,6 +195,8 @@ let save_leave = (index,text,that) =>{
                     borrowerBank:that.borrowerBank,
                     useDate:that.useDate,//付款时间
                     returnDate:that.returnDate,//付款时间
+                    // useDate:'2020-1-5',//付款时间
+                    // returnDate:'2020-1-5',//付款时间
                     borrowerAccount:that.borrowerAccount,
                     borrowerName:that.borrowerName, //收款人
                     urls : fileObj.urlStr, //附件

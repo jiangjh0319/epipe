@@ -231,6 +231,7 @@
               <AddressList
                 v-show="item.open"
                 :list="item.offices"
+                :companyName="item.name"
                 v-on:pitchOn = "pitchOn"
               >
               </AddressList>
@@ -660,7 +661,7 @@
              this.$toast('该用户为审批人')
              return;
            }
-
+          console.log(item,'ittemm')
           this.submitDeliver(item)
           return false; 
          } 
