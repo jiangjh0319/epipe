@@ -10,7 +10,7 @@
             <div class="styles input_group">
                 <div class="bor_bottom">
                     <span class="title">文件标题</span>
-                    <input placeholder="请输入标题" style="color:#666"  v-model="projectTitle" />
+                    <input placeholder="请输入标题"  v-bind:disabled="isHr"  style="color:#666"  v-model="projectTitle" />
                 </div>
                   <div>
                     <span class="title">立项申请人</span>
@@ -24,7 +24,7 @@
             <div class="styles input_group">
                 <div class="bor_bottom">
                     <span class="title">项目编号</span>
-                    <input style="color:#666" v-model="projectNo" placeholder="请输入项目编号"/>
+                    <input style="color:#666" v-bind:disabled="isHr" v-model="projectNo" placeholder="请输入项目编号"/>
                 </div>
                  <div class="bor_bottom choose" @click="getTime(0)">
                      <span class="title">申请时间</span>
@@ -37,11 +37,12 @@
                 </div>
                 <div class="bor_bottom">
                     <span class="title">项目名称</span>
-                    <input style="color:#666" v-model="projectName" placeholder="请输入项目名称"/>
+                    <input style="color:#666" v-bind:disabled="isHr" v-model="projectName" placeholder="请输入项目名称"/>
                 </div>
+                
                 <div class="bor_bottom">
                     <span class="title">预估金额(元)</span>
-                    <input style="color:#666" v-model="projectBudget" placeholder="请输入项目预估金额"/>
+                    <input style="color:#666" v-bind:disabled="isHr" v-model="projectBudget" placeholder="请输入项目预估金额"/>
                 </div>
                  <div class="bor_bottom choose" @click="getTime(1)">
                      <span class="title">立项时间</span>
@@ -54,18 +55,27 @@
                 </div>
                 <div class="bor_bottom">
                     <span class="title">项目周期</span>
-                    <input style="color:#666" v-model="projectDate" placeholder="请输入项目周期"/>
+                    <input style="color:#666" v-bind:disabled="isHr" v-model="projectDate" placeholder="请输入项目周期"/>
+                </div>
+                 <div class="bor_bottom choose" @click="to_principal()" v-if="isHr">
+                     <span class="title">第二负责人</span>
+                    <p>
+                        <span class="nullValue">{{principal?principal.name:'请选择'}}</span>
+                        <svg class="icon icon-back" aria-hidden="false">
+                                <use xlink:href="#icon-right"></use>
+                        </svg>
+                    </p>
                 </div>
                 <div class="bor_bottom">
                     <span class="title">单位联系人</span>
-                    <input style="color:#666" v-model="connectionName" placeholder="请输入单位联系人"/>
+                    <input style="color:#666" v-bind:disabled="isHr" v-model="connectionName" placeholder="请输入单位联系人"/>
                 </div>
            
             </div>
 
             <div class="styles" style="padding:0 0.15rem;">
                 <p class="title">项目背景</p>
-                <textarea v-model.trim="projectBackground" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入项目背景,限定1000字">
+                <textarea v-model.trim="projectBackground" v-bind:disabled="isHr" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入项目背景,限定1000字">
 
                 </textarea>
                 <div class="record_box">
@@ -74,7 +84,7 @@
             </div>
             <div class="styles" style="padding:0 0.15rem;">
                 <p class="title">项目需求概述</p>
-                <textarea v-model.trim="description" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入项目需求概述,限定1000字">
+                <textarea v-model.trim="description" v-bind:disabled="isHr" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入项目需求概述,限定1000字">
 
                 </textarea>
                 <div class="record_box">
@@ -190,7 +200,6 @@ let save_leave = (index,text,that) =>{
 
         params = that.Util.approverFormat(that.allApprovers,that.linkAuditNum)
         fileObj = that.Util.fileFo(that.accessory)
-
         that.axios({
                 method:"post",
                 url:"/work/project/save",
@@ -209,6 +218,7 @@ let save_leave = (index,text,that) =>{
                     projectBudget:that.projectBudget,
                     projectNo:that.projectNo,
                     projectDate:that.projectDate,
+                    connectNameSec:that.principal.userId?that.principal.userId:'',
                     urls : fileObj.urlStr, //附件
                     fileNames:fileObj.fileNameStr, 
                     fileSizes:fileObj.fileSizeStr,
@@ -270,7 +280,7 @@ export default {
         data(){
             return{
                 id:'',
-                projectTitle : '', // 标题
+                projectTitle: '', // 标题
                 userName : '',//用车人
                 projectDate:'',
                 projectNo:'',
@@ -292,6 +302,9 @@ export default {
                 linkAuditNum:'',
                 showCopy:0,
                 applyLinkIds:'',
+
+                isHr:false,
+                principal:{name:'请选择'},
                 allApprovers:[],
             }
         },
@@ -338,7 +351,7 @@ export default {
             this.approver_man(this.approver_list)
             let showGroup = this.allApprovers[index].approvalUserScope=='0'?true:false;
             let flag = this.allApprovers[index].remarks=='0'?'1':null;
-            this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',amount:flag,num:1,showGroup,}})
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#0fc37c',amount:flag,num:1,showGroup,}})
 
         },
         del_poeple(index,num){
@@ -364,6 +377,16 @@ export default {
                 this.chosed_list.splice(index, 1);
                 this.change_man(this.chosed_list)
             }
+        },
+        to_principal(){
+            this.addressListIndex = -1;
+
+            let arr = []
+            if(this.principal.name!='请选择'){
+                arr.push(this.principal)
+            }
+            this.approver_man(arr)
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#0fc37c',num:1,amount:1}})
         },
         isImg:function(str){
                  //判断是否是图片 - strFilter必须是小写列举
@@ -393,6 +416,7 @@ export default {
 
             },
             getTime(num){ //获取原生时间
+            if(this.isHr&&num==1) return 
                 let that = this;
                 window.location.href = "epipe://?&mark=getLeaveTime";
 
@@ -460,6 +484,10 @@ export default {
         activated(){
             if(this.addressListIndex>0){
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }else{
+                if(this.principal.name=='请选择'){
+                    this.principal = this.approver_man_state[0]?this.approver_man_state[this.approver_man_state.length-1]:this.principal;
+                }
             }
             this.chosed_list = this.chosed_man_state
          },
@@ -528,9 +556,11 @@ export default {
                       that.projectDate = data.projectDate;
                       that.projectBudget = data.projectBudget;
                       that.projectName = data.projectName;
+                      that.principal = data.connectSecName?{name:data.connectSecName,userId:data.connectSecId}:{name:'请选择'}
                       that.description = data.description;
-                      that.applyDate = data.applyDate;
-                      that.buildDate = data.buildDate;
+                      that.applyDate = data.applyDate.slice(0,-9);
+                      that.isHr = data.isFromHr==1?true:false;
+                      that.buildDate = data.buildDate.slice(0,-9);;
                       that.textNum = data.description.length
                       that.textCount = data.projectBackground.length;
                       that.chosed_list = data.receivers;

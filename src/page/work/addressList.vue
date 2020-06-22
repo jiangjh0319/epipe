@@ -207,7 +207,8 @@
 
     <div v-show="!is_search">
       <TopHead mark="mark" v-on:history_back="history_back_click" :bgcolor="bgcolor" title="选择联系人" :show='states'></TopHead>
-      <div :style="states=='pro'?'':'margin-top: 0.44rem'" @click="is_search=!is_search" class="im_top_div_2">
+      <div style="height:0.44rem;"></div>
+      <div :style="states=='pro'?'':''" @click="is_search=!is_search" class="im_top_div_2">
         <div style="box-shadow: 0 10px 16px #ddd, 0 0 10px #ddd, 0 0 10px #ddd;  " class="im_top_div_3">
           <svg style="font-size: 0.17rem" class="icon"
                aria-hidden="false">
@@ -235,63 +236,6 @@
               >
               </AddressList>
           </div>
-          <!-- <div v-for="(item,index) in datalist" :key="index">
-            <li @click="open_item(index)">
-              <span>{{item.name}}</span>
-              <div style="padding-right: 0.15rem;">
-                <svg v-bind:class="{top_ul_yuan22:item.open}" style="width: 0.15rem;height: 0.15rem" class="icon"
-                     aria-hidden="false">
-                  <use xlink:href="#icon-back"></use>
-                </svg>
-              </div>
-            </li>
-            <div v-show="item.open" v-for="(p,num) in item.offices" class="im_div4" style="padding:0" :key="num">   
-                <li @click="open_child(index,num)" style="padding-left:0.3rem;">
-                <span>{{p.name}}&nbsp （{{p.personNO}}）</span>
-                <div style="padding-right: 0.15rem;">
-                    <svg v-bind:class="{top_ul_yuan22:p.open}" style="width: 0.15rem;height: 0.15rem" class="icon"
-                        aria-hidden="false">
-                    <use xlink:href="#icon-back"></use>
-                    </svg>
-                </div>
-                </li>
-                
-                <div @click="chose_child(index,num,s,n)" v-show="p.open" v-for="(s,n) in p.staff" class="im_div3">  
-                    <svg v-show="s.mark_chose" style="font-size: 0.19rem;padding-right: 0.15rem" class="icon">
-                        <use xlink:href="#icon-chenggong"></use>
-                    </svg>
-                    <svg v-show="!s.mark_chose" style="font-size: 0.19rem;padding-right: 0.15rem" class="icon">
-                        <use xlink:href="#icon-meiyouxuanzhong"></use>
-                    </svg>
-                    <img :src= s.profileImg|man_photo_format v-show="s.profileImg"/>
-                    <img v-show="!s.profileImg" src="../../assets/tou.png"/>
-                    <div>{{s.name}}</div>
-                </div>
-            </div>
-              
-          </div> -->
-          <!-- <div v-if="item.offices==0" v-for="(item,index) in datalist.offices">
-            <li @click="open_item(index)">
-              <span>{{item.name}}&nbsp （{{item.personNO}}）</span>
-              <div style="padding-right: 0.15rem;">
-                <svg v-bind:class="{top_ul_yuan22:item.open}" style="width: 0.15rem;height: 0.15rem" class="icon"
-                     aria-hidden="false">
-                  <use xlink:href="#icon-back"></use>
-                </svg>
-              </div>
-            </li>
-            <div @click="chose_child(index,num,p,'department')" v-show="item.open" v-for="(p,num) in item.staff" class="im_div3">  
-              <svg v-show="p.mark_chose" style="font-size: 0.19rem;padding-right: 0.15rem" class="icon">
-                <use xlink:href="#icon-chenggong"></use>
-              </svg>
-              <svg v-show="!p.mark_chose" style="font-sizae: 0.19rem;padding-right: 0.15rem" class="icon">
-                <use xlink:href="#icon-meiyouxuanzhong"></use>
-              </svg>
-              <img :src=p.profileImg|man_photo_format v-show="p.profileImg"/>
-              <img v-show="!p.profileImg" src="../../assets/tou.png"/>
-              <div>{{p.name}}</div>
-            </div>
-          </div> -->
         </ul>
         
       </div>
@@ -306,7 +250,7 @@
         <div class="bottom_button">
 
         </div>
-        <li @click="reduce(item)"   v-for="item in peerData" class="chose">
+        <li @click="reduce(item)" :key="item.userId"   v-for="item in peerData" class="chose">
           <div style="height: 0.15rem">
             <svg style="font-size: 0.15rem;position: relative;top: 0.08rem;left: 0.135rem" class="icon">
               <use xlink:href="#icon-shanchu"></use>
@@ -416,6 +360,19 @@
       pitchOn(item){
           item.mark_chose = !item.mark_chose
 
+
+          if(this.$route.query.type=='1'){ //为1既为 选中立马回到之前的界面
+
+              this.peerData[0] = item;
+              this.peerData_man({
+                  index:this.peArrIndex,
+                  array:this.peerData,
+              })
+              window.history.back()
+              return false;
+          }
+
+
           if(item.mark_chose){
             this.chose_data.push(item)
           }else{
@@ -425,6 +382,7 @@
               }
             }
           }
+
 
           this.peerData = this.chose_data;
             this.peerData_man({
@@ -480,7 +438,7 @@
           this.peerData_man({
               index:this.peArrIndex,
               array:this.peerData,
-            })
+          })
       },
       history_back: function () {
             window.history.back(-1)
@@ -494,6 +452,17 @@
       },
       chose_select: function (item, index) { //搜索之后选中某个人
         let that = this;
+
+       if(this.$route.query.type=='1'){ //为1既为 选中立马回到之前的界面
+              this.peerData[0]= item;
+              this.peerData_man({
+                  index:this.peArrIndex,
+                  array:this.peerData,
+              })
+              window.history.back()
+              return false;
+          }
+
         if (!item.mark_chose) {
           that.seach_list_man[index].mark_chose = true
 

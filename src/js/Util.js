@@ -133,7 +133,7 @@ const Util = {
   deliverIds(arr,idName){
     let idStr = ''
     arr.forEach(item=>{
-      if(item.flow&&item.status=='00'){
+      if(item.flow&&(item.status=='00'||item.status=='0')){
         idStr+=item[idName]+'|'
 
       }else if(item.auditers){

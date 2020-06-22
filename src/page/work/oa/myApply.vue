@@ -36,6 +36,26 @@
                     </div>
                 </div>
 
+                <div v-if="item.typecode=='MY_'"   @click="goDetails(item,'all_oa')" class="affairs_item myaffairs_shadow"  :key="item.id">
+                    <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的{{item.applyName}}</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                                <p>提交人 :<span>{{item.userName}}</span></p>
+                                <p>部门&emsp; :<span>{{item.officeName}}</span></p>
+                            </div>
+                        </div>
+                        <div   class="skip" >
+                            查看详情
+                        </div>
+                        <i v-if="item.readFlag=='0'&&isCopy"></i>
+                    </div>
+                </div>
+
                 <div v-else-if="item.typecode == 2"  @click="goDetails(item.applyId,item.fianlStatus,'letterOfRequest','leOfRe')"  class="affairs_item myaffairs_shadow">
                     <div class="affirs_child">
                         <div class="affairs_title">
@@ -748,6 +768,29 @@
                         </div>
                 </div>
             </div>
+            <div v-else-if="item.typecode == 25" @click="goDetails(item.applyId,item.fianlStatus,'performance')"   class="affairs_item" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的绩效考核申请</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>考核周期 :</span><p class="line1">{{item.performanceCycle}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>考核人数 :</span>
+                                    <p class="line1">{{item.assessNum}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                </div>
+            </div>
 
             </div>
 
@@ -805,8 +848,14 @@
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },  
             goDetails(id,type,typeName,details){
-                typeName=details?details:typeName
-                window.location.href = "epipe://?&mark="+typeName+"Details&_id="+id+'&data='+JSON.stringify({text:0});
+
+                if(type=='all_oa'){
+                    window.location.href = "epipe://?&mark=oaDetails&_id="+id.applyId+'&data='+JSON.stringify({text:0});
+                }else{
+                    typeName=details?details:typeName
+                    window.location.href = "epipe://?&mark="+typeName+"Details&_id="+id+'&data='+JSON.stringify({text:0});
+                }
+
             },
             go_search(){
                 this.$router.push({path:'/oaSearch',query:{tag:1,color:'#f80'}})
@@ -878,6 +927,7 @@
             },
             
             slice : function(value){
+                value+=''
                 return value.slice(0,-3)
             },
 

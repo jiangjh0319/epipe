@@ -33,11 +33,19 @@ const Menu = r => require.ensure([], () => r(require('@/page/work/oa/menu.vue'))
 
 const ErpPermission = r => require.ensure([], () => r(require('@/page/work/oa/erpPermission.vue')), 'group-foo')
 const ErpPermissionDetails = r => require.ensure([], () => r(require('@/page/work/oa/erpPermissionDetails.vue')), 'group-foo')
+const Performance = r => require.ensure([], () => r(require('@/page/work/oa/performance.vue')), 'group-foo')
+const PerformanceDetails = r => require.ensure([], () => r(require('@/page/work/oa/performanceDetails.vue')), 'group-foo')
+const PerformanceInfo = r => require.ensure([], () => r(require('@/page/work/oa/performanceInfo.vue')), 'group-foo')
+const PerformanceList = r => require.ensure([], () => r(require('@/page/work/oa/performanceList.vue')), 'group-foo')
 const Select = r => require.ensure([], () => r(require('@/page/work/select.vue')), 'group-foo')
+// archivesBorrow
 
+const ArchivesBorrow = r => require.ensure([], () => r(require('@/page/work/oa/archivesBorrow.vue')), 'group-foo')
+// const BuyDetails = r => require.ensure([], () => r(require('@/page/work/oa/buyDetails.vue')), 'group-foo')
 // const Position = r => require.ensure([], () => r(require('@/page/work/oa/position.vue')), 'group-foo')
 // const PositionDetails = r => require.ensure([], () => r(require('@/page/work/oa/positionDetails.vue')), 'group-foo')
-
+const OaForm = r => require.ensure([], () => r(require('@/page/work/oa/oaForm.vue')), 'group-foo')
+const OaDetails = r => require.ensure([], () => r(require('@/page/work/oa/oaDetails.vue')), 'group-foo')
 
 
 
@@ -152,6 +160,24 @@ export default [
 		meta: {keepAlive: true}
     },
     {
+        path:'/performance', //绩效考核
+        component:Performance,
+		meta: {keepAlive: true}
+    },
+    {
+        path:'/performanceDetails', //
+        component:PerformanceDetails,
+		meta: {keepAlive: true}
+    },
+    {
+        path:'/performanceInfo', //
+        component:PerformanceInfo,
+    },
+    {
+        path:'/performanceList', //
+        component:PerformanceList,
+    },
+    {
         path:'/more_employee', //更多应聘条件
         component:MoreEmployee,
     },
@@ -162,6 +188,22 @@ export default [
     {
         path:'/select', //审批人选择
         component:Select,
+		meta: {keepAlive: true}
+    },
+     {
+        path:'/oaForm', //菜单
+        component:OaForm,
+		meta: {keepAlive: true}
+    },
+    {
+        path:'/oaDetails', //菜单
+        component:OaDetails,
+		meta: {keepAlive: true}
+    },
+
+    {
+        path:'/archivesBorrow', //
+        component:ArchivesBorrow,
 		meta: {keepAlive: true}
     },
 ]

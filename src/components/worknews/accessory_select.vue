@@ -96,11 +96,20 @@
 
 <style scoped lang="stylus">
 
-    .styles .title{
-        line-height: 0.44rem;
+    .styles,.title{
         font-size: 0.15rem;
         color: #333;
         font-weight: bold;
+    }
+
+    .title{
+        line-height: 0.44rem;
+
+    }
+
+    .styles{
+        background-color #fff;
+        margin-bottom 0.15rem;
     }
 
      .accessory{

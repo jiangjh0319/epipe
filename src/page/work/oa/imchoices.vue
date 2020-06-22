@@ -456,7 +456,7 @@
           }
       },
       submitDeliver(data){
-        
+        console.log(data)
         this.$router.push({path:'/deliverExplain',query:{
               id:this.$route.query.id,
               userName:data.name,

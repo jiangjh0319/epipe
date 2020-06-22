@@ -209,7 +209,6 @@
                      
                 }
                  
-                 
                  receiverIds = this.Util.getIds(this.newCopy,'userId')
                  receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
                  url = type!=2?'/opinion':'/imchoices';

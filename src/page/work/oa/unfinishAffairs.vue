@@ -64,7 +64,11 @@ export default {
                 return data;
             },
             goDetails(item,type){
-                window.location.href = "epipe://?&mark="+type+"Details&_id="+item.applyId+'&data='+JSON.stringify({text:0});
+                if(type=='all_oa'){
+                    window.location.href = "epipe://?&mark=oaDetails&_id="+item.applyId+'&data='+JSON.stringify({text:0});
+                }else{
+                    window.location.href = "epipe://?&mark="+type+"Details&_id="+item.applyId+'&data='+JSON.stringify({text:0});
+                }
             },
             
             onInfinite(){

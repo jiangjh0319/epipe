@@ -362,8 +362,6 @@
                                 ar.status = '0'
                             }
                         })
-                        console.log('============')
-                        console.log(ar)
 
                         if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
                             ar.auditers[0].flow = true

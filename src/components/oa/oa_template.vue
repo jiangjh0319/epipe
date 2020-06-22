@@ -22,6 +22,53 @@
                 </div>
             </div>
 
+            <!-- <div v-if="item.typecode=='MY_'"   @click="goDetails(item,'all_oa')" class="affairs_item myaffairs_shadow"  :key="item.id">
+                    <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的审批</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                                <p>提交人 :<span>{{item.userName}}</span></p>
+                                <p>部门&emsp; :<span>{{item.officeName}}</span></p>
+                            </div>
+                        </div>
+                        <div   class="skip" >
+                            查看详情
+                        </div>
+                        <i v-if="item.readFlag=='0'&&isCopy"></i>
+                    </div>
+                </div> -->
+
+
+            <div v-if="item.typecode == 'MY_'"  class="affairs_content"  @click="goDetails(item,'all_oa')"  :key="item.id">
+                <div class="affirs_child">
+                    <div>
+                        <div class="affairs_title">
+                            <img :src="item.profileImg"/>
+                            <h2>{{item.title}}的{{item.applyName}}</h2>
+                            <time >{{item.applyTime | timeSlice}}</time>
+                        </div>
+                        <div class="affairs_infor">
+                            <div class="request_infor lineHeight">
+                                <span>提交人:</span>
+                                <p class="line1"> {{item.userName}}</p>
+                            </div>
+                            <div class="request_infor lineHeight">
+                                <span>部门&emsp; :</span>
+                                <p class="line1"> {{item.officeName}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div  class="skip" tag="div">
+                        查看详情
+                    </div>
+                    <i v-if="item.readFlag=='0'&&isCopy"></i>
+                </div>
+            </div>
+
             <div v-if="item.typecode == 2"  class="affairs_content"  @click="goDetails(item,'leOfRe')" >
                 <div class="affirs_child">
                     <div>
@@ -768,6 +815,30 @@
                     <i v-if="item.readFlag=='0'&&isCopy"></i>
                 </div>
             </div>
+            <div v-else-if="item.typecode == 25" @click="goDetails(item,'performance')"   class="affairs_content" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>{{item.title}}的绩效考核</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                                <div class="request_infor lineHeight">
+                                    <span>考核周期 :</span><p class="line1">{{item.performanceCycle}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>考核人数 :</span>
+                                    <p class="line1">{{item.assessNum}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                    <i v-if="item.readFlag=='0'&&isCopy"></i>
+                </div>
+            </div>
     </div>
 </template>
 
@@ -781,6 +852,7 @@
             },
             methods:{
                 goDetails(item,type){
+                
                     this.$emit('goDetails',item,type)
                 }
             },

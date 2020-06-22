@@ -2,7 +2,7 @@
     <section class="reimburse">
         <TopHead
         mark='mark'
-        bgcolor = '#0fc37c'
+        bgcolor = '#609ef7'
         :title=title
         v-on:history_back="history_back_click"
          ></TopHead>
@@ -15,69 +15,48 @@
                         <p class="nameTl">{{dataObj.username}}</p>
                         <p :class="leaveType==2?'careOf':leaveType==0?'res':'consent'">{{leaveType |oa_details_status}}</p>
                         <p class="res" v-if="leaveType==3||leaveType==4">等待{{dataObj.auditUserName}}的{{dataObj | awaits}}</p>
-
                     </div>
                 </div>
             </div>
             <div class="styles infor">
                 <div class="infor-box">
-                    <span>审批编号&emsp;</span>
+                    <span>审批编号</span>
                     <p>{{dataObj.applyNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>标&emsp;&emsp;题 &emsp;</span>
-                    <p>{{dataObj.projectTitle}}</p>
-                </div>
-            </div>
-            <div class="styles infor">
-                <div class="infor-box">
-                    <span style="letter-spacing:0.04rem">申请人&emsp;</span>
-                    <p>{{dataObj.username}}</p>
+                    <span>考核周期</span>
+                    <p>{{dataObj.performanceCycle}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>所属部门&emsp;</span>
-                    <p>{{dataObj.officeName}}</p>
+                    <span>考核人数</span>
+                    <p>{{dataObj.assessNum}}</p>
+                </div>
+                <div class="infor-box">
+                    <span>备注 </span>
+                    <p>{{dataObj.reason}} </p>
                 </div>
             </div>
 
-            <div class="styles infor">
-                <div class="infor-box">
-                    <span>项目编号&emsp; </span>
-                    <p>{{dataObj.projectNo}}</p>
-                </div>
-                 <div class="infor-box">
-                    <span>申请时间&emsp; </span>
-                    <p>{{dataObj.applyTime}} </p>
-                </div>
-                 <div class="infor-box">
-                    <span>项目名称&emsp; </span>
-                    <p>{{dataObj.projectName}} </p>
-                </div>
-                 <div class="infor-box">
-                    <span>预估金额&emsp; </span>
-                    <p>{{dataObj.projectBudget}} 元</p>
-                </div>
-                 <div class="infor-box">
-                    <span>立项时间&emsp; </span>
-                    <p>{{dataObj.buildDate}} </p>
-                </div>
-                <div class="infor-box" v-if="dataObj.isFromHr&&dataObj.isFromHr==1">
-                    <span >第二负责人 </span>
-                    <p>{{dataObj.connectSecName}} </p>
-                </div>
-                 <div class="infor-box">
-                    <span >单位联系人 </span>
-                    <p>{{dataObj.connectionName}} </p>
-                </div>
-                <div class="infor-box">
-                    <span>项目背景&emsp; </span>
-                    <p>{{dataObj.projectBackground}} </p>
-                </div>
-                <div class="infor-box">
-                    <span>需求概述&emsp; </span>
-                    <p>{{dataObj.description}} </p>
-                </div>
+            <div class="performance">
+                    <div class="performance_title">
+                        考核员工
+                        <span @click="to_more_members">
+                             
+                                {{dataObj.assessNum}}人<svg style="width: 0.12rem;height: 0.12rem;" class="icon" aria-hidden="false" >
+                                    <use xlink:href="#icon-right"></use>
+                                </svg>
+                            </span>
+                     </div>
+                    <div class="performanceList">
+                        <div v-for="(el,ind) in hrData" :key="ind" class="performanceList_item" @click="to_people_info(ind)"> 
+                            <img  :src="el.photo"/>
+                            <span>{{el.name}}</span>
+                        </div>
+                    </div>
+
+                    <div v-if="hrData.length>15" style="text-align:center;line-height:0.3rem;margin-bottom:0.1rem;" @click="to_more_members">查看全部成员</div>
             </div>
+
 
             <AccessoryList :accessory='accessory'>
             </AccessoryList>
@@ -93,10 +72,10 @@
              :dataObj = dataObj
              :newCopy = newCopy
              v-on:remove = "removeCopy"
-             color="#0fc37c"
+             color="#f80"
 
-            >
-            </Copy>
+            > 
+             </Copy> 
             
             <div class="foot-box">
 
@@ -148,7 +127,7 @@
             v-show="isBackout"
             >
         </Dialog>
-          
+
     </section>
 </template>
 
@@ -168,6 +147,7 @@
         data(){
             return{
                 dataObj: {},
+                hrData:[],
                 isDialog : false,
                 btnType : 0,
                 refuseIndex :-1, //拒绝截止下标
@@ -178,7 +158,7 @@
                 refuseSvgIndex:-1,
                 mark :'marks',
                 accessory:[],
-                projectId:'',
+                performanceId:'',
                 newCopy:[], //新增抄送人
                 newAppr:[], //新增审批人
                 head:'native',
@@ -186,9 +166,7 @@
                 title:'',
                 myself:false,
                 isBackout:false,
-                amount:0,
                 endIndex:999,
-
 
             }
         },
@@ -203,9 +181,10 @@
             Dialog
         },
         methods :{
+
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
-                 this.$router.push({path:'/opinion',query:{id:this.dataObj.projectApplyId,typeName:'project',applyType:14,color:'#0fc37c'}})
+                 this.$router.push({path:'/opinion',query:{id:this.dataObj.performanceApplyId,typeName:'performance',applyType:24,color:'#609ef7'}})
             },
             history_back_click:function(){
                     if(location.href.indexOf('goWork=0')>0){
@@ -215,27 +194,27 @@
                     window.location.href = "epipe://?&mark=goWork"
             },
             deliverTo(){ //转交
-                let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
+                let newApprStr = this.appAndCopy(this.dataObj.links,'auditUserId')
                 let newCopy = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.projectApplyId,receiverIds:newCopy,careOf:true,typeName:'project',applyType:14,bgcolor:'#0fc37c',auditerIds:newApprStr,num:1}})
+                this.$router.push({path:'/imchoices',query:{id:this.dataObj.performanceApplyId,receiverIds:newCopy,careOf:true,typeName:'performance',applyType:24,bgcolor:'#609ef7',auditerIds:newApprStr,num:1}})
             },
             approveBack(){ //退回
-                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.projectApplyId,typeName:'project',applyType:14,color:'#0fc37c'}})
+                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.performanceApplyId,typeName:'performance',applyType:24,color:'#609ef7'}})
             },
             consent:function(type){
-
                 let that = this,receiverIds='',auditerIds='',receiverCompanyId="",auditCompanyId="",url='',params={};
 
                 if(type==2){
-                auditerIds = this.Util.deliverIds(this.dataObj.links,'userId')
-                auditCompanyId = this.Util.deliverIds(this.dataObj.links,'companyId')
+                     auditerIds = this.Util.deliverIds(this.dataObj.links,'userId')
+                     auditCompanyId = this.Util.deliverIds(this.dataObj.links,'companyId')
                 }
+                
                 receiverIds = this.Util.getIds(this.newCopy,'userId')
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
                 url = type!=2?'/opinion':'/imchoices';
 
-                params={id:this.dataObj.projectApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
-                color:'#0fc37c',applyType:14,typeName:'project',pageType:type,careOf:true,num:1}
+                params={id:this.dataObj.performanceApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                color:'#609ef7',applyType:24,typeName:'performance',pageType:type,careOf:true,num:1}
 
               this.$router.push({path:url,query:params})
 
@@ -244,15 +223,15 @@
                 window.location.href = "epipe://?&mark=print&url="+location.href;
             },
             resubmit(){ //再次提交
-                this.$router.replace({path:'/project',query:{projectId:this.dataObj.projectApplyId,resubmit:1}})
+                this.$router.replace({path:'/performance',query:{performanceId:this.dataObj.performanceApplyId,resubmit:1}})
             },
             urge(){ //催办
                 this.isBackout = false;
                 let that = this;
                 this.axios.post('/work/audit'+this.Service.queryString({
-                    applyId:this.dataObj.projectApplyId,
+                    applyId:this.dataObj.performanceApplyId,
                     type:6,
-                    applyType:14,
+                    applyType:24,
                 })).then(function(res){
                     if(res.data.h.code==200){
                         that.$toast('催办成功!')
@@ -278,9 +257,9 @@
                 let that = this;
                 this.isDialog = false;
                 this.axios.post('/work/audit'+this.Service.queryString({
-                    applyId:this.dataObj.projectApplyId,
+                    applyId:this.dataObj.performanceApplyId,
                     type:1,
-                    applyType:14,
+                    applyType:24,
                 })).then(function(res){
                         if(res.data.h.code!=200){
                             that.$toast(res.data.h.msg)
@@ -289,7 +268,7 @@
                             that.$toast('撤销成功！')
           
                             setTimeout(()=>{
-                                window.location.href = "epipe://?&mark=projectDetails&_id="+that.dataObj.projectApplyId+'&data='+JSON.stringify({text:1});;
+                                window.location.href = "epipe://?&mark=performanceDetails&_id="+that.dataObj.performanceApplyId+'&data='+JSON.stringify({text:1});;
                             },500)     
                         } 
                     })
@@ -316,125 +295,132 @@
                 }
                 return arrs
             },
+            to_more_members(){
+                this.$router.push({path:'/performanceList',query:{data:JSON.stringify(this.hrData),id:this.$route.query.performanceId}})
+            },
+            to_people_info(index){
+                this.$router.push({path:'/performanceInfo',query:{index,id:this.$route.query.performanceId}})
+
+            },
             go_imchoice:function(num){
-                this.$router.push({path: 'imchoices', query: {bgcolor:'#0fc37c',num:num}})
+                this.$router.push({path: 'imchoices', query: {bgcolor:'#f80',num:num}})
             },
             removeCopy:function(index){
                 this.newCopy.splice(index, 1);
                 this.change_man(this.newCopy)
             },
-            removeApp:function(index){
-                this.newAppr.splice(index, 1);
-                this.approver_man(this.newAppr)
-            },
              go_user(id){
                 window.location.href = "epipe://?&mark=userinfo&_id="+id;
             },
+
         },
         created() {
         },
         mounted:function(){
 
             let that = this;
-            this.projectId = this.$route.query.projectId;
+            this.performanceId = this.$route.query.performanceId;
             let pusthId = this.$route.query.pushId
-            this.axios.get('/work/project/info?projectApplyId='+this.projectId+'&pushId='+pusthId).then((res)=>{
-                that.dataObj = res.data.b;
+            this.axios.get('/work/performanceApply/info?performanceId='+this.performanceId+'&pushId='+pusthId).then((res)=>{
+
+                that.dataObj = res.data.b.performanceApplyInfoApp;
+
+                let hrarr = res.data.b.performanceApplyHr.result.data;
+                        hrarr.forEach((item,index)=>{
+                            this.hrData.push({
+                                photo:item.photo,
+                                name:item.employee,
+                                index,
+                            })
+                        })
+
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
-                that.title = that.dataObj.username+'的项目立项申请'
-            let arr= that.dataObj.links, newArr = [];
+                that.title = that.dataObj.username+'的绩效考核申请'
 
-                arr.forEach(item=>{
-                for(let i =0;i<item.auditers.length;i++){
-                if(item.auditers[i].accessory!=null){
-                item.auditers[i].accessory = that.accessoryFors(item.auditers[i].accessory)
-                }
-                }
-                })
-
-                for(let i=0;i<arr.length;i++){
-                let ar = JSON.parse(JSON.stringify(arr[i]))
-                ar.auditers = [];
-                let data = arr[i].auditers;
-
-                if(arr[i].admins&&arr[i].admins.length){
-                let flow = arr[i]
-                flow.auditers = arr[i].admins;
-                flow.admins = [];
-                flow.linkType = 4;
-                arr.splice(i,0,flow)
-                }
+                   let arr=  that.dataObj.links, newArr = [];
 
 
-                data.forEach(item=>{
-                if(item.status!=='00'&&item.status!='0'){
-                item.flow = true;
-                newArr.push(item)
-                }else{
-                item.hide = true;
-                ar.auditers.push(item)
-                }
+                    arr.forEach(item=>{
+                        for(let i =0;i<item.auditers.length;i++){
+                            if(item.auditers[i].accessory!=null){
+                                    item.auditers[i].accessory = that.accessoryFors(item.auditers[i].accessory)
+                            }
+                        }
+                    })
 
-                if(item.status=='0'){
+                    for(let i=0;i<arr.length;i++){//审批人数据进行循环
+                        let ar = JSON.parse(JSON.stringify(arr[i]))
+                        ar.auditers = [];
+                        let data = arr[i].auditers;
 
-                ar.status = '0'
-                }
-                })
 
-                if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
-                ar.auditers[0].flow = true
-                newArr.push(ar.auditers[0])
-                }else if(ar.auditers.length>0){
-                newArr.push(ar)
-                }
+                        data.forEach(item=>{// 如果每一个环节里的审批人 有人审批过来就将它放入 newArr
+                            if(item.status!=='00'&&item.status!='0'){
+                                item.flow = true;
+                                newArr.push(item)
+                            }else{
+                                item.hide = true;
+                                ar.auditers.push(item)
+                            }
 
-                if(!arr[i].auditers.length&&(arr[i].approvalUserType==1||arr[i].approvalUserType==2)&&arr[i].approvalUserScope==2){
-                newArr.push(ar)
-                }
-                }
+                            if(item.status=='0'){
+                                ar.status = '0'
+                            }
+                        })
 
-                for (let i = 0; i < newArr.length; i++) {
+                        if(ar.auditers.length==1&&ar.auditers[0].status=='0'){
+                            ar.auditers[0].flow = true
+                            newArr.push(ar.auditers[0])
+                        console.log(newArr,'3')
 
-                if(newArr[i].status&&newArr[i].status=='2'){
-                this.endIndex = i;
-                this.leaveType = '0'; //已经拒绝
-                }
-                }
-                that.dataObj.links = newArr;
+                        }else if(ar.auditers.length>0){
+                            newArr.push(ar)
+                        }
 
-                if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
-                that.myself=true;
-                if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
-                that.dataObj.myselfApply="0"
-                }
-                }
+                        if(!arr[i].auditers.length&&(arr[i].approvalUserType==1||arr[i].approvalUserType==2)&&arr[i].approvalUserScope==2){
+                            newArr.push(ar)
 
-                for (let i = 0; i < this.dataObj.links.length; i++) {
+                        }
+                        
+                    }
 
-                if( this.dataObj.links[i].status&& this.dataObj.links[i].status=='2'){
-                this.endIndex = i;
-                this.leaveType = '0'; //已经拒绝
-                }
-                }
+                    for (let i = 0; i < newArr.length; i++) {
 
-                if(that.dataObj.auditStatus=='4'){
-                that.leaveType='5'
-                return;
-                }
+                        if(newArr[i].status&&newArr[i].status=='2'){
+                            this.endIndex = i;
+                            this.leaveType = '0';  //已经拒绝
+                            
+                        }
+                    }
 
-                if(that.dataObj.links[that.dataObj.links.length-1].status == 1){ // 已同意
-                that.leaveType = '1';
-                return;
-                }
-                if(that.dataObj.links[that.dataObj.links.length-1].status == 5){ // 已评论
-                that.leaveType = '6';
-                return;
-                }
 
-                if(that.dataObj.auditStatus == '3'){ //已经撤销
-                that.leaveType = '2'
-                return;
-                }
+                    that.dataObj.links = newArr;
+
+                    if(that.dataObj.auditUserId.indexOf(that.dataObj.userId)>-1&&that.dataObj.myselfApply!=1){
+                        that.myself=true;
+                        if(that.dataObj.auditStatus==0&&that.dataObj.myselfApply!='00'){
+                            that.dataObj.myselfApply="0"
+                        }
+                    }
+
+                    if(that.dataObj.auditStatus=='4'){
+                        that.leaveType='5'
+                        return;
+                    }
+
+                    if(that.dataObj.links[that.dataObj.links.length-1].status == 1){ // 已同意
+                        that.leaveType = '1';
+                        return;
+                    }
+                    if(that.dataObj.links[that.dataObj.links.length-1].status == 5){ // 已评论
+                        that.leaveType = '6';
+                        return;
+                    }
+
+                    if(that.dataObj.auditStatus == '3'){ //已经撤销
+                        that.leaveType = '2'
+                        return;
+                    }
             })
 
         },
@@ -630,6 +616,7 @@
             }
 
             span{
+                width 0.75rem;
                 color #666;
                 margin-right 0.15rem;
             }
@@ -648,7 +635,57 @@
         height:0.55rem;
     }
 
-    body{
-        background-color:#f80;
+
+
+    .performance{
+        background-color:#fff;
+        padding 0 0.15rem;
+        margin-bottom:0.15rem;
+
+        &_title{
+            line-height: 0.44rem;
+            font-size: 0.15rem;
+            color: #333;
+            font-weight: bold;
+
+            span{
+                float:right;
+                font-size:0.14rem;
+                color:#808080;
+            }
+        }
+
+    }
+
+
+    .performanceList{
+        display:flex;
+        max-height:2rem;
+        overflow:hidden;
+        flex-wrap:wrap;
+       
+       &_item{
+           text-align:center;
+           width:20%;
+           margin-bottom:0.1rem;
+
+           img{
+               width:0.32rem;
+               height:0.32rem;
+               border-radius:50%;
+               display:block;
+               margin 0 auto;
+               margin-bottom:0.05rem;
+           }
+
+           span{
+               display:block;
+               color:#808080;
+               font-size 0.14rem;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+           }
+       }
     }
 </style>
