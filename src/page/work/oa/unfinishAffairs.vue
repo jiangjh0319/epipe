@@ -8,7 +8,7 @@
 
         <div>
             <div>
-                <OaTemplate v-on:goDetails="goDetails" v-for="(item,index) in leaveData" :item=item :key="item.applyId"></OaTemplate>
+                <OaTemplate v-on:goDetails="goDetails" v-for="(item,index) in leaveData" :item="item" :key="item.applyId"></OaTemplate>
                 <infinite-loading  spinner="bubbles" :on-infinite="onInfinite" ref="infiniteLoading">
                     <span slot="no-more" class="no-more">
                         暂无更多加载
