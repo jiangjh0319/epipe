@@ -16,7 +16,7 @@
         props:['value','info'],
         methods:{
             getVal(){
-                 this.$emit('input',this.value);
+                 this.$emit('input');
             }
         }
     }

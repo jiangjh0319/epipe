@@ -49,7 +49,7 @@
                 
                 ></MoreSelect>
 
-                <NumInput :info="el" v-else-if="el.ename=='numberInputBox'"
+                <NumInput :info="el" v-else-if="el.ename=='numberInputBox'" v-on:input='inputEvent(el)'
 
                 ></NumInput>
 
@@ -214,8 +214,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 departData:[], //部门数据
                 defaultIndex:1,//单选默认选中
                 peopleType:0,//联系人类型
-
-
+                approvalFormId:'',
             }
         },
         components: {
@@ -249,6 +248,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
 
 
             if(this.$route.query.approvalFormId){
+                this.approvalFormId = this.$route.query.approvalFormId
                 this.getData(this.$route.query.approvalFormId)
             }
 
@@ -257,6 +257,8 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 this.axios.get('/process/apply/info?applyId='+this.applyId).then(res=>{
                     let data = res.data.b;
                     let newData = []
+                this.approvalFormId = data.applyType
+
                     this.getData(data.applyType,1)
 
                     data.list.forEach(item=>{
@@ -340,6 +342,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                     item.value = value;
                     item.valueIndex = index;
                     item.valueCode = index;
+                    this.inputEvent(item)
                 }else if(item.ename=='department'){
                     item.value = value
                     item.valueIndex = index
@@ -376,9 +379,14 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
             },
             checked(type){
 
+                    if(this.formData.isCondFlag==1&&!this.allApprovers.length){
+                       this.$toast('该内容下无符合条件的审批人')
+                        return;
+
+                    }
                 if(this.Util.checkApprovers(this.allApprovers)){
-                    this.$toast('请选择审批人')
-                    return;
+                        this.$toast('请选择审批人')
+                        return;
                 }
 
                 for (let i = 0; i < this.formData.components.length; i++) {
@@ -469,7 +477,6 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 })
 
                 console.log(params)
-
                 this.axios({
                 method:"post",
                 url:"/process/apply/save",
@@ -610,6 +617,74 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 this.chosed_list.splice(index, 1);
                 this.change_man(this.chosed_list)
             },
+
+            numberInput(val){//监听数字输入
+                if(this.formData.isCondFlag==0) return ''
+
+                this.getConForm()
+            },
+            inputEvent(item){
+                if(this.formData.isCondFlag==0&&item.req!=1) return ''
+                this.getConForm()
+            },
+            getConForm(){
+
+                let arrs = [], param = {}, flag = false;
+                console.log(flag)
+                this.formData.components.map(item=>{
+                    if(item.req==1&&item.columnType==3){
+                        if(item.value==''){
+                            console.log(1)
+                            flag = true
+                        }
+                        arrs.push(item)
+                    }else if(item.req==1&&item.columnType==4){
+                        if(item.valueCode===''){
+                            flag = true
+                        }
+                        arrs.push(item)
+
+                    }
+                })
+                if(flag) return ''
+
+                arrs.map((item,index)=>{
+                    param['list['+index+'].componentId'] = item.id
+                    param['list['+index+'].stringValue'] = item.columnType=='3'?item.value:item.valueCode
+                })
+
+
+                param.applyType =this.approvalFormId
+
+                 this.axios({
+                method:"post",
+                url:"/process/apply/load",
+                headers:{
+                    'Content-type': 'application/x-www-form-urlencoded'
+                },
+                data:param,
+                transformRequest: [function (data) {
+                        let ret = ''
+                        for (let it in data) {
+                        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+                        }
+                        return ret
+                    }],
+                }).then((res)=>{ 
+                    let data = res.data.b.processInfo;
+
+                    this.allApprovers = this.Util.approverDataInit(data.links);
+                    this.linkAuditNum = data.linkAuditNum;
+                    this.applyLinkIds = data.applyLinkIds;
+                    this.showCopy = data.approvalReceiverFlag=='1'?false:true;
+
+                    if(data.receivers&&data.receivers.length>0){
+                            this.chosed_list = data.receivers
+                            this.change_man(this.chosed_list);
+                    }
+                })
+                
+            }
         },
         activated(){
             if(this.addressListIndex>0){
