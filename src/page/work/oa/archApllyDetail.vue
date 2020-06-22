@@ -195,12 +195,11 @@
                  this.$router.push({path:'/opinion',query:{id:this.dataObj.tripId,typeName:'trip',applyType:4,color:'#609df6'}})
             },
             history_back_click:function(){
-                    // if(location.href.indexOf('goWork=0')>0){
-                    //     window.location.href = "epipe://?&mark=history_back"
-                    //     return
-                    // }
-                    // window.location.href = "epipe://?&mark=goWork"
-                    history.back()
+                    if(location.href.indexOf('goWork=0')>0){
+                        window.location.href = "epipe://?&mark=history_back"
+                        return
+                    }
+                    window.location.href = "epipe://?&mark=goWork"
             },
             deliverTo(){ //转交
                 let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
@@ -334,11 +333,11 @@
         mounted:function(){
 
             let that = this;
-            let dossierBorrowApplyId = this.$route.query.dossierBorrowApplyId;
-            console.log(dossierBorrowApplyId,'id')
+            let archApllyId = this.$route.query.archApllyId;
+            console.log(archApllyId,'id')
             let pusthId = this.$route.query.pushId
 
-            this.axios.get('work/dossierBorrowApply/info?dossierBorrowApplyId='+dossierBorrowApplyId+'&pushId='+pusthId+'&type=1').then((res)=>{
+            this.axios.get('work/dossierBorrowApply/info?dossierBorrowApplyId='+archApllyId+'&pushId='+pusthId+'&type=1').then((res)=>{
                 that.dataObj = res.data.b;
                 console.log(that.dataObj,'data详情')
                 that.accessory = that.accessoryFors(that.dataObj.accessory)

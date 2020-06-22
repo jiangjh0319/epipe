@@ -45,6 +45,7 @@ export default {
             let that = this;
             this.axios.get('/work/wait/list').then(function(res){
                         that.leaveData = that.dataFor(res.data.b.data);
+                        console.log(that.leaveData,'数据')
                        that.count = res.data.b.data[0].count
                  })
         },

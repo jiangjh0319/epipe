@@ -201,12 +201,11 @@
                  this.$router.push({path:'/opinion',query:{id:this.dataObj.tripId,typeName:'trip',applyType:4,color:'#609df6'}})
             },
             history_back_click:function(){
-                    // if(location.href.indexOf('goWork=0')>0){
-                    //     window.location.href = "epipe://?&mark=history_back"
-                    //     return
-                    // }
-                    // window.location.href = "epipe://?&mark=goWork"
-                    history.back()
+                    if(location.href.indexOf('goWork=0')>0){
+                        window.location.href = "epipe://?&mark=history_back"
+                        return
+                    }
+                    window.location.href = "epipe://?&mark=goWork"
             },
             deliverTo(){ //转交
                 let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
@@ -340,11 +339,11 @@
         mounted:function(){
 
             let that = this;
-            let performanceApplyId = this.$route.query.performanceApplyId;
-            console.log(performanceApplyId,'id')
+            let archMoveApplyId = this.$route.query.archMoveApplyId;
+            console.log(archMoveApplyId,'id')
             let pusthId = this.$route.query.pushId
 
-            this.axios.get('work/dossierTransferApply/info?dossierTransferApplyId='+performanceApplyId+'&pushId='+pusthId+'&type=1').then((res)=>{
+            this.axios.get('work/dossierTransferApply/info?dossierTransferApplyId='+archMoveApplyId+'&pushId='+pusthId+'&type=1').then((res)=>{
                 that.dataObj = res.data.b;
                 console.log(that.dataObj,'data')
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
