@@ -4,7 +4,7 @@
         <TopHead
         mark = 'mark'
         bgcolor='#609EF7'
-        title="上传档案" 
+        title="档案审批" 
         v-on:history_back="history_back_click"
          ></TopHead>
 

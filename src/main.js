@@ -55,8 +55,8 @@ Vue.use(wcSwiper);
 
 
 import 'vant/lib/index.css';
-import { Collapse,CollapseItem,Button ,Popup,Tabbar,TabbarItem,RadioGroup,Radio,Picker,Progress,Search,ActionSheet,Tab,Tabs,Dialog,Field,PullRefresh,List,Loading,Step, Steps,Cell, CellGroup,DatetimePicker,Checkbox, CheckboxGroup,Divider,Icon,Uploader,Overlay,Swipe, SwipeItem,NavBar,Grid,GridItem    } from 'vant';
-Vue.use(Collapse).use(CollapseItem).use(Tabbar).use(Button ).use(TabbarItem).use(Popup).use(RadioGroup).use(Radio).use(Picker).use(Progress).use(Search).use(ActionSheet).use(Tab).use(Tabs).use(Dialog).use(Field).use(PullRefresh).use(List).use(Loading).use(Grid).use(GridItem)
+import {Col, Row,Collapse,CollapseItem,Button ,Popup,Tabbar,TabbarItem,RadioGroup,Radio,Picker,Progress,Search,ActionSheet,Tab,Tabs,Dialog,Field,PullRefresh,List,Loading,Step, Steps,Cell, CellGroup,DatetimePicker,Checkbox, CheckboxGroup,Divider,Icon,Uploader,Overlay,Swipe, SwipeItem,NavBar,Grid,GridItem    } from 'vant';
+Vue.use(Collapse).use(Col).use(Row).use(CollapseItem).use(Tabbar).use(Button ).use(TabbarItem).use(Popup).use(RadioGroup).use(Radio).use(Picker).use(Progress).use(Search).use(ActionSheet).use(Tab).use(Tabs).use(Dialog).use(Field).use(PullRefresh).use(List).use(Loading).use(Grid).use(GridItem)
 .use(Step).use(Steps).use(Cell).use(CellGroup).use(DatetimePicker).use(Checkbox).use(CheckboxGroup).use(Divider).use(Icon).use(Uploader).use(Overlay).use(Swipe).use(SwipeItem).use(NavBar);  
 
 

@@ -4,7 +4,7 @@
         <TopHead
         mark = 'mark'
         bgcolor='#609EF7'
-        title="上传档案" 
+        title="档案移交" 
         v-on:history_back="history_back_click"
          ></TopHead>
 
@@ -12,65 +12,183 @@
         <div class="content">
             <div class="styles input_group">
                 <div class="bor_bottom">
-                    <van-field v-model="archNum" clearable input-align="right" label="档案编号" placeholder="请输入档案编号" />
-                </div>   
-                <div class="bor_bottom">
-                    <van-field v-model="archName" clearable input-align="right" label="档案名称" placeholder="请输入档案名称" />
+                    <van-field v-model="applyNum" clearable input-align="right" label="移交编号" placeholder="移交编号" />
                 </div>
-            </div>
-
-            <div class="styles input_group">
-        
+                <div class="bor_bottom">
+                    <van-field v-model="userName" readonly input-align="right" label="移交申请人" placeholder="" />
+                </div>
+                <div class="bor_bottom">
+                    <van-field v-model="organName" readonly input-align="right" label="所属公司" placeholder="" />
+                </div>
+                <div class="bor_bottom">
+                    <van-field v-model="departmentName" readonly input-align="right" label="所属部门" placeholder="" />
+                </div>
+                <div class="bor_bottom">
+                    <van-field v-model="transferName" clearable input-align="right" label="移交名称" placeholder="请输入移交名称" />
+                </div>
                 <div class="bor_bottom choose">
                     <van-field
                         v-model="valDate"
-                        label="档案日期"
-                        placeholder="请选择档案日期"
+                        label="移交日期"
+                        placeholder="请选择日期"
+                        right-icon="arrow-down"
+                        input-align="right"
+                        @click="handlerShowPicker(1)"
+                    />
+                </div>     
+            </div>
+
+            <div class="styles input_group">
+                <div class="choose">
+                    <van-field
+                        v-model="userInfo.name"
+                        label="接收人"
+                        placeholder="请选择接收人"
+                        readonly
+                        right-icon="arrow"
+                        input-align="right"
+                        @click="choose_user"
+                    />
+                </div>  
+                <div class="choose">
+                    <van-field
+                        v-model="userInfo.companyName"
+                        label="接收公司"
+                        placeholder="接收公司"
+                        clearable
+                        input-align="right"
+                    />
+                </div> 
+                <!-- <div class="bor_bottom choose">
+                    <van-field
+                        v-model="valDate"
+                        label="接收日期"
+                        placeholder="请选择接收日期"
                          right-icon="arrow-down"
                         input-align="right"
                         @click="handlerShowPicker(1)"
                     />
-                </div>      
+                </div>       -->
                 
-                <div class="choose">
+                <div class="choose bor_bottom">
                     <van-field
-                        v-model="valGrade"
-                        label="保密等级"
-                        placeholder="请选择保密等级"
-                         right-icon="arrow-down"
+                        v-model="userInfo.officeName"
+                        label="接收部门"
+                        placeholder="接收部门"
                         input-align="right"
-                        @click="handlerShowPicker(2)"
                     />
                 </div>    
+              
          
             </div>
+            <div class="styles" style="padding:0 0.15rem;">
+                 <p class="title">移交说明</p>
+                    <textarea v-model.trim="userBuyApplyRemarks" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入移交说明,限定1000字">
 
-            <div class="styles input_group">
-        
-                <div class="bor_bottom choose">
-                    <van-field
-                        v-model="ageLimit"
-                        label="保管年限"
-                        placeholder="请输入保管年限"
-                        clearable
-                        input-align="right"
-
-                    />
-                </div>      
-                
-                <div class="choose">
-                    <van-field
-                        v-model="endTime"
-                        label="保管截止日期"
-                        placeholder="选择保管截止日期"
-                         right-icon="arrow-down"
-                        input-align="right"
-                        @click="handlerShowPicker(3)"
-                    />
-                </div>    
-         
+                    </textarea>
+                    <div class="record_box">
+                            <span>{{textNum}}/1000</span>
+                    </div>
             </div>
-            <div class="styles input_group">
+            <div v-for="(item,index) in addList" :key="index">
+                <div class="title_f" v-if="isShowHeard">资料明细（{{index+1}}）<img src="../../../assets/shanchu.png" @click="deleteRules(item,index)"> </div>
+                <div class="styles input_group">
+         
+                    <div class="choose">
+                        <van-field
+                            v-model="item.name"
+                            label="档案名称"
+                            placeholder="选择档案名称"
+                            readonly
+                            right-icon="arrow-down"
+                            input-align="right"
+                            @click="handlerShowPicker(6,index)"
+                        />
+                    </div>  
+                    <div class="bor_bottom choose">
+                        <van-field
+                            v-model="item.no"
+                            label="档案编号"
+                            placeholder="请输入档案编号"
+                            clearable
+                            input-align="right"
+                        />
+                    </div>    
+
+                    <div class="bor_bottom choose">
+                        <van-field
+                            v-model="item.dossierLocationName"
+                            label="存放位置"
+                            placeholder="请输入原存放位置"
+                            clearable
+                            input-align="right"
+                        />
+                    </div>
+                    <div class="choose">
+                        <van-field
+                            v-model="item.managerName"
+                            label="档案管理员"
+                            placeholder="请输入档案管理员"
+                            clearable
+                            input-align="right"
+                        />
+                    </div>  
+                    <div class="bor_bottom" style="background-color: #fff;" v-if="isShowRadio"> 
+                        <van-radio-group v-model="radio" direction="horizontal">
+                            <div style="font-size:14px;margin-left:15px;margin-right:100px;line-height: 42px;height:42px">是否有纸质档</div>
+                            <van-radio name="1">是</van-radio>
+                            <van-radio name="0">否</van-radio>
+                        </van-radio-group>
+                    </div>
+                </div>
+                <!-- <div class="styles input_group">
+            
+                    <div class="bor_bottom choose">
+                        <van-field
+                            v-model="item.beforePlace"
+                            label="原存放位置"
+                            placeholder="请输入原存放位置"
+                            clearable
+                            input-align="right"
+                        />
+                    </div>      
+                    
+                    <div class="choose">
+                        <van-field
+                            v-model="item.archAdmin"
+                            label="档案管理员"
+                            placeholder="请输入档案管理员"
+                            clearable
+                            input-align="right"
+                        />
+                    </div>    
+            
+                </div>
+                <div class="styles input_group">
+            
+                    <div class="bor_bottom choose">
+                        <van-field
+                            v-model="item.newPlace"
+                            label="新存放位置"
+                            placeholder="请输入新存放位置"
+                            clearable
+                            input-align="right"
+                        />
+                    </div>      
+                    
+                    <div class="choose">
+                        <van-field
+                            v-model="item.newAdmin"
+                            label="新档案管理员"
+                            placeholder="请输入新档案管理员"
+                            clearable
+                            input-align="right"
+                        />
+                    </div>    
+            
+                </div> -->
+            </div>
+            <!-- <div class="styles input_group">
         
                 <div class="bor_bottom choose">
                     <van-field
@@ -93,8 +211,8 @@
                     />
                 </div>      
          
-            </div>
-            <div class="styles input_group">
+            </div> -->
+            <!-- <div class="styles input_group">
         
                 <div class="choose">
                     <van-field
@@ -106,7 +224,7 @@
                         @click="handlerShowPicker(5)"
                     />
                 </div>            
-            </div>
+            </div> -->
             <van-popup v-model="showPicker"  position="bottom">
                 <van-picker
                     show-toolbar
@@ -125,32 +243,12 @@
                     @confirm="onConfirmTime"
                     />
             </van-popup> 
-            <div class="styles" style="padding:0 0.15rem;">
-                 <p class="title">档案描述</p>
-                    <textarea v-model.trim="userBuyApplyRemarks" name="" maxlength="1000" id="" cols="30" rows="10" placeholder="请输入备注,限定1000字">
-
-                    </textarea>
-                    <div class="record_box">
-                            <span>{{textNum}}/1000</span>
-                    </div>
-            </div>
-          
-            <div v-for="(item,index) in addList" :key="index">
-                <div class="title_f">资料明细（{{index+1}}）<img src="../../../assets/shanchu.png" @click="deleteRules(item,index)"> </div>
-                <div class="bor_bottom"> 
-                    <van-field
-                        v-model="item.dataName"
-                        label="资料名称"
-                        placeholder="输入资料名称"
-                        input-align="right"
-                        />
-                </div>
-                <Accessory
-                    :accessory ='accessory'
-                >
-                </Accessory>
-            </div>
-            <div class="remove_btn" @click="addDataName">增加资料明细</div>
+           
+            <div class="remove_btn" @click="addDataName">增加移交档案明细</div>
+            <Accessory
+                :accessory ='accessory'
+            >
+            </Accessory>
             <!-- <ApproverMan 
                 :has_journal="!has_journal"
                 color="#0fc37c"
@@ -168,7 +266,7 @@
               hintType=1
             ></ApproMan>
 
-            <!-- <CopeMan 
+            <CopeMan 
                 :has_journal="!has_journal"
                 color="#0fc37c"
                 :data_list=chosed_list
@@ -177,7 +275,7 @@
                 :types = '2'
                 :isGroup = true
                 :showAdd="showCopy"
-            ></CopeMan> -->
+            ></CopeMan>
         </div>
             <WorkButton
                 v-if="!has_journal"
@@ -204,38 +302,41 @@
 <script>
 let reg = /[\u4e00-\u9fa5]/g;
 let save_leave = (index,text,that) =>{
-    if(that.userBuyApplyTheme==''){
-        that.$toast('申请事由不能为空')
-    }else if(that.userBuyApplyTheme.length<2||that.userBuyApplyTheme.length>100){
-        that.$toast('申请事由不能低于2个或超过100个字符')
+    if(that.transferName==''){
+        that.$toast('移交名称不能为空')
+    }else if(that.valDate==''){
+        that.$toast('请选择移交日期')
+    }else if(new Date(that.valDate).getTime()<=new Date().getTime()){
+        that.$toast('移交日期必须大于当前日期')
+        return false
+    }else if(that.transferName.length<2||that.transferName.length>100){
+        that.$toast('移交名称不能低于2个或超过100个字符')
     }else if(that.userBuyApplyRemarks.length<6||that.userBuyApplyRemarks.length>1000){
-        that.$toast('备注不能低于6个或超过1000个字符')
-    }else if(that.hopeDeliveryDate=='请选择'){
-        that.$toast('请选择期望交付日期')
+        that.$toast('移交说明不能低于6个或超过1000个字符')
     }else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
 
-        for(let i=0;i<that.buy.length;i++){
+        // for(let i=0;i<that.buy.length;i++){
             
-            if(that.buy[i].name==''){
-                that.$toast('请输入名称')
-            }else if(that.buy[i].name&&(that.buy[i].name.length<2||that.buy[i].name.length>30)){
-                that.$toast('物品名称必须为2-30个字符')
-            }else if(!that.buy[i].price){
-                that.$toast('价格不能为空')
-            } else if(isNaN(that.buy[i].price) || that.buy[i].price.length>8){
-                that.$toast('价格为1-8位数字')
-            }else if(that.buy[i].unit==''){
-                that.$toast('请输入单位')
-            }else if(that.buy[i].specifications==''){
-                that.$toast('请输入规格')
-            }else if(that.buy[i].number==''){
-                that.$toast('请输入数量')
-            }else if(isNaN(that.buy[i].number)){
-                that.$toast('数量需为数字')
-            }
-        }
+        //     if(that.buy[i].name==''){
+        //         that.$toast('请输入名称')
+        //     }else if(that.buy[i].name&&(that.buy[i].name.length<2||that.buy[i].name.length>30)){
+        //         that.$toast('物品名称必须为2-30个字符')
+        //     }else if(!that.buy[i].price){
+        //         that.$toast('价格不能为空')
+        //     } else if(isNaN(that.buy[i].price) || that.buy[i].price.length>8){
+        //         that.$toast('价格为1-8位数字')
+        //     }else if(that.buy[i].unit==''){
+        //         that.$toast('请输入单位')
+        //     }else if(that.buy[i].specifications==''){
+        //         that.$toast('请输入规格')
+        //     }else if(that.buy[i].number==''){
+        //         that.$toast('请输入数量')
+        //     }else if(isNaN(that.buy[i].number)){
+        //         that.$toast('数量需为数字')
+        //     }
+        // }
 
         let receiverIds = '',receiverCompanyIds="",fileObj = {}, params={}, approver = {}
 
@@ -248,12 +349,17 @@ let save_leave = (index,text,that) =>{
 
         params = {
             Id : that.id, // id
+           
+            dossierTransferNo:that.applyNum, //移交编号
+            transferName:that.transferName,//移交名称
+            transferDate:that.valDate,//移交日期
+            
+            dossierTransferNoDm:that.userBuyApplyRemarks, //移交原因
+            receiveCompany:that.userInfo.companyName,//接收人公司
+            receiveOffice:that.userInfo.officeName,//接收人部门
+            receiveId:that.userInfo.userId,//接收人ID
+
             urls : fileObj.urlStr, //附件
-            userBuyApplyTheme:that.userBuyApplyTheme, //
-            payType:that.payTypeCode,
-            buyType:that.buyTypeCode,
-            hopeDeliveryDate:that.hopeDeliveryDate,
-            userBuyApplyRemarks:that.userBuyApplyRemarks,
             fileNames : fileObj.fileNameStr, //文件名称s
             fileSizes : fileObj.fileSizeStr, //文件大小
             receiverIds, //抄送人
@@ -265,17 +371,20 @@ let save_leave = (index,text,that) =>{
             draftFlag : index, //草稿还是发送
         }
 
-        that.buy.forEach((item,index)=>{
-            params['list['+index+'].name'] = item.name
-            params['list['+index+'].specifications'] = item.specifications
-            params['list['+index+'].number'] = item.number
-            params['list['+index+'].price'] = item.price
-            params['list['+index+'].unit'] = item.unit
+        that.addList.forEach((item,index)=>{
+            params['dmInfo['+index+'].dossier'] = item.name
+            params['dmInfo['+index+'].dossierId'] = item.id
+            params['dmInfo['+index+'].oldDossierLocation'] = item.dossierLocationName
+            params['dmInfo['+index+'].oldDossierLocationId'] = item.dossierLocationId
+            params['dmInfo['+index+'].dossierTransferNoDm'] = item.no
+            params['dmInfo['+index+'].handleUser'] = item.managerName
+            params['dmInfo['+index+'].handleUserId'] = item.managerId
         })
-
+        console.log('参数',params)
+        // return
         that.axios({
                 method:"post",
-                url:"/work/buy/save",
+                url:"work/dossierTransferApply/save",
                 headers:{
                     'Content-type': 'application/x-www-form-urlencoded'
                 },
@@ -305,11 +414,18 @@ let save_leave = (index,text,that) =>{
                         }
                     },500)
                 }else{
+                    console.log(res.data.b.performanceApplyId,'performanceApplyId')
                     that.$toast('提交成功!')
-                    window.location.href = "epipe://?&mark=workUpdate";
+                    that.transferName = '';
+                    that.valDate = '';
+                    that.userBuyApplyRemarks = '';
+                    // return
+                    // window.location.href = "epipe://?&mark=workUpdate";
                     setTimeout(()=>{
-                        window.location.href = "epipe://?&mark=submitBuy&_id="+res.data.b.userBuyApplyId;
+                        window.location.href = "epipe://?&mark=submitArchMoveApply&_id="+res.data.b.performanceApplyId;
+                        // that.$router.push({path:'/archMoveApplyDetail',query:{performanceApplyId:res.data.b.performanceApplyId}})
                     },500)
+                    
                 }
             }
             that.change_man([])
@@ -348,6 +464,8 @@ export default {
                 buy: [{name:'',number:'',price:'',specifications:'',unit:''}], //
                 departmentName:'',
                 userName:'',
+                organName:'',
+                userInfo:{},
                 isShow:false,
                 oldData:null,
                 addressListIndex:-1,
@@ -357,13 +475,15 @@ export default {
                 allApprovers:[],
                 linkAuditNum:'',
 
-                     valDate:'',
+                valDate:this.getNowTime(),
                 valGrade:'',
                 showPicker:false,
                 showPickerTime:false,
                 minDate: new Date(1690, 0, 1),
                 currentDate: new Date(),
-                columns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
+                columns: [],
+                archNameIds:[],
+                pickIndex:0,
                 endTime:'',
                 index_:'',
                 picker_index:'',
@@ -373,10 +493,20 @@ export default {
                 placeArch:'',
                 addList:[
                     {
-                        dataName:'',
-                        accessory:[]
+                        archNum:'',
+                        archName:'',
+                        beforePlace:'',
+                        archAdmin:'',
+                        newPlace:'',
+                        newAdmin:''
                     }
-                ]
+                ],
+                isShowHeard:false,
+                applyNum:'',
+                transferName:'',//移交名称
+                isShowRadio:false,
+                radio:''
+                
             }
         },
         components: {
@@ -396,7 +526,13 @@ export default {
         submit_btn(){ //提
             save_leave(0, "提交成功", this)
         },
-         handlerShowPicker(i){
+        choose_user(){//选择申请人
+        console.log('申请人')
+            this.addressListIndex = -1;
+            this.approver_man([])
+            this.$router.push({path: 'imchoices', query: {bgcolor:'#609df6',num:1,amount:1}})
+        },
+        handlerShowPicker(i,index){
             if(i===1){
                 this.index_ = i;
                 this.showPickerTime = true;
@@ -412,21 +548,46 @@ export default {
              }else if(i===5){
                 this.picker_index = i;
                 this.showPicker = true;
+             }else if(i===6){
+                this.picker_index = i;
+                this.pickIndex = index;
+                this.showPicker = true;
              }
         },
-        onConfirm(value) {
+        onConfirm(value,index) {
             if(this.picker_index===2){
                 this.valGrade = value;
             }else if(this.picker_index===4){
                 this.wellmadestarm = value;
             }else if(this.picker_index===5){
                 this.placeArch = value;
+            }else if(this.picker_index===6){
+                var listArr = this.newArr.filter((item)=>{
+            
+                    return item.id==this.archNameIds[index]
+                })
+                console.log(listArr,'arr')
+                for(let val of listArr){
+                    console.log(val,'一条数据')
+                    // if(val.containPage==1){
+                    //     this.isShowRadio = true;
+                    // }else{
+                    //     this.isShowRadio = false;
+                    // }
+                    this.addList[this.pickIndex].name = val.name;
+                    this.addList[this.pickIndex].id = val.id;
+                    this.addList[this.pickIndex].no = val.no;
+                    this.addList[this.pickIndex].dossierLocationName = val.dossierLocationName;
+                    this.addList[this.pickIndex].dossierLocationId = val.dossierLocationId;
+                    this.addList[this.pickIndex].managerName = val.managerName;
+                    this.addList[this.pickIndex].managerId = val.managerId;
+                }
             }
             this.showPicker = false;
         },
-        format(date, index){
-        date = new Date(date);
-        return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        format(date){
+            date = new Date(date);
+            return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         },
         onConfirmTime(value){
             if(this.index_==1){
@@ -533,6 +694,10 @@ export default {
 
             this.totalPrice = total.toFixed(1);
         },
+        getNowTime(){//获取当前时间
+            var date = new Date();
+            return  `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        },
         getTime(){ //获取原生时间
                 let that = this;
                 window.location.href = "epipe://?&mark=getLeaveTime";
@@ -552,11 +717,19 @@ export default {
         },
         history_back_click:function(){
                 // window.location.href = "epipe://?&mark=history_back&url=myApply"
-                if(!this.Util.isUpdate(this.$data,this.oldData)){
-                     window.location.href = "epipe://?&mark=history_back"
-                }else{
-                    this.isShow = true;
-                }
+                window.location.href = "epipe://?&mark=history_back"
+                // if(!this.Util.isUpdate(this.$data,this.oldData)){
+                // }else{
+                //     this.isShow = true;
+                // }
+        },
+        tab(date1,date2){
+            var oDate1 = new Date(date1);
+            var oDate2 = new Date(date2);
+            if(oDate1.getTime() < oDate2.getTime()){
+                 this.$toast('移交日期必须大于当前日期')
+                 return
+            }
         },
         tiemF(timeStr){
             timeStr+=':00';
@@ -568,12 +741,20 @@ export default {
                 if (index !== -1) {
                     this.addList.splice(index, 1)
                 }
+                if(this.addList.length==1){
+                    this.isShowHeard = false;
+                }
             },
         addDataName(){ //明细
            this.addList.push({
-                    dataName:'',
-                    accessory:[]
+                    archNum:'',
+                    archName:'',
+                    beforePlace:'',
+                    archAdmin:'',
+                    newPlace:'',
+                    newAdmin:''
                 });
+                this.isShowHeard = true;    
         },
         buyTypeSelect(){
             this.$router.push({path:'/option',query:{indexs:this.buyTypeCode,type:'buy',color:'#0fc37c',title:'采购类型',getType:1}})
@@ -605,6 +786,35 @@ export default {
 
         },
         created() {
+             
+
+            this.axios.get('work/dossierTransferApply/no').then(res=>{
+                console.log(res,'移交编号数据')
+                if(res.data.h.code==200){
+                    this.applyNum = res.data.b.no;
+                }else{
+                    this.$toast(res.data.h.msg)
+                }
+            })
+
+            this.axios.get("work/dossierBorrowApply/token?pageNo=1&pageSize=10").then(res=>{
+                if(res.data.h.code==200){
+                console.log(res.data.b.b.dataList,'档案名称')
+                this.newArr = res.data.b.b.dataList;
+                   if(this.newArr.length==0){
+                    this.columns.push('暂无数据')
+                    }else{
+                        for(let val of this.newArr){
+                            // console.log(val,'val')
+                            this.columns.push(val.name)
+                            this.archNameIds.push(val.id)
+                        }
+                    }
+                }else{
+                    this.$toast(res.data.h.msg)
+                }
+
+            })
 
             if(localStorage.getItem('buy')){
                 let buydata = JSON.parse(localStorage.getItem('buy'))
@@ -617,6 +827,14 @@ export default {
 
             this.oldData = JSON.parse(JSON.stringify(this.$data))
             let that = this;
+            this.axios.post('/user/current/userinfo').then(function(res){
+                console.log(res.data.b,'个人信息')
+                that.departmentName = res.data.b.officeName
+                that.userName = res.data.b.name
+                that.organName = res.data.b.organName
+                
+                that.oldData = JSON.parse(JSON.stringify(that.$data))
+            })    
 
              eventBus.$on('leaveType', res =>{
                 if(res.name=='') return;
@@ -644,12 +862,21 @@ export default {
 
         },
         activated(){
-            if(this.addressListIndex>0){
+            // if(this.addressListIndex>0){
+            //     this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            // }
+            // this.chosed_list = this.chosed_man_state
+            // this.$forceUpdate();
+            
+            if(this.addressListIndex>-1){
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
+            }else{
+                this.userInfo = this.approver_man_state[0]?this.approver_man_state[0]:this.userInfo;
+                console.log(this.userInfo,'userinfo')
             }
             this.chosed_list = this.chosed_man_state
-		    this.$forceUpdate();
          },
+
         mounted(){
                 window["epipe_camera_callback"] = (url,fileSize,fileName) => {
                     var obj = {
@@ -934,7 +1161,7 @@ export default {
     .title_f{
         padding-bottom 0.13rem;
         font-size:0.14rem;
-        color:#323233;
+        color:#609EF7;
         padding-left 0.1rem;
         position: relative;
         img {

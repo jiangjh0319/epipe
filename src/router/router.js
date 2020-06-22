@@ -151,7 +151,21 @@ const MyApply = r => require.ensure([], () => r(require('@/page/work/oa/myApply.
 const Drafts = r => require.ensure([], () => r(require('@/page/work/oa/drafts.vue')), 'group-work')
 const Imchoices = r => require.ensure([], () => r(require('@/page/work/oa/imchoices.vue')), 'group-work')
 
+
 const ArchUpload = r => require.ensure([], () => r(require('@/page/work/oa/archUpload.vue')), 'group-work')
+const ArchList = r => require.ensure([], () => r(require('@/page/work/oa/archList.vue')), 'group-work')
+const ArchTast = r => require.ensure([], () => r(require('@/page/work/oa/archTast.vue')), 'group-work')
+const ArchUploadDetail = r => require.ensure([], () => r(require('@/page/work/oa/archUploadDetail.vue')), 'group-work')
+const ArchAplly = r => require.ensure([], () => r(require('@/page/work/oa/archAplly.vue')), 'group-work')
+const ArchApllyDetail = r => require.ensure([], () => r(require('@/page/work/oa/archApllyDetail.vue')), 'group-work')
+const ArchBack = r => require.ensure([], () => r(require('@/page/work/oa/archBack.vue')), 'group-work')
+const ArchView = r => require.ensure([], () => r(require('@/page/work/oa/archView.vue')), 'group-work')
+const ArchViewDetail = r => require.ensure([], () => r(require('@/page/work/oa/archViewDetail.vue')), 'group-work')
+const ArchViewDetailMore = r => require.ensure([], () => r(require('@/page/work/oa/archViewDetailMore.vue')), 'group-work') 
+const ArchMoveApply = r => require.ensure([], () => r(require('@/page/work/oa/archMoveApply.vue')), 'group-work') 
+const ArchMoveApplyDetail = r => require.ensure([], () => r(require('@/page/work/oa/archMoveApplyDetail.vue')), 'group-work') 
+
+
 
 
 const AddressList = r => require.ensure([], () => r(require('@/page/work/addressList.vue')), 'group-work')
@@ -925,6 +939,55 @@ export default new Router({
     {
       path:'/archUpload', //档案上传
       component:ArchUpload,
+      meta: {keepAlive: true}
+    },
+    {
+      path:'/archList', //档案代办事宜
+      component:ArchList,
+    },
+    {
+      path:'/archTast', //档案上传任务
+      component:ArchTast,
+    },
+    {
+      path:'/archUploadDetail', //档案审批
+      component:ArchUploadDetail,
+      meta: {keepAlive: true}
+    },
+    {
+      path:'/archAplly', //档案借阅
+      component:ArchAplly,
+      meta: {keepAlive: true}
+    },
+    {
+      path:'/archApllyDetail', //档案借阅详情
+      component:ArchApllyDetail,
+      meta: {keepAlive: true}
+    },
+    {
+      path:'/archBack', //档案上传任务
+      component:ArchBack,
+    },
+    {
+      path:'/archView', //档案查看
+      component:ArchView,
+    },
+    {
+      path:'/archViewDetail', //档案查看详细
+      component:ArchViewDetail,
+    },
+    {
+      path:'/archViewDetailMore', //档案详细
+      component:ArchViewDetailMore,
+    },
+    {
+      path:'/archMoveApply', //档案移交
+      component:ArchMoveApply,
+      meta: {keepAlive: true}
+    },
+    {
+      path:'/archMoveApplyDetail', //档案移交详情
+      component:ArchMoveApplyDetail,
       meta: {keepAlive: true}
     },
     ...routeData

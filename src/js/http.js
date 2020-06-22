@@ -8,14 +8,18 @@ axios.defaults.timeout = 50000;
 
 
 const dev = 'http://192.168.3.166:8280/member/v3'; //测试
+// const dev = '/api'
+
 // const dev = 'http://192.168.3.243:8079/member/v2'; // 习节祥
-// const dev = 'http://192.168.3.40:8081/member/v1'; //
+// const dev = 'http://192.168.3.185:8080/member/v3'; //本地齐
+
 // const dev = 'http://192.168.3.249:8079/member/v1'; //本地测试
 // const dev = 'http://192.168.3.241:8882/member/v1'; //自动化测试 
-const product = 'https://apps.epipe.cn/member/v3';//正式环境
+// const product = 'https://apps.epipe.cn/member/v3';//正式环境
 // const product = "http://21874u8g05.iask.in:19054/member/v1"; //正式
-axios.defaults.baseURL = window.location.href.indexOf("apps.epipe.cn")>0 ? product : dev;
-// axios.defaults.baseURL = product;
+// axios.defaults.baseURL = window.location.href.indexOf("apps.epipe.cn")>0 ? product : dev;
+
+axios.defaults.baseURL = dev;
     
 function getCookie(name) {
   var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");

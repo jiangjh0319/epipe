@@ -44,6 +44,8 @@
         },
         methods:{
             chose_click(item){
+                console.log(item,'选择',this.companyName)
+                this.$set(item,'companyName',this.companyName)
                 this.$emit('pitchOn',item)
             },
             pitchOn(item){
@@ -52,7 +54,10 @@
         },
         components:{
         },
-        props:['list']
+        props:['list','companyName'],
+        mounted(){
+           console.log(this.companyName,'公司') 
+        }
     }
 </script>
 
