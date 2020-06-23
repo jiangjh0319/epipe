@@ -41,7 +41,7 @@
                     <van-field
                         v-model="borrowDate"
                         label="预计规划日期"
-                        placeholder="选择预计规划日期"
+                        placeholder="选择预计归还日期"
                          right-icon="arrow-down"
                         input-align="right"
                         readonly
@@ -771,7 +771,7 @@ export default {
                 }
             })
 
-             this.axios.get('/process/apply/enter?req=20').then((res)=>{
+             this.axios.get('/process/apply/enter?req=26').then((res)=>{
                 let data = res.data.b;
 
                 this.allApprovers = this.Util.approverDataInit(data.links);

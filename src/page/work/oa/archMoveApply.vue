@@ -847,7 +847,7 @@ export default {
                 }
             })
 
-             this.axios.get('/process/apply/enter?req=20').then((res)=>{
+             this.axios.get('/process/apply/enter?req=27').then((res)=>{
                 let data = res.data.b;
 
                 this.allApprovers = this.Util.approverDataInit(data.links);
