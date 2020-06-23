@@ -248,7 +248,7 @@
                 url = type!=2?'/opinion':'/imchoices';
 
                 params={id:this.dataObj.dossierTransferApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
-                color:'#609df6',applyType:4,typeName:'archMoveApplyDetails',pageType:type,careOf:true,num:1}
+                color:'#609df6',applyType:4,typeName:'archMoveApply',pageType:type,careOf:true,num:1}
 
                 this.$router.push({path:url,query:params})
             },

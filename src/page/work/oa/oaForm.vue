@@ -82,18 +82,20 @@
                     v-on:address="go_address"
                     v-on:del_poeple="del_poeple"
                     hintType=1
+                    
                 ></ApproMan>
+                <div v-if="formData.isCondFlag&&!meetConditionFlag&&!formData.links.length" class="noapprover">该条件下无审批人</div>
 
-            <CopeMan 
-                :has_journal="!showCopy"
-                color="#0fc37c"
-                :data_list=chosed_list
-                v-on:remove_item="remove_item"
-                :special_class='1'
-                :types = '2'
-                :isGroup = true
-                :showAdd="showCopy"
-            ></CopeMan>
+                <CopeMan 
+                    :has_journal="!showCopy"
+                    color="#0fc37c"
+                    :data_list=chosed_list
+                    v-on:remove_item="remove_item"
+                    :special_class='1'
+                    :types = '2'
+                    :isGroup = true
+                    :showAdd="showCopy"
+                ></CopeMan>
 
             </div>
         </div>
@@ -215,6 +217,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 defaultIndex:1,//单选默认选中
                 peopleType:0,//联系人类型
                 approvalFormId:'',
+                meetConditionFlag:false
             }
         },
         components: {
@@ -672,7 +675,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                     }],
                 }).then((res)=>{ 
                     let data = res.data.b.processInfo;
-
+                    this.meetConditionFlag = res.data.b.meetConditionFlag
                     this.allApprovers = this.Util.approverDataInit(data.links);
                     this.linkAuditNum = data.linkAuditNum;
                     this.applyLinkIds = data.applyLinkIds;
@@ -763,5 +766,13 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
 
     .van-checkbox-group>div{
         margin:0.15rem 0
+    }
+
+    .noapprover{
+        background-color: #fff;
+        padding: 0.15rem;
+        position: relative;
+        top: -0.35rem;
+        color: #666;
     }
 </style>
