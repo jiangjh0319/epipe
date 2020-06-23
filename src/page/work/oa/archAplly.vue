@@ -40,7 +40,7 @@
                 <div class="choose">
                     <van-field
                         v-model="borrowDate"
-                        label="预计规划日期"
+                        label="预计归还日期"
                         placeholder="选择预计归还日期"
                          right-icon="arrow-down"
                         input-align="right"
@@ -301,7 +301,7 @@ let save_leave = (index,text,that) =>{
             params['dmInfo['+index+'].dossierBorrowNoDm'] = item.no
             params['dmInfo['+index+'].handleUser'] = item.managerName
             params['dmInfo['+index+'].handleUserId'] = item.managerId 
-            params['dmInfo['+index+'].whetherNeedPage'] = item.whetherNeedPage
+            params['dmInfo['+index+'].whetherNeedPage'] = item.whetherNeedPage==null?0:item.whetherNeedPage
         })
         console.log(params)
         // return
