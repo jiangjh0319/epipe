@@ -490,6 +490,8 @@
                 let _this = this;
 
                 this.axios.get('/work/app/list').then(res=>{
+                    console.log(res)
+                    console.log(111)
                     _this.workData = res.data.b.appCategorys;
                     _this.isHide()
                 }).catch(function(err){
@@ -545,6 +547,8 @@
                                 checkDate: date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate(),
                             }
                         }).then(res=>{
+                            console.log(res)
+                            console.log(1110)
                             let str = res.data.b.data[res.data.b.data.length - 1].signTime;
                             that.toDayCheck = str.slice(10)
                         })

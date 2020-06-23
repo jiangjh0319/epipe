@@ -8,9 +8,8 @@ axios.defaults.timeout = 50000;
 
 
 const dev = 'http://192.168.3.166:8280/member/v3'; //测试
-// const dev = '/api'
 
-// const dev = 'http://192.168.3.243:8079/member/v2'; // 习节祥
+// const dev = 'http://192.168.3.170:8079/member/v2'; // 习节祥
 // const dev = 'http://192.168.3.185:8080/member/v3'; //本地齐
 
 // const dev = 'http://192.168.3.249:8079/member/v1'; //本地测试

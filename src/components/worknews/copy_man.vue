@@ -81,8 +81,8 @@
           查看全部
         </div>
       </li>
-      <ul class="day_chose_ul3 open_ul3">
-        <li @click="remove_man(item,index)" v-for="(item,index) in data_list">
+      <ul class="day_chose_ul3 open_ul3" >
+        <li @click="remove_man(item,index)" v-for="(item,index) in data_list" :key="index">
           <p>
             <svg v-if="has_journal" style="font-size: 0.15rem" class="icon" aria-hidden="false">
               <use xlink:href="#icon-shanchu"></use>
