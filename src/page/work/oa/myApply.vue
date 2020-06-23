@@ -791,6 +791,64 @@
                         </div>
                 </div>
             </div>
+             <div v-else-if="item.typecode == 26" @click="goDetails(item.applyId,item.fianlStatus,'archAplly')"   class="affairs_item" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的档案借阅申请</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>借阅名称 :</span><p class="line1">{{item.borrowName}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>提交人 :</span>
+                                    <p class="line1">{{item.title}}</p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>预计归还时间 :</span>
+                                    <p class="line1">{{item.dossierReturnDate}}</p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>借阅原因 :</span>
+                                    <p class="line1">{{item.borrowReason}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                </div>
+            </div>
+            <div v-else-if="item.typecode == 27" @click="goDetails(item.applyId,item.fianlStatus,'archMoveApply')"   class="affairs_item" >
+                <div class="affirs_child">
+                        <div>
+                            <div class="affairs_title">
+                                <img :src="item.profileImg"/>
+                                <h2>我的档案移交申请</h2>
+                                <time >{{item.applyTime | timeSlice}}</time>
+                            </div>
+                            <div class="affairs_infor">
+                               <div class="request_infor lineHeight">
+                                    <span>移交名称 :</span><p class="line1">{{item.transferName}} </p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>提交人 :</span>
+                                    <p class="line1">{{item.title}}</p>
+                                </div>
+                                <div class="request_infor lineHeight">
+                                    <span>移交时间 :</span>
+                                    <p class="line1">{{item.transferDate}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div  class="skip" tag="div">
+                            查看详情
+                        </div>
+                </div>
+            </div>
 
             </div>
 

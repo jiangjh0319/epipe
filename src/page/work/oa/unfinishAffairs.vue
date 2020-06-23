@@ -8,7 +8,7 @@
 
         <div>
             <div>
-                <OaTemplate v-on:goDetails="goDetails" v-for="(item,index) in leaveData" :item=item :key="item.applyId"></OaTemplate>
+                <OaTemplate v-on:goDetails="goDetails" v-for="(item,index) in leaveData" :item="item" :key="item.applyId"></OaTemplate>
                 <infinite-loading  spinner="bubbles" :on-infinite="onInfinite" ref="infiniteLoading">
                     <span slot="no-more" class="no-more">
                         暂无更多加载
@@ -45,6 +45,7 @@ export default {
             let that = this;
             this.axios.get('/work/wait/list').then(function(res){
                         that.leaveData = that.dataFor(res.data.b.data);
+                        console.log(that.leaveData,'数据')
                        that.count = res.data.b.data[0].count
                  })
         },

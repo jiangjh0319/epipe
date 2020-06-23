@@ -192,32 +192,31 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
-                 this.$router.push({path:'/opinion',query:{id:this.dataObj.tripId,typeName:'trip',applyType:4,color:'#609df6'}})
+                 this.$router.push({path:'/opinion',query:{id:this.dataObj.dossierBorrowApplyId,typeName:'trip',applyType:4,color:'#609df6'}})
             },
             history_back_click:function(){
-                    // if(location.href.indexOf('goWork=0')>0){
-                    //     window.location.href = "epipe://?&mark=history_back"
-                    //     return
-                    // }
-                    // window.location.href = "epipe://?&mark=goWork"
-                    history.back()
+                    if(location.href.indexOf('goWork=0')>0){
+                        window.location.href = "epipe://?&mark=history_back"
+                        return
+                    }
+                    window.location.href = "epipe://?&mark=goWork"
             },
             deliverTo(){ //转交
                 let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
                 let copyStr = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.tripId,receiverIds:copyStr,bgcolor:'#609df6', careOf:true,typeName:'trip',applyType:4,auditerIds:newApprStr,num:1}})
+                this.$router.push({path:'/imchoices',query:{id:this.dataObj.dossierBorrowApplyId,receiverIds:copyStr,bgcolor:'#609df6', careOf:true,typeName:'trip',applyType:4,auditerIds:newApprStr,num:1}})
             },
             approveBack(){ //退回
-                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.tripId,typeName:'trip',applyType:4,color:'#609df6'}})
+                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.dossierBorrowApplyId,typeName:'trip',applyType:4,color:'#609df6'}})
             },
             resubmit(){ //再次提交
-                this.$router.replace({path:'/trip',query:{tripId:this.dataObj.tripId,resubmit:1}})
+                this.$router.replace({path:'/trip',query:{tripId:this.dataObj.dossierBorrowApplyId,resubmit:1}})
             },
             urge(){ //催办
                 this.isBackout = false;
                 let that = this;
                 this.axios.post('/work/audit'+this.Service.queryString({
-                    applyId:this.dataObj.tripId,
+                    applyId:this.dataObj.dossierBorrowApplyId,
                     type:6,
                     applyType:4,
                 })).then(function(res){
@@ -242,8 +241,8 @@
                 receiverCompanyId = this.Util.getIds(this.newCopy,'companyId')
                 url = type!=2?'/opinion':'/imchoices';
 
-                params={id:this.dataObj.tripId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
-                color:'#609df6',applyType:4,typeName:'trip',pageType:type,careOf:true,num:1}
+                params={id:this.dataObj.dossierBorrowApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
+                color:'#609df6',applyType:4,typeName:'archApllyDetails',pageType:type,careOf:true,num:1}
 
                 this.$router.push({path:url,query:params})
             },
@@ -264,7 +263,7 @@
                 let that = this;
                 this.isDialog = false;
                 this.axios.post('/work/audit'+this.Service.queryString({
-                    applyId:this.dataObj.tripId,
+                    applyId:this.dataObj.dossierBorrowApplyId,
                     type:1,
                     applyType:4,
                 })).then(function(res){
@@ -275,7 +274,7 @@
                             that.$toast('撤销成功！')
           
                             setTimeout(()=>{
-                                window.location.href = "epipe://?&mark=tripDetails&_id="+that.dataObj.tripId+'&data='+JSON.stringify({text:1});;
+                                window.location.href = "epipe://?&mark=tripDetails&_id="+that.dataObj.dossierBorrowApplyId+'&data='+JSON.stringify({text:1});;
                             },500)     
                         } 
                     })
@@ -334,11 +333,11 @@
         mounted:function(){
 
             let that = this;
-            let dossierBorrowApplyId = this.$route.query.dossierBorrowApplyId;
-            console.log(dossierBorrowApplyId,'id')
+            let archApllyId = this.$route.query.archApllyId;
+            console.log(archApllyId,'id')
             let pusthId = this.$route.query.pushId
 
-            this.axios.get('work/dossierBorrowApply/info?dossierBorrowApplyId='+dossierBorrowApplyId+'&pushId='+pusthId+'&type=1').then((res)=>{
+            this.axios.get('work/dossierBorrowApply/info?dossierBorrowApplyId='+archApllyId+'&pushId='+pusthId+'&type=1').then((res)=>{
                 that.dataObj = res.data.b;
                 console.log(that.dataObj,'data详情')
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
