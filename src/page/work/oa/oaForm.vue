@@ -84,7 +84,7 @@
                     hintType=1
                     
                 ></ApproMan>
-                <div v-if="formData.isCondFlag&&!meetConditionFlag&&!formData.links.length" class="noapprover">该条件下无审批人</div>
+                <div v-if="formData.isCondFlag==1&&!meetConditionFlag&&!allApprovers.length" class="noapprover">该条件下无审批人</div>
 
                 <CopeMan 
                     :has_journal="!showCopy"
@@ -272,6 +272,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                              child.endVal = item.secondStringValue?item.secondStringValue:'';
                          }else if(child.ename=='singleBox'||child.ename=='checkbox'||child.ename=='contactPerson'||child.ename=='department'){
                              child.valueCode = item.secondStringValue?item.secondStringValue:'';
+                        
                          }else if(child.ename=='location'){
                              child.lon = item.lon?item.lon:''
                              child.lat = item.lat?item.lon:''
@@ -281,8 +282,9 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                     })
 
 
-                    this.formData.components = newData
-                    this.$forceUpdate()
+                    // this.formData.components = newData
+
+                    this.$set( this.formData,'components',newData)
                 })
             }
         },
@@ -304,21 +306,29 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                             item.valueCode = ''
                         })
                         this.formData = param;
+                        //  this.$forceUpdate()
                     }else{
-                        this.formData.linkAuditNum = param.linkAuditNum;
+                        // this.formData.linkAuditNum = param.linkAuditNum;
                         this.formData.applyLinkIds = param.applyLinkIds;
                         this.formData.approvalReceiverFlag = param.approvalReceiverFlag;
                         this.formData.receivers = param.receivers;
                         this.formData.approvalFormId = id;
+                        this.formData.links = param.links;
+                        this.formData.isCondFlag = param.isCondFlag
                         this.formData.approvalName =param.approvalName
                     }
                     this.allApprovers = this.Util.approverDataInit(param.links);
-                    this.linkAuditNum = this.formData.linkAuditNum;
+                    // this.linkAuditNum = this.formData.linkAuditNum;
+                    this.linkAuditNum = param.linkAuditNum;
                     this.applyLinkIds = this.formData.applyLinkIds;
                     this.showCopy = this.formData.approvalReceiverFlag=='1'?false:true;
                     if(this.formData.receivers&&this.formData.receivers.length>0){
                             this.chosed_list = this.formData.receivers
                             this.change_man(this.chosed_list);
+                    }
+
+                    if(type&&param.isCondFlag==1){
+                        this.getConForm()
                     }
                 })
             },
@@ -343,6 +353,7 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                     item.endVal = this.timeF(value,item.dataType)
                 }else if(item.ename=='singleBox'){
                     item.value = value;
+                    this.$set(item,'value',value)
                     item.valueIndex = index;
                     item.valueCode = index;
                     this.inputEvent(item)
@@ -525,7 +536,8 @@ import SiteInput  from '../../../components/form_oa/site_input.vue'
                 this.common(item,index)
                 let arr = item.items.split(',')
                 this.columns = arr;
-                this.defaultIndex = item.valueIndex-1
+                // this.$set(this.columns,arr)
+                this.defaultIndex = item.valueIndex
                 this.pickerSelect = true;
             },
             more_select(item,index){//多选项
