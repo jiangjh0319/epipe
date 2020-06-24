@@ -40,8 +40,8 @@
                 <div class="choose">
                     <van-field
                         v-model="borrowDate"
-                        label="预计规划日期"
-                        placeholder="选择预计规划日期"
+                        label="预计归还日期"
+                        placeholder="选择预计归还日期"
                          right-icon="arrow-down"
                         input-align="right"
                         readonly
@@ -157,7 +157,7 @@
                 </div>
                 <div class="bor_bottom" style="background-color: #fff;" v-if="item.isShowRadio"> 
                    <van-radio-group v-model="radioArr[index]" direction="horizontal" @change="changeRadio">
-                        <div style="font-size:14px;margin-left:15px;margin-right:130px;line-height: 42px;height:42px">是否有纸质档</div>
+                        <div style="font-size:14px;margin-left:15px;margin-right:130px;line-height: 42px;height:42px">是否借纸质档</div>
                         <van-radio name="1">是</van-radio>
                         <van-radio name="0">否</van-radio>
                     </van-radio-group>
@@ -258,6 +258,8 @@ let save_leave = (index,text,that) =>{
             //     that.$toast('数量需为数字')
             // }
         }
+     
+
 
         let receiverIds = '',receiverCompanyIds="",fileObj = {}, params={}, approver = {}
 
@@ -292,8 +294,12 @@ let save_leave = (index,text,that) =>{
             linkAuditNum:approver.numStr,
             draftFlag : index, //草稿还是发送
         }
+        // let dossierBorrowInfoList = []
+        // let listObj = {}
+
 
         that.addList.forEach((item,index)=>{
+            console.log(index)
             params['dmInfo['+index+'].dossier'] = item.name
             params['dmInfo['+index+'].dossierId'] = item.id
             params['dmInfo['+index+'].oldDossierLocation'] = item.dossierLocationName
@@ -301,9 +307,30 @@ let save_leave = (index,text,that) =>{
             params['dmInfo['+index+'].dossierBorrowNoDm'] = item.no
             params['dmInfo['+index+'].handleUser'] = item.managerName
             params['dmInfo['+index+'].handleUserId'] = item.managerId 
-            params['dmInfo['+index+'].whetherNeedPage'] = item.whetherNeedPage
+            params['dmInfo['+index+'].whetherNeedPage'] = item.whetherNeedPage==null?'0':item.whetherNeedPage
+            // listObj['dossierBorrowInfoList['+index+'].dossierId'] = item.managerId 
+            // listObj['dossierBorrowInfoList['+index+'].containPage'] = item.whetherNeedPage==null?0:item.whetherNeedPage
         })
         console.log(params)
+
+
+
+
+        // let dossinfo = { //有用的
+        //     dossierBorrowInfoList:that.dossierBorrowInfoList
+        // }
+        // that.axios({
+        //     method:"post",
+        //     headers:{
+        //         accessToken:window.localStorage.getItem('auth_token')
+        //     },
+        //     url:"http://192.168.3.171:8780/dossierapi/v1/dossierborrow/verifyDossier",
+        //     data:dossinfo,
+        // }).then(res=>{
+        //     console.log(res,'数据')
+        // })
+
+
         // return
         that.axios({
                 method:"post",
@@ -337,16 +364,32 @@ let save_leave = (index,text,that) =>{
                         }
                     },500)
                 }else{
+                    // console.log( JSON.parse(res.data.b.res),'数据oo')
+                    // console.log(res.data.b.dossierBorrowApplyId)
+                  
                     console.log(res.data.b)
-                    that.$toast('提交成功!')
-                    that.borrowName = '';
-                    that.borrowDate = '';
-                    that.userBuyApplyRemarks = '';
-                    window.location.href = "epipe://?&mark=workUpdate";
-                    setTimeout(()=>{
-                        window.location.href = "epipe://?&mark=submitArchAplly&_id="+res.data.b.dossierBorrowApplyId;
-                        // that.$router.push({path:'/archApllyDetail',query:{dossierBorrowApplyId:res.data.b.dossierBorrowApplyId}})
-                    },500)
+                    if(res.data.b.res){
+                        let resData = JSON.parse(res.data.b.res)
+                        if(resData.b==null){
+                            that.$toast(resData.h.msg)
+                            return 
+                        }
+                    }else{
+                        if(res.data.b.dossierBorrowApplyId){
+                             that.$toast('提交成功!')
+                             that.borrowName = '';
+                             that.borrowDate = '';
+                             that.userBuyApplyRemarks = '';
+                             window.location.href = "epipe://?&mark=workUpdate";
+                             setTimeout(()=>{
+                                 window.location.href = "epipe://?&mark=submitArchAplly&_id="+res.data.b.dossierBorrowApplyId;
+                                 // that.$router.push({path:'/archApllyDetail',query:{dossierBorrowApplyId:res.data.b.dossierBorrowApplyId}})
+                             },500)
+                         }
+
+                    }
+                    
+                    
                 }
             }
             that.change_man([])
@@ -424,6 +467,9 @@ export default {
                     }
                 ],
                 isShowHeard:false,
+                dossierId:'',
+                containPage:'',
+                dossierBorrowInfoList:[]
                 
             }
         },
@@ -478,16 +524,15 @@ export default {
                 this.placeArch = value;
             }else if(this.picker_index===6){
                
-                console.log(this.archNameIds[index])
                 var listArr = this.newArr.filter((item)=>{
-                    // console.log(item)
+        
                     return item.id==this.archNameIds[index]
                 })
-                console.log(listArr,'iiii')
-         
+                console.log(listArr,'arr')
                 listArr.forEach((val,key)=>{
-                    console.log(key,'key')
-                    console.log(val,'000998')
+          
+                    console.log(val,'确定获取数据')
+                    
                     this.addList[this.pickIndex].name = val.name;
                     this.addList[this.pickIndex].id = val.id;
                     this.addList[this.pickIndex].no = val.no;
@@ -497,14 +542,42 @@ export default {
                     this.addList[this.pickIndex].managerId = val.managerId;
                     this.addList[this.pickIndex].whetherNeedPage = val.containPage;
                     this.addList[this.pickIndex].isShowRadio = val.containPage=='1'?true:false;
+                    this.addList[this.pickIndex].dossierId = val.id;
+                    this.addList[this.pickIndex].containPage = val.containPage;
+
+
                 })
                     // this.addlist.isShowRadio = 1
                 
                 console.log(this.addList,'addliut')
+                // let a = {}
+                // let arrPage = []
+                // arrPage = this.addList.map((item)=>{
+                //     console.log(item)
+                //     return item.containPage
+                // })
+                // console.log(arrPage,'5555')
                 // this.addList = listArr;
+                console.log(this.reducedFilter(this.addList, ['dossierId','containPage']));
+                this.dossierBorrowInfoList = this.reducedFilter(this.addList, ['dossierId','containPage'])
 
             }
             this.showPicker = false;
+        },
+        reducedFilter(obj, arr, addProperty) {
+        if (typeof (obj) !== "object" || !Array.isArray(arr)) {
+          throw new Error("参数格式不正确")
+        }
+        let list = []
+        obj.forEach(i => {
+          let result = {}
+          Object.assign(i, addProperty)
+          Object.keys(i).filter((key) => arr.includes(key)).forEach((key) => {
+            result[key] = i[key]
+          })
+          list.push(result)
+        })
+        return list
         },
         changeRadio(name){
             console.log(name)
@@ -712,6 +785,7 @@ export default {
 
         },
         created() {
+            console.log(window.localStorage.getItem('auth_token'))
             this.axios.get('work/dossierBorrowApply/no').then(res=>{
                 console.log(res,'编号数据')
                 if(res.data.h.code==200){
@@ -771,7 +845,7 @@ export default {
                 }
             })
 
-             this.axios.get('/process/apply/enter?req=20').then((res)=>{
+             this.axios.get('/process/apply/enter?req=27').then((res)=>{
                 let data = res.data.b;
 
                 this.allApprovers = this.Util.approverDataInit(data.links);

@@ -63,6 +63,10 @@
                         <p>{{item.handleUser}} </p>
                     </div>
                     <div class="infor-box">
+                        <span>借纸质档</span>
+                        <p>{{dataObj.whetherNeedPage|whetherNeedPage}}</p>
+                    </div>
+                    <div class="infor-box">
                         <span>档案位置</span>
                         <p>{{item.oldDossierLocation}}</p>
                     </div>
@@ -242,7 +246,7 @@
                 url = type!=2?'/opinion':'/imchoices';
 
                 params={id:this.dataObj.dossierBorrowApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
-                color:'#609df6',applyType:4,typeName:'archAplly',pageType:type,careOf:true,num:1}
+                color:'#609df6',applyType:26,typeName:'archAplly',pageType:type,careOf:true,num:1}
 
                 this.$router.push({path:url,query:params})
             },
@@ -466,7 +470,13 @@
                 let arr = value.split('|')
                 return arr.join(',')
             },
-          
+            whetherNeedPage(value){
+                if(value=='1'){
+                    return '是'
+                }else{
+                    return '否'
+                }
+            }
         },
         computed: mapState(["chosed_man_state","approver_man_state"])
     }
