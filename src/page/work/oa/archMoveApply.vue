@@ -799,16 +799,22 @@ export default {
 
             this.axios.get("work/dossierBorrowApply/token?pageNo=1&pageSize=10").then(res=>{
                 if(res.data.h.code==200){
-                console.log(res.data.b.b.dataList,'档案名称')
+                console.log(res.data.b.b.dataList,'档案列表')
                 this.newArr = res.data.b.b.dataList;
                    if(this.newArr.length==0){
                     this.columns.push('暂无数据')
                     }else{
-                        for(let val of this.newArr){
-                            // console.log(val,'val')
-                            this.columns.push(val.name)
-                            this.archNameIds.push(val.id)
-                        }
+                      return this.newArr.filter((item)=>{
+                            if(item.containPage=='1'){
+                                this.columns.push(item.name)
+                                this.archNameIds.push(item.id)
+                            }
+                        })
+                        // for(let val of this.newArr){
+                          
+                        //     this.columns.push(val.name)
+                        //     this.archNameIds.push(val.id)
+                        // }
                     }
                 }else{
                     this.$toast(res.data.h.msg)
@@ -847,7 +853,7 @@ export default {
                 }
             })
 
-             this.axios.get('/process/apply/enter?req=27').then((res)=>{
+             this.axios.get('/process/apply/enter?req=28').then((res)=>{
                 let data = res.data.b;
 
                 this.allApprovers = this.Util.approverDataInit(data.links);

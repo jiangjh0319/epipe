@@ -791,7 +791,7 @@
                         </div>
                 </div>
             </div>
-             <div v-else-if="item.typecode == 26" @click="goDetails(item.applyId,item.fianlStatus,'archAplly')"   class="affairs_item" >
+             <div v-else-if="item.typecode == 27" @click="goDetails(item.applyId,item.fianlStatus,'archAplly')"   class="affairs_item" >
                 <div class="affirs_child">
                         <div>
                             <div class="affairs_title">
@@ -822,7 +822,7 @@
                         </div>
                 </div>
             </div>
-            <div v-else-if="item.typecode == 27" @click="goDetails(item.applyId,item.fianlStatus,'archMoveApply')"   class="affairs_item" >
+            <div v-else-if="item.typecode == 28" @click="goDetails(item.applyId,item.fianlStatus,'archMoveApply')"   class="affairs_item" >
                 <div class="affirs_child">
                         <div>
                             <div class="affairs_title">
@@ -895,7 +895,7 @@
          components: {
             InfiniteLoading
         },
-        methods : {
+        methods:{
             goback(){
                 window.location.href = "epipe://?&mark=history_back"
             },

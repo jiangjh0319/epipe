@@ -21,11 +21,11 @@
             </div>
             <div class="styles infor">
                 <div class="infor-box">
-                    <span>借阅编号</span>
+                    <span>移交编号</span>
                     <p>{{dataObj.dossierTransferNo}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>借阅名称</span>
+                    <span>移交名称</span>
                     <p>{{dataObj.transferName}}</p>
                 </div>
                 <div class="infor-box">
@@ -33,7 +33,7 @@
                     <p>{{dataObj.transferReason}}</p>
                 </div>
                 <div class="infor-box">
-                    <span>预计归还日期</span>
+                    <span>移交日期</span>
                     <p>{{dataObj.transferDate}}</p>
                 </div>
             </div>

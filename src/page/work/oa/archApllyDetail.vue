@@ -63,6 +63,10 @@
                         <p>{{item.handleUser}} </p>
                     </div>
                     <div class="infor-box">
+                        <span>借纸质档</span>
+                        <p>{{dataObj.whetherNeedPage|whetherNeedPage}}</p>
+                    </div>
+                    <div class="infor-box">
                         <span>档案位置</span>
                         <p>{{item.oldDossierLocation}}</p>
                     </div>
@@ -333,7 +337,8 @@
         mounted:function(){
 
             let that = this;
-            let archApllyId = this.$route.query.archApllyId;
+            // let archApllyId = this.$route.query.archApllyId;
+             let archApllyId = '75d21efdb53411eaa9934ccc6ac12eca';
             console.log(archApllyId,'id')
             let pusthId = this.$route.query.pushId
 
@@ -466,7 +471,13 @@
                 let arr = value.split('|')
                 return arr.join(',')
             },
-          
+            whetherNeedPage(value){
+                if(value=='1'){
+                    return '是'
+                }else{
+                    return '否'
+                }
+            }
         },
         computed: mapState(["chosed_man_state","approver_man_state"])
     }

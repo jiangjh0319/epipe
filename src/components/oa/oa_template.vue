@@ -839,7 +839,7 @@
                     <i v-if="item.readFlag=='0'&&isCopy"></i>
                 </div>
             </div>
-              <div v-else-if="item.typecode == 26" @click="goDetails(item,'archAplly')"   class="affairs_content" >
+              <div v-else-if="item.typecode == 27" @click="goDetails(item,'archAplly')"   class="affairs_content" >
                 <div class="affirs_child">
                         <div>
                             <div class="affairs_title">
@@ -871,7 +871,7 @@
                     <i v-if="item.readFlag=='0'&&isCopy"></i>
                 </div>
             </div>
-              <div v-else-if="item.typecode == 27" @click="goDetails(item,'archMoveApply')"   class="affairs_content" >
+              <div v-else-if="item.typecode == 28" @click="goDetails(item,'archMoveApply')"   class="affairs_content" >
                 <div class="affirs_child">
                         <div>
                             <div class="affairs_title">
