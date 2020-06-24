@@ -809,12 +809,9 @@ export default {
                                 this.columns.push(item.name)
                                 this.archNameIds.push(item.id)
                             }
+                           
                         })
-                        // for(let val of this.newArr){
-                          
-                        //     this.columns.push(val.name)
-                        //     this.archNameIds.push(val.id)
-                        // }
+                    
                     }
                 }else{
                     this.$toast(res.data.h.msg)

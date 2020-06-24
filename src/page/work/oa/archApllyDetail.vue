@@ -196,7 +196,7 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
-                 this.$router.push({path:'/opinion',query:{id:this.dataObj.dossierBorrowApplyId,typeName:'trip',applyType:27,color:'#609df6'}})
+                 this.$router.push({path:'/opinion',query:{id:this.dataObj.dossierBorrowApplyId,typeName:'archAplly',applyType:27,color:'#609df6'}})
             },
             history_back_click:function(){
                     if(location.href.indexOf('goWork=0')>0){
