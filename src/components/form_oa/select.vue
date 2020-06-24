@@ -21,8 +21,7 @@
         },
         props:["info"],
         methods:{
-            go_select(){
-             
+            go_select(){  
                 this.$emit('select')
             }
         }
