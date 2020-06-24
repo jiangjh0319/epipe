@@ -337,8 +337,7 @@
         mounted:function(){
 
             let that = this;
-            // let archApllyId = this.$route.query.archApllyId;
-             let archApllyId = '75d21efdb53411eaa9934ccc6ac12eca';
+            let archApllyId = this.$route.query.archApllyId;
             console.log(archApllyId,'id')
             let pusthId = this.$route.query.pushId
 

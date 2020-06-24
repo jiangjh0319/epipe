@@ -364,22 +364,32 @@ let save_leave = (index,text,that) =>{
                         }
                     },500)
                 }else{
-                    console.log( JSON.parse(res.data.b.res),'数据oo')
-                    let resData = JSON.parse(res.data.b.res)
-                    if(!resData.b.dossierBorrowApplyId){
-                        that.$toast(resData.h.msg)
-                        return 
+                    // console.log( JSON.parse(res.data.b.res),'数据oo')
+                    // console.log(res.data.b.dossierBorrowApplyId)
+                  
+                    console.log(res.data.b)
+                    if(res.data.b.res){
+                        let resData = JSON.parse(res.data.b.res)
+                        if(resData.b==null){
+                            that.$toast(resData.h.msg)
+                            return 
+                        }
                     }else{
-                        that.$toast('提交成功!')
-                        that.borrowName = '';
-                        that.borrowDate = '';
-                        that.userBuyApplyRemarks = '';
-                        window.location.href = "epipe://?&mark=workUpdate";
-                        setTimeout(()=>{
-                            window.location.href = "epipe://?&mark=submitArchAplly&_id="+res.data.b.dossierBorrowApplyId;
-                            // that.$router.push({path:'/archApllyDetail',query:{dossierBorrowApplyId:res.data.b.dossierBorrowApplyId}})
-                        },500)
+                        if(res.data.b.dossierBorrowApplyId){
+                             that.$toast('提交成功!')
+                             that.borrowName = '';
+                             that.borrowDate = '';
+                             that.userBuyApplyRemarks = '';
+                             window.location.href = "epipe://?&mark=workUpdate";
+                             setTimeout(()=>{
+                                 window.location.href = "epipe://?&mark=submitArchAplly&_id="+res.data.b.dossierBorrowApplyId;
+                                 // that.$router.push({path:'/archApllyDetail',query:{dossierBorrowApplyId:res.data.b.dossierBorrowApplyId}})
+                             },500)
+                         }
+
                     }
+                    
+                    
                 }
             }
             that.change_man([])
