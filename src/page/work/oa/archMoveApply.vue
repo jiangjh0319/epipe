@@ -354,7 +354,7 @@ let save_leave = (index,text,that) =>{
             transferName:that.transferName,//移交名称
             transferDate:that.valDate,//移交日期
             
-            dossierTransferNoDm:that.userBuyApplyRemarks, //移交原因
+            transferReason:that.userBuyApplyRemarks, //移交原因
             receiveCompany:that.userInfo.companyName,//接收人公司
             receiveOffice:that.userInfo.officeName,//接收人部门
             receiveId:that.userInfo.userId,//接收人ID
