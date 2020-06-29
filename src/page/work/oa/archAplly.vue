@@ -157,7 +157,7 @@
                 </div>
                 <div class="bor_bottom" style="background-color: #fff;" v-if="item.isShowRadio"> 
                    <van-radio-group v-model="radioArr[index]" direction="horizontal" @change="changeRadio">
-                        <div style="font-size:14px;margin-left:15px;margin-right:130px;line-height: 42px;height:42px">是否借纸质档</div>
+                        <div style="font-size:0.14rem;margin-left:0.15rem;margin-right:1.2rem;line-height: 0.42rem;height:0.42rem">是否借纸质档</div>
                         <van-radio name="1">是</van-radio>
                         <van-radio name="0">否</van-radio>
                     </van-radio-group>
@@ -233,7 +233,7 @@ let save_leave = (index,text,that) =>{
         return false
     }else if(that.userBuyApplyRemarks==''){
         that.$toast('请输入借阅原因')
-    }
+    }else if(this.dmInfo[0].dossier==''){}
     else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
@@ -296,10 +296,9 @@ let save_leave = (index,text,that) =>{
         }
         // let dossierBorrowInfoList = []
         // let listObj = {}
-
+        
 
         that.addList.forEach((item,index)=>{
-            console.log(index)
             params['dmInfo['+index+'].dossier'] = item.name
             params['dmInfo['+index+'].dossierId'] = item.id
             params['dmInfo['+index+'].oldDossierLocation'] = item.dossierLocationName
@@ -307,13 +306,13 @@ let save_leave = (index,text,that) =>{
             params['dmInfo['+index+'].dossierBorrowNoDm'] = item.no
             params['dmInfo['+index+'].handleUser'] = item.managerName
             params['dmInfo['+index+'].handleUserId'] = item.managerId 
-            params['dmInfo['+index+'].whetherNeedPage'] = item.whetherNeedPage==null?'0':item.whetherNeedPage
+            params['dmInfo['+index+'].whetherNeedPage'] = that.whetherNeedPage==null?'0':that.whetherNeedPage
             // listObj['dossierBorrowInfoList['+index+'].dossierId'] = item.managerId 
             // listObj['dossierBorrowInfoList['+index+'].containPage'] = item.whetherNeedPage==null?0:item.whetherNeedPage
         })
-        console.log(params)
+        console.log(params,'提交参数')
 
-
+        return
 
 
         // let dossinfo = { //有用的
@@ -456,6 +455,7 @@ export default {
                 wellmadestarm:'',
                 archAdmin:'',
                 placeArch:'',
+                whetherNeedPage:0,
                 addList:[
                     {
                         name:'',
@@ -580,7 +580,7 @@ export default {
         return list
         },
         changeRadio(name){
-            console.log(name)
+            console.log('name',name)
             this.whetherNeedPage = name;
         },
         format(date, index){
@@ -614,13 +614,13 @@ export default {
             if(this.$route.query.buyId&&!this.$route.query.resubmit){
                  save_leave(1, "存入草稿成功", this)
             }else{
-                localStorage.setItem('buy',JSON.stringify(this.$data))
+                localStorage.setItem('archAplly',JSON.stringify(this.$data))
             }
             window.location.href = "epipe://?&mark=history_back"
         },
         rg_click(){
             this.isShow=false;
-            localStorage.removeItem('buy')
+            localStorage.removeItem('archAplly')
             window.location.href = "epipe://?&mark=history_back"
         },
         go_address(index){
@@ -878,27 +878,29 @@ export default {
                 }
 
             let that = this;
-            if(this.$route.query.buyId){
-                   this.axios.get('/work/buy/info',{
+            console.log(this.$route.query.dossierBorrowApplyId,'trid')
+            if(this.$route.query.dossierBorrowApplyId){
+                   this.axios.get('work/dossierBorrowApply/info',{  
                         params:{
-                            type:that.$route.query.resubmit,
-                            userBuyApplyId:this.$route.query.buyId
+                            type:this.$route.query.resubmit,
+                            dossierBorrowApplyId:this.$route.query.dossierBorrowApplyId
                         }
                     }).then(function(res){ 
                    let data = res.data.b;
+                   console.log(data,'6666')
+            
                        if(!that.$route.query.resubmit){
-                                that.id = data.userBuyId;
+                                that.id = data.dossierBorrowApplyId;
                         }
 
                         that.isDraftFlag = 1;
                         that.accessoryFor(data)
-                        that.buyType = data.buyType
-                        that.buyTypeCode = data.buyTypeCode
-                        that.payType = data.payType
-                        that.payTypeCode = data.payTypeCode
-                        that.userBuyApplyTheme = data.userBuyApplyTheme;
-                        that.userBuyApplyRemarks = data.userBuyApplyRemarks;
-                        that.hopeDeliveryDate = data.hopeDeliveryDate;
+
+                       
+                        that.userBuyApplyRemarks = data.borrowReason;
+                        that.borrowName = data.borrowName;
+                        that.borrowDate = data.dossierReturnDate;
+
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list)
                         that.buy = data.list
@@ -979,6 +981,7 @@ export default {
         white-space: nowrap;
         text-align:right;
         float:left;
+        
     }
 
     .accessory{
@@ -987,6 +990,7 @@ export default {
             display:flex;
             margin-bottom 0.1rem;
             padding-left 0.15rem;
+            
          }
 
         img{

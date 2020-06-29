@@ -96,7 +96,7 @@
          
                     <div class="choose">
                         <van-field
-                            v-model="item.name"
+                            v-model="item.dossier"
                             label="档案名称"
                             placeholder="选择档案名称"
                             readonly
@@ -107,7 +107,7 @@
                     </div>  
                     <div class="bor_bottom choose">
                         <van-field
-                            v-model="item.no"
+                            v-model="item.dossierTransferNoDm"
                             label="档案编号"
                             placeholder="请输入档案编号"
                             clearable
@@ -117,7 +117,7 @@
 
                     <div class="bor_bottom choose">
                         <van-field
-                            v-model="item.dossierLocationName"
+                            v-model="item.oldDossierLocation"
                             label="存放位置"
                             placeholder="请输入原存放位置"
                             clearable
@@ -126,7 +126,7 @@
                     </div>
                     <div class="choose">
                         <van-field
-                            v-model="item.managerName"
+                            v-model="item.handleUser"
                             label="档案管理员"
                             placeholder="请输入档案管理员"
                             clearable
@@ -372,12 +372,13 @@ let save_leave = (index,text,that) =>{
         }
 
         that.addList.forEach((item,index)=>{
-            params['dmInfo['+index+'].dossier'] = item.name
+            console.log(item,'itemm88')
+            params['dmInfo['+index+'].dossier'] = item.dossier
             params['dmInfo['+index+'].dossierId'] = item.id
-            params['dmInfo['+index+'].oldDossierLocation'] = item.dossierLocationName
+            params['dmInfo['+index+'].oldDossierLocation'] = item.oldDossierLocation
             params['dmInfo['+index+'].oldDossierLocationId'] = item.dossierLocationId
-            params['dmInfo['+index+'].dossierTransferNoDm'] = item.no
-            params['dmInfo['+index+'].handleUser'] = item.managerName
+            params['dmInfo['+index+'].dossierTransferNoDm'] = item.dossierTransferNoDm
+            params['dmInfo['+index+'].handleUser'] = item.handleUser
             params['dmInfo['+index+'].handleUserId'] = item.managerId
         })
         console.log('参数',params)
@@ -493,12 +494,13 @@ export default {
                 placeArch:'',
                 addList:[
                     {
-                        archNum:'',
-                        archName:'',
-                        beforePlace:'',
-                        archAdmin:'',
-                        newPlace:'',
-                        newAdmin:''
+                        dossier:'',
+                        id:'',
+                        dossierTransferNoDm:'',
+                        oldDossierLocation:'',
+                        dossierLocationId:'',
+                        handleUser:'',
+                        managerId:''
                     }
                 ],
                 isShowHeard:false,
@@ -574,12 +576,12 @@ export default {
                     // }else{
                     //     this.isShowRadio = false;
                     // }
-                    this.addList[this.pickIndex].name = val.name;
+                    this.addList[this.pickIndex].dossier = val.name;
                     this.addList[this.pickIndex].id = val.id;
-                    this.addList[this.pickIndex].no = val.no;
-                    this.addList[this.pickIndex].dossierLocationName = val.dossierLocationName;
+                    this.addList[this.pickIndex].dossierTransferNoDm = val.no;
+                    this.addList[this.pickIndex].oldDossierLocation = val.dossierLocationName;
                     this.addList[this.pickIndex].dossierLocationId = val.dossierLocationId;
-                    this.addList[this.pickIndex].managerName = val.managerName;
+                    this.addList[this.pickIndex].handleUser = val.managerName;
                     this.addList[this.pickIndex].managerId = val.managerId;
                 }
             }
@@ -746,14 +748,17 @@ export default {
                 }
             },
         addDataName(){ //明细
-           this.addList.push({
-                    archNum:'',
-                    archName:'',
-                    beforePlace:'',
-                    archAdmin:'',
-                    newPlace:'',
-                    newAdmin:''
-                });
+           this.addList.push(
+                    {
+                        dossier:'',
+                        id:'',
+                        dossierTransferNoDm:'',
+                        oldDossierLocation:'',
+                        dossierLocationId:'',
+                        handleUser:'',
+                        managerId:''
+                    }
+                );
                 this.isShowHeard = true;    
         },
         buyTypeSelect(){
@@ -892,27 +897,34 @@ export default {
                 }
 
             let that = this;
-            if(this.$route.query.buyId){
-                   this.axios.get('/work/buy/info',{
+            if(this.$route.query.dossierTransferApplyId){
+                   this.axios.get('work/dossierTransferApply/info',{
                         params:{
                             type:that.$route.query.resubmit,
-                            userBuyApplyId:this.$route.query.buyId
+                            dossierTransferApplyId:this.$route.query.dossierTransferApplyId
                         }
                     }).then(function(res){ 
                    let data = res.data.b;
                        if(!that.$route.query.resubmit){
-                                that.id = data.userBuyId;
+                                that.id = data.dossierTransferApplyId;
                         }
 
                        that.isDraftFlag = 1;
                         that.accessoryFor(data)
-                        that.buyType = data.buyType
-                        that.buyTypeCode = data.buyTypeCode
-                        that.payType = data.payType
-                        that.payTypeCode = data.payTypeCode
-                        that.userBuyApplyTheme = data.userBuyApplyTheme;
-                        that.userBuyApplyRemarks = data.userBuyApplyRemarks;
-                        that.hopeDeliveryDate = data.hopeDeliveryDate;
+                        that.transferName = data.transferName
+                        that.valDate = data.transferDate
+
+                        that.userInfo.name = data.receiver
+                        that.userInfo.companyName = data.receiveCompany
+                        that.userInfo.officeName = data.receiveOffice;
+                        that.userBuyApplyRemarks = data.transferReason;
+
+                        that.addList = data.dmInfo;
+                        // for(let i=0;i<data.dmInfo.length;i++){
+                        //     that.addList[i] = {
+
+                        //     }
+                        // }
                         that.chosed_list = data.receivers;
                         that.change_man(that.chosed_list)
                         that.buy = data.list

@@ -198,7 +198,7 @@
         methods :{
         ...mapMutations(['change_man','approver_man']),
             refuse:function(){
-                 this.$router.push({path:'/opinion',query:{id:this.dataObj.dossierTransferApplyId,typeName:'archMoveApply',applyType:28,color:'#609df6'}})
+                 this.$router.push({path:'/opinion',query:{id:this.dataObj.dossierTransferApplyId,typeName:'archMoveApply',applyType:27,color:'#609df6'}})
             },
             history_back_click:function(){
                     if(location.href.indexOf('goWork=0')>0){
@@ -210,13 +210,13 @@
             deliverTo(){ //转交
                 let newApprStr = this.appAndCopy(this.newAppr,'auditUserId')
                 let copyStr = this.appAndCopy(this.newCopy)
-                this.$router.push({path:'/imchoices',query:{id:this.dataObj.dossierTransferApplyId,receiverIds:copyStr,bgcolor:'#609df6', careOf:true,typeName:'archMoveApply',applyType:28,auditerIds:newApprStr,num:1}})
+                this.$router.push({path:'/imchoices',query:{id:this.dataObj.dossierTransferApplyId,receiverIds:copyStr,bgcolor:'#609df6', careOf:true,typeName:'archMoveApply',applyType:27,auditerIds:newApprStr,num:1}})
             },
             approveBack(){ //退回
-                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.dossierTransferApplyId,typeName:'archMoveApply',applyType:28,color:'#609df6'}})
+                 this.$router.push({path:'/approveBack',query:{id:this.dataObj.dossierTransferApplyId,typeName:'archMoveApply',applyType:27,color:'#609df6'}})
             },
             resubmit(){ //再次提交
-                this.$router.replace({path:'/archMoveApply',query:{tripId:this.dataObj.dossierTransferApplyId,resubmit:1}})
+                this.$router.replace({path:'/archMoveApply',query:{dossierTransferApplyId:this.dataObj.dossierTransferApplyId,resubmit:27}})
             },
             urge(){ //催办
                 this.isBackout = false;
@@ -224,7 +224,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                     applyId:this.dataObj.dossierTransferApplyId,
                     type:6,
-                    applyType:28,
+                    applyType:27,
                 })).then(function(res){
                     if(res.data.h.code==200){
                         that.$toast('催办成功!')
@@ -248,7 +248,7 @@
                 url = type!=2?'/opinion':'/imchoices';
 
                 params={id:this.dataObj.dossierTransferApplyId,receiverIds,auditerIds,receiverCompanyId,auditCompanyId,
-                color:'#609df6',applyType:28,typeName:'archMoveApply',pageType:type,careOf:true,num:1}
+                color:'#609df6',applyType:27,typeName:'archMoveApply',pageType:type,careOf:true,num:1}
 
                 this.$router.push({path:url,query:params})
             },
@@ -271,7 +271,7 @@
                 this.axios.post('/work/audit'+this.Service.queryString({
                     applyId:this.dataObj.dossierTransferApplyId,
                     type:1,
-                    applyType:28,
+                    applyType:27,
                 })).then(function(res){
                         if(res.data.h.code!=200){
                             that.$toast(res.data.h.msg)
@@ -280,7 +280,7 @@
                             that.$toast('撤销成功！')
           
                             setTimeout(()=>{
-                                window.location.href = "epipe://?&mark=tripDetails&_id="+that.dataObj.dossierTransferApplyId+'&data='+JSON.stringify({text:1});;
+                                window.location.href = "epipe://?&mark=archMoveApplyDetails&_id="+that.dataObj.dossierTransferApplyId+'&data='+JSON.stringify({text:1});;
                             },500)     
                         } 
                     })
@@ -339,8 +339,9 @@
         mounted:function(){
 
             let that = this;
-            let archMoveApplyId = this.$route.query.archMoveApplyId;
-            console.log(archMoveApplyId,'id')
+            let archMoveApplyId = this.$route.query.archMoveApplyId; 
+            // let archMoveApplyId = 'b21ba098b9fc11eab9724ccc6ac12eca';
+            console.log(archMoveApplyId,'移交id')
             let pusthId = this.$route.query.pushId
 
             this.axios.get('work/dossierTransferApply/info?dossierTransferApplyId='+archMoveApplyId+'&pushId='+pusthId+'&type=1').then((res)=>{

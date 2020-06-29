@@ -53,7 +53,10 @@
                 this.$emit('print')
             }
         },
-        props:['dataObj','leaveType']
+        props:['dataObj','leaveType'],
+        mounted(){
+            console.log(this.dataObj,'dataObj')
+        }
         
     }
 </script>
