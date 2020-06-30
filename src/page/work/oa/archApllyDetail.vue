@@ -343,7 +343,7 @@
             console.log(archApllyId,'借阅archApllyId')
             let pusthId = this.$route.query.pushId
 
-            this.axios.get('work/dossierBorrowApply/info?dossierBorrowApplyId='+archApllyId+'&pushId='+pusthId+'&type=1').then((res)=>{
+            this.axios.get('work/dossierBorrowApply/info?dossierBorrowApplyId='+archApllyId+'&pushId='+pusthId).then((res)=>{
                 that.dataObj = res.data.b;
                 console.log(that.dataObj,'data详情')
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
