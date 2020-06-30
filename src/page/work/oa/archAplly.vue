@@ -353,15 +353,19 @@ let save_leave = (index,text,that) =>{
                 that.$toast(res.data.h.msg)
             }else if(res.data.h.code == 200){
                 if(index){
+                    if(res.data.b.dossierBorrowApplyId){
                     that.$toast('已保存至草稿箱!')
                     setTimeout(()=>{
 
-                         if(that.$route.query.buyId){
+                         if(that.$route.query.dossierBorrowApplyId){
                              window.location.href = "epipe://?&mark=goWork"
                         }else{
                             window.location.href = "epipe://?&mark=history_back" 
                         }
                     },500)
+                    }else{
+                        that.$toast('此档案无法保存至草稿箱，档案已被借完！')
+                    }
                 }else{
                     // console.log( JSON.parse(res.data.b.res),'数据oo')
                     // console.log(res.data.b.dossierBorrowApplyId)
@@ -878,12 +882,12 @@ export default {
                 }
 
             let that = this;
-            console.log(this.$route.query.dossierBorrowApplyId,'trid')
-            if(this.$route.query.dossierBorrowApplyId){
+            console.log(this.$route.query.archApllyId,'借阅草稿archApllyId')
+            if(this.$route.query.archApllyId){
                    this.axios.get('work/dossierBorrowApply/info',{  
                         params:{
                             type:this.$route.query.resubmit,
-                            dossierBorrowApplyId:this.$route.query.dossierBorrowApplyId
+                            dossierBorrowApplyId:this.$route.query.archApllyId
                         }
                     }).then(function(res){ 
                    let data = res.data.b;

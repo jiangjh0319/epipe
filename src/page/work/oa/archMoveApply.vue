@@ -897,16 +897,17 @@ export default {
                 }
 
             let that = this;
-            if(this.$route.query.dossierTransferApplyId){
+             console.log(this.$route.query.archMoveApplyId,'移交草稿archMoveApplyId')
+            if(this.$route.query.archMoveApplyId){
                    this.axios.get('work/dossierTransferApply/info',{
                         params:{
                             type:that.$route.query.resubmit,
-                            dossierTransferApplyId:this.$route.query.dossierTransferApplyId
+                            dossierTransferApplyId:this.$route.query.archMoveApplyId
                         }
                     }).then(function(res){ 
                    let data = res.data.b;
                        if(!that.$route.query.resubmit){
-                                that.id = data.dossierTransferApplyId;
+                                that.id = data.archMoveApplyId;
                         }
 
                        that.isDraftFlag = 1;
@@ -914,12 +915,12 @@ export default {
                         that.transferName = data.transferName
                         that.valDate = data.transferDate
 
-                        that.userInfo.name = data.receiver
-                        that.userInfo.companyName = data.receiveCompany
-                        that.userInfo.officeName = data.receiveOffice;
+                        // that.userInfo.name = data.receiver
+                        // that.userInfo.companyName = data.receiveCompany
+                        // that.userInfo.officeName = data.receiveOffice;
                         that.userBuyApplyRemarks = data.transferReason;
 
-                        that.addList = data.dmInfo;
+                        // that.addList = data.dmInfo;
                         // for(let i=0;i<data.dmInfo.length;i++){
                         //     that.addList[i] = {
 

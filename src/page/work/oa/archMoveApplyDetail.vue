@@ -216,7 +216,7 @@
                  this.$router.push({path:'/approveBack',query:{id:this.dataObj.dossierTransferApplyId,typeName:'archMoveApply',applyType:27,color:'#609df6'}})
             },
             resubmit(){ //再次提交
-                this.$router.replace({path:'/archMoveApply',query:{dossierTransferApplyId:this.dataObj.dossierTransferApplyId,resubmit:27}})
+                this.$router.replace({path:'/archMoveApply',query:{archMoveApplyId:this.dataObj.dossierTransferApplyId,resubmit:27}})
             },
             urge(){ //催办
                 this.isBackout = false;

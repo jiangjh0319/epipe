@@ -214,7 +214,7 @@
                  this.$router.push({path:'/approveBack',query:{id:this.dataObj.dossierBorrowApplyId,typeName:'archAplly',applyType:26,color:'#609df6'}})
             },
             resubmit(){ //再次提交
-                this.$router.replace({path:'/archAplly',query:{dossierBorrowApplyId:this.dataObj.dossierBorrowApplyId,resubmit:26}})
+                this.$router.replace({path:'/archAplly',query:{archApllyId:this.dataObj.dossierBorrowApplyId,resubmit:26}})
             },
             urge(){ //催办
                 this.isBackout = false;

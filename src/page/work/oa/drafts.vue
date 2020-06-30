@@ -1235,6 +1235,7 @@
                 if(typeName=='all_oa'){
                     window.location.href = "epipe://?&mark=oaForm&_id="+item.applyId+"&type=1";
                 }else{
+                    console.log(item.applyId,'applyId')
                     window.location.href = "epipe://?&mark="+typeName+"&_id="+item.applyId;
                 }
             },
