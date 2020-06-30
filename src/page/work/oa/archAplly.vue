@@ -233,7 +233,7 @@ let save_leave = (index,text,that) =>{
         return false
     }else if(that.userBuyApplyRemarks==''){
         that.$toast('请输入借阅原因')
-    }else if(this.dmInfo[0].dossier==''){}
+    }
     else if(that.Util.checkApprovers(that.allApprovers)){
         that.$toast('请选择审批人')
     }else{
@@ -312,7 +312,7 @@ let save_leave = (index,text,that) =>{
         })
         console.log(params,'提交参数')
 
-        return
+
 
 
         // let dossinfo = { //有用的
