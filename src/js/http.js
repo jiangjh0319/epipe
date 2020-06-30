@@ -17,9 +17,9 @@ const dev = 'http://192.168.3.166:8280/member/v3'; //测试
 // const dev = 'http://192.168.3.185:8080/member/v3'; //伊旗 
 const product = 'https://apps.epipe.cn/member/v3';//正式环境
 // const product = "http://21874u8g05.iask.in:19054/member/v1"; //正式
-// axios.defaults.baseURL = window.location.href.indexOf("apps.epipe.cn")>0 ? product : dev;
+axios.defaults.baseURL = window.location.href.indexOf("apps.epipe.cn")>0 ? product : dev;
 
-axios.defaults.baseURL = dev;
+// axios.defaults.baseURL = product;
     
 function getCookie(name) {
   var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
