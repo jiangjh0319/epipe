@@ -238,26 +238,14 @@ let save_leave = (index,text,that) =>{
         that.$toast('请选择审批人')
     }else{
         console.log('借阅进入')
-        // for(let i=0;i<that.buy.length;i++){
-            
-        //     // if(that.buy[i].name==''){
-        //     //     that.$toast('请输入名称')
-        //     // }else if(that.buy[i].name&&(that.buy[i].name.length<2||that.buy[i].name.length>30)){
-        //     //     that.$toast('物品名称必须为2-30个字符')
-        //     // }else if(!that.buy[i].price){
-        //     //     that.$toast('价格不能为空')
-        //     // } else if(isNaN(that.buy[i].price) || that.buy[i].price.length>8){
-        //     //     that.$toast('价格为1-8位数字')
-        //     // }else if(that.buy[i].unit==''){
-        //     //     that.$toast('请输入单位')
-        //     // }else if(that.buy[i].specifications==''){
-        //     //     that.$toast('请输入规格')
-        //     // }else if(that.buy[i].number==''){
-        //     //     that.$toast('请输入数量')
-        //     // }else if(isNaN(that.buy[i].number)){
-        //     //     that.$toast('数量需为数字')
-        //     // }
-        // }
+        for(let i=0;i<that.addList.length;i++){
+            console.log(that.addList[i])
+            if( that.addList[i].name==''){
+                that.$toast('请选择档案名称')
+                return
+            }
+           
+        }
      
 
 
@@ -294,9 +282,6 @@ let save_leave = (index,text,that) =>{
             linkAuditNum:approver.numStr,
             draftFlag : index, //草稿还是发送
         }
-        // let dossierBorrowInfoList = []
-        // let listObj = {}
-        
 
         that.addList.forEach((item,index)=>{
             params['dmInfo['+index+'].dossier'] = item.name
@@ -307,32 +292,13 @@ let save_leave = (index,text,that) =>{
             params['dmInfo['+index+'].handleUser'] = item.managerName
             params['dmInfo['+index+'].handleUserId'] = item.managerId 
             params['dmInfo['+index+'].whetherNeedPage'] = item.whetherNeedPage==null?'0':item.whetherNeedPage
-            // listObj['dossierBorrowInfoList['+index+'].dossierId'] = item.managerId 
-            // listObj['dossierBorrowInfoList['+index+'].containPage'] = item.whetherNeedPage==null?0:item.whetherNeedPage
         })
         console.log(params,'提交参数')
 
 
-
-
-        // let dossinfo = { //有用的
-        //     dossierBorrowInfoList:that.dossierBorrowInfoList
-        // }
-        // that.axios({
-        //     method:"post",
-        //     headers:{
-        //         accessToken:window.localStorage.getItem('auth_token')
-        //     },
-        //     url:"http://192.168.3.171:8780/dossierapi/v1/dossierborrow/verifyDossier",
-        //     data:dossinfo,
-        // }).then(res=>{
-        //     console.log(res,'数据')
-        // })
-
-
         // return
 
-        
+
         that.axios({
                 method:"post",
                 url:"work/dossierBorrowApply/save",

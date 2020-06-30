@@ -317,26 +317,15 @@ let save_leave = (index,text,that) =>{
         that.$toast('请选择审批人')
     }else{
 
-        // for(let i=0;i<that.buy.length;i++){
-            
-        //     if(that.buy[i].name==''){
-        //         that.$toast('请输入名称')
-        //     }else if(that.buy[i].name&&(that.buy[i].name.length<2||that.buy[i].name.length>30)){
-        //         that.$toast('物品名称必须为2-30个字符')
-        //     }else if(!that.buy[i].price){
-        //         that.$toast('价格不能为空')
-        //     } else if(isNaN(that.buy[i].price) || that.buy[i].price.length>8){
-        //         that.$toast('价格为1-8位数字')
-        //     }else if(that.buy[i].unit==''){
-        //         that.$toast('请输入单位')
-        //     }else if(that.buy[i].specifications==''){
-        //         that.$toast('请输入规格')
-        //     }else if(that.buy[i].number==''){
-        //         that.$toast('请输入数量')
-        //     }else if(isNaN(that.buy[i].number)){
-        //         that.$toast('数量需为数字')
-        //     }
-        // }
+        console.log('移交进入')
+        for(let i=0;i<that.addList.length;i++){
+            console.log(that.addList[i])
+            if( that.addList[i].dossier==''){
+                that.$toast('请选择档案名称')
+                return
+            }
+           
+        }
 
         let receiverIds = '',receiverCompanyIds="",fileObj = {}, params={}, approver = {}
 
