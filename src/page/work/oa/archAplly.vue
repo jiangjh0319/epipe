@@ -306,7 +306,7 @@ let save_leave = (index,text,that) =>{
             params['dmInfo['+index+'].dossierBorrowNoDm'] = item.no
             params['dmInfo['+index+'].handleUser'] = item.managerName
             params['dmInfo['+index+'].handleUserId'] = item.managerId 
-            params['dmInfo['+index+'].whetherNeedPage'] = that.whetherNeedPage==null?'0':that.whetherNeedPage
+            params['dmInfo['+index+'].whetherNeedPage'] = item.whetherNeedPage==null?'0':item.whetherNeedPage
             // listObj['dossierBorrowInfoList['+index+'].dossierId'] = item.managerId 
             // listObj['dossierBorrowInfoList['+index+'].containPage'] = item.whetherNeedPage==null?0:item.whetherNeedPage
         })
@@ -331,6 +331,8 @@ let save_leave = (index,text,that) =>{
 
 
         // return
+
+        
         that.axios({
                 method:"post",
                 url:"work/dossierBorrowApply/save",
@@ -544,7 +546,7 @@ export default {
                     this.addList[this.pickIndex].dossierLocationId = val.dossierLocationId;
                     this.addList[this.pickIndex].managerName = val.managerName;
                     this.addList[this.pickIndex].managerId = val.managerId;
-                    this.addList[this.pickIndex].whetherNeedPage = val.containPage;
+                    
                     this.addList[this.pickIndex].isShowRadio = val.containPage=='1'?true:false;
                     this.addList[this.pickIndex].dossierId = val.id;
                     this.addList[this.pickIndex].containPage = val.containPage;
@@ -585,7 +587,8 @@ export default {
         },
         changeRadio(name){
             console.log('name',name)
-            this.whetherNeedPage = name;
+            this.addList[this.pickIndex].whetherNeedPage = name;
+            // this.whetherNeedPage = name;
         },
         format(date, index){
         date = new Date(date);
