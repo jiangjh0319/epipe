@@ -56,7 +56,7 @@
                     </div>
                     <div class="infor-box">
                         <span>档案编号</span>
-                        <p>{{item.dossierNo}}</p>
+                        <p>{{item.dossierTransferNoDm}}</p>
                     </div>
                     <div class="infor-box">
                         <span>档案管理员</span>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="infor-box">
                         <span>档案位置</span>
-                        <p>{{item.oldDossierLocation}}</p>
+                        <p>{{item.oldDossierLocation|oldDossierLocation}}</p>
                     </div>
                 </div>
             </div>
@@ -344,9 +344,9 @@
             console.log(archMoveApplyId,'移交id')
             let pusthId = this.$route.query.pushId
 
-            this.axios.get('work/dossierTransferApply/info?dossierTransferApplyId='+archMoveApplyId+'&pushId='+pusthId+'&type=1').then((res)=>{
+            this.axios.get('work/dossierTransferApply/info?dossierTransferApplyId='+archMoveApplyId+'&pushId='+pusthId).then((res)=>{
                 that.dataObj = res.data.b;
-                console.log(that.dataObj,'data')
+                console.log(that.dataObj,'档案移交data')
                 that.accessory = that.accessoryFors(that.dataObj.accessory)
                 that.title = that.dataObj.username+'的档案移交申请'
           
@@ -473,6 +473,11 @@
                 let arr = value.split('|')
                 return arr.join(',')
             },
+            oldDossierLocation(value){
+                if(value==null){
+                    return ''
+                }
+            }
           
         },
         computed: mapState(["chosed_man_state","approver_man_state"])
