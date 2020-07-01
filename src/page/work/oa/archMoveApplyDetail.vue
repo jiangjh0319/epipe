@@ -64,7 +64,7 @@
                     </div>
                     <div class="infor-box">
                         <span>档案位置</span>
-                        <p>{{item.oldDossierLocation|oldDossierLocation}}</p>
+                        <p>{{item.oldDossierLocation}}</p> 
                     </div>
                 </div>
             </div>

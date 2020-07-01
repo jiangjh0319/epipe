@@ -102,7 +102,7 @@
                             readonly
                             right-icon="arrow-down"
                             input-align="right"
-                            @click="handlerShowPicker(6,index)"
+                            @click="handlUpdownPage(index)"
                         />
                     </div>  
                     <div class="bor_bottom choose">
@@ -736,6 +736,10 @@ export default {
                     this.isShowHeard = false;
                 }
             },
+        handlUpdownPage(index){
+            this.pickIndex = index;
+            this.$router.push({path:'/archNameList'})
+        },    
         addDataName(){ //明细
            this.addList.push(
                     {
@@ -872,6 +876,28 @@ export default {
                 console.log(this.userInfo,'userinfo')
             }
             this.chosed_list = this.chosed_man_state
+            if(this.archrDatasList){
+                  console.log(this.archrDatasList,'ar')
+                let archArr =[];
+                archArr.push(this.archrDatasList);
+                console.log(archArr,'archArr')
+                for(let val of archArr){
+                    console.log(val,'每一条')
+                    this.addList[this.pickIndex].dossier = val.name;
+                    this.addList[this.pickIndex].id = val.id;
+                    this.addList[this.pickIndex].dossierTransferNoDm = val.no;
+                    this.addList[this.pickIndex].oldDossierLocation = val.dossierLocationName;
+                    this.addList[this.pickIndex].dossierLocationId = val.dossierLocationId;
+                    this.addList[this.pickIndex].handleUser = val.managerName;
+                    this.addList[this.pickIndex].managerId = val.managerId;
+                    
+                    // this.addList[this.pickIndex].isShowRadio = val.containPage=='1'?true:false;
+                    // this.addList[this.pickIndex].dossierId = val.id;
+                    // this.addList[this.pickIndex].containPage = val.containPage;
+       
+                }
+              
+            }
          },
 
         mounted(){
@@ -926,7 +952,7 @@ export default {
             }
         },
         computed:{
-            ...mapState(["chosed_man_state","approver_man_state",]),
+            ...mapState(["chosed_man_state","approver_man_state","archrDatasList"]),
         } 
 
         

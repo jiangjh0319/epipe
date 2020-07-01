@@ -163,7 +163,8 @@ const ArchView = r => require.ensure([], () => r(require('@/page/work/oa/archVie
 const ArchViewDetail = r => require.ensure([], () => r(require('@/page/work/oa/archViewDetail.vue')), 'group-work')
 const ArchViewDetailMore = r => require.ensure([], () => r(require('@/page/work/oa/archViewDetailMore.vue')), 'group-work') 
 const ArchMoveApply = r => require.ensure([], () => r(require('@/page/work/oa/archMoveApply.vue')), 'group-work') 
-const ArchMoveApplyDetail = r => require.ensure([], () => r(require('@/page/work/oa/archMoveApplyDetail.vue')), 'group-work') 
+const ArchMoveApplyDetail = r => require.ensure([], () => r(require('@/page/work/oa/archMoveApplyDetail.vue')), 'group-work')
+const ArchNameList = r => require.ensure([], () => r(require('@/page/work/oa/archNameList.vue')), 'group-work') 
 
 
 
@@ -994,6 +995,10 @@ export default new Router({
       path:'/archMoveApplyDetails', //档案移交详情
       component:ArchMoveApplyDetail,
       meta: {keepAlive: true}
+    },
+    {
+      path:'/archNameList', //档案名称列表
+      component:ArchNameList,
     },
     ...routeData
   ],

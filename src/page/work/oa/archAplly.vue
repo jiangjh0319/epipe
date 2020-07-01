@@ -124,9 +124,11 @@
                         placeholder="选择档案名称"
                         right-icon="arrow-down"
                         readonly
-                        input-align="right"
-                        @click="handlerShowPicker(6,index)"
+                        input-align="right" 
+                        @click="handlUpdownPage(index)"
                         />
+                        <!-- @click="handlerShowPicker(6,index)" -->
+                        <!-- @click="handlUpdownPage" -->
                 </div>
                 <div class="bor_bottom"> 
                     <van-field
@@ -462,6 +464,10 @@ export default {
         submit_btn(){ //提
             save_leave(0, "提交成功", this)
         },
+        handlUpdownPage(index){
+            this.pickIndex = index;
+            this.$router.push({path:'/archNameList'})
+        },
          handlerShowPicker(i,index){
              console.log(i,'iii999')
             if(i===1){
@@ -536,6 +542,7 @@ export default {
             }
             this.showPicker = false;
         },
+
         reducedFilter(obj, arr, addProperty) {
         if (typeof (obj) !== "object" || !Array.isArray(arr)) {
           throw new Error("参数格式不正确")
@@ -718,14 +725,16 @@ export default {
                 }
             },
         addDataName(){ //明细
-            this.addList.push( {
+            this.addList.push( 
+                {
                         name:'',
                         no:'',
                         dossierLocationName:'',
                         managerName:'',
                         whetherNeedPage:0,
                         isShowRadio:false
-                    });
+                    }
+                    );
             this.isShowHeard = true;    
         },
         buyTypeSelect(){
@@ -758,6 +767,7 @@ export default {
 
         },
         created() {
+            
             console.log(window.localStorage.getItem('auth_token'))
             this.axios.get('work/dossierBorrowApply/no').then(res=>{
                 console.log(res,'编号数据')
@@ -767,7 +777,6 @@ export default {
                     this.$toast(res.data.h.msg)
                 }
             })
-
 
             this.axios.get("work/dossierBorrowApply/token?pageNo=1&pageSize=10").then(res=>{
                 if(res.data.h.code==200){
@@ -837,7 +846,29 @@ export default {
                 this.allApprovers[this.addressListIndex].auditers = this.approver_man_state
             }
             this.chosed_list = this.chosed_man_state
-		    this.$forceUpdate();
+            this.$forceUpdate();
+            if(this.archrDatasList){
+                  console.log(this.archrDatasList,'ar')
+                let archArr =[];
+                archArr.push(this.archrDatasList);
+                console.log(archArr,'archArr')
+                for(let val of archArr){
+                    console.log(val,'每一条')
+                    this.addList[this.pickIndex].name = val.name;
+                    this.addList[this.pickIndex].id = val.id;
+                    this.addList[this.pickIndex].no = val.no;
+                    this.addList[this.pickIndex].dossierLocationName = val.dossierLocationName;
+                    this.addList[this.pickIndex].dossierLocationId = val.dossierLocationId;
+                    this.addList[this.pickIndex].managerName = val.managerName;
+                    this.addList[this.pickIndex].managerId = val.managerId;
+                    
+                    this.addList[this.pickIndex].isShowRadio = val.containPage=='1'?true:false;
+                    this.addList[this.pickIndex].dossierId = val.id;
+                    this.addList[this.pickIndex].containPage = val.containPage;
+       
+                }
+              
+            }
          },
         mounted(){
                 window["epipe_camera_callback"] = (url,fileSize,fileName) => {
@@ -885,7 +916,7 @@ export default {
             }
         },
         computed:{
-            ...mapState(["chosed_man_state","approver_man_state",]),
+            ...mapState(["chosed_man_state","approver_man_state","archrDatasList"]),
         } 
 
         

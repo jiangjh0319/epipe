@@ -17,6 +17,7 @@ const state = {
   oaCount:0,
   reimburse:[{typeName:'请选择类型',type:-1}],
   permissionsusers:[],
+  archrDatasList:{}
 }
 
 const mutations = {
@@ -100,6 +101,9 @@ const mutations = {
   },
   affairs_set(state,val){ //设置待办事宜数量
     state.affairsNum = val;
+  },
+  archr_list(state,val){//档案名称列表
+    state.archrDatasList = val;
   }
 }
 
